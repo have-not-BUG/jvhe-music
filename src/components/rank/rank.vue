@@ -6,32 +6,17 @@
 
 <script>
 export default {
-  name: 'hello',
+  name: 'rank',
   data () {
     return {
-      msg: '我是hello。vue'
+      msg: '排行页面'
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "~common/stylus/variable"
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
 </style>

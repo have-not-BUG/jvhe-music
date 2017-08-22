@@ -1,20 +1,27 @@
 <template>
   <div id="app">
-    <img src="./common/image/logo.png">
-    <!--<router-view></router-view>-->
-    我是App.vue fff
+    <m-header></m-header>
+    <tab></tab>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'app'
-}
+  import MHeader from 'components/m-header/m-header'
+  import Tab from 'components/tab/tab'
+  export default {
+    name: 'app',
+    components: {
+      MHeader,
+      Tab
+    }
+
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
-  #app{
+  #app {
     color $color-theme
   }
 
