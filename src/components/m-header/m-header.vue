@@ -6,10 +6,10 @@
 
 <script>
 export default {
-  name: 'singer',
+  name: 'header',
   data () {
     return {
-      msg: '我是头部'
+      msg: '聚合音乐'
     }
   }
 }
@@ -18,5 +18,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  .header{
+    text-align center
+    padding 10px 0
+  }
 
 </style>
