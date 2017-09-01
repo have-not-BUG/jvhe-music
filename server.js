@@ -1,7 +1,6 @@
 var express = require('express')
 var path = require('path')
 var serveStatic = require('serve-static')
-<<<<<<< HEAD
 var axios = require('axios')
 
 var app = express()
@@ -17,14 +16,9 @@ apiRoutes.get('/getSliderData', function (req, res) {
 
     console.log(' 自建的代理出错!  ', err)
   })
-
 })
 
 app.use('/api', apiRoutes)
-=======
-
-var app = express()
->>>>>>> 426115af9ce1481d6ddcdfccc197a59921463e0e
 app.use(serveStatic(path.join(__dirname, 'dist')))
 
 var port = process.env.PORT || 5000

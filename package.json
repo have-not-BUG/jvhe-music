@@ -12,7 +12,6 @@
     "start": "node server.js"
   },
   "dependencies": {
-<<<<<<< HEAD
     "axios": "^0.16.2",
     "babel-runtime": "^6.26.0",
     "fastclick": "^1.0.6",
@@ -21,8 +20,6 @@
     "vue-router": "^2.6.0"
   },
   "devDependencies": {
-=======
->>>>>>> 426115af9ce1481d6ddcdfccc197a59921463e0e
     "autoprefixer": "^7.1.2",
     "axios": "^0.16.2",
     "babel-core": "^6.22.1",
@@ -75,7 +72,6 @@
     "webpack-hot-middleware": "^2.18.0",
     "webpack-merge": "^4.1.0"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
