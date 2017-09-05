@@ -3,7 +3,10 @@
     <div class="slider-group" ref="sliderGroup">
       <slot></slot>
     </div>
-    <div class="dots"></div>
+    <div class="dots">
+      <span class="dot" v-for="(item , index) in dots" v-bind:class="{active: currentPageIndex===index }">
+      </span>
+    </div>
   </div>
 </template>
 
@@ -12,6 +15,13 @@
   import BetterScroll from 'better-scroll'
 
   export default {
+    data: function () {
+      return {
+        dots: [],
+        currentPageIndex: 0
+      }
+
+    },
     props: {
       loop: {
         type: Boolean,
@@ -27,7 +37,7 @@
       }
     },
     methods: {
-      _setSliderWidth: function () {
+      _setSliderWidth: function (isResize) {
         this.children = this.$refs.sliderGroup.children;
         let width = 0;
         let sliderWidth = this.$refs.slider.clientWidth;
@@ -40,12 +50,15 @@
           width += sliderWidth;
         }
 
-        if (this.loop) {
+        if (this.loop && !isResize) {
           width += 2 * sliderWidth
         }
 
         this.$refs.sliderGroup.style.width = width + 'px'
 
+      },
+      _initDots: function () {
+        this.dots = new Array(this.children.length)
       },
       _initSlider: function () {
         this.slider = new BetterScroll(this.$refs.slider, {
@@ -53,22 +66,59 @@
           scrollY: false,
           momentum: false,
           snap: {
-            loop:this.loop,
-            threshold:0.3,
-            speed:400
-          },
-
-          click: true
+            loop: this.loop,
+            threshold: 0.3,
+            speed: 400
+          }
         })
+        this.slider.on("scrollEnd", () => {
+          let pageIndex = this.slider.getCurrentPage().pageX;
+          if (this.loop) {
+            pageIndex -= 1
+          }
+          this.currentPageIndex = pageIndex;
+          if (this.autoPlay) {
+            clearTimeout(this.timer);
+            this._sliderPlay();
+          }
+
+        })
+      },
+      _sliderPlay: function () {
+        let pageIndex = this.currentPageIndex + 1;
+        if (this.loop) {
+          pageIndex += 1
+        }
+
+        this.timer = setTimeout(() => {
+          this.slider.goToPage(pageIndex, 0, 400)
+        }, this.interval)
+
       }
     },
     mounted: function () {
       setTimeout(() => {
         this._setSliderWidth();
+        this._initDots();
         this._initSlider();
-      }, 20)
+        if (this.autoPlay) {
+          this._sliderPlay();
+        }
+      }, 20);
 
+      window.addEventListener('resize', () => {
+        if (!this.slider) {
+          return
+        }
+        this._setSliderWidth(true)
+        this.slider.refresh()
+      })
+
+    },
+    destroyed: function () {
+      clearTimeout(this.timer)
     }
+
   }
 </script>
 
@@ -78,8 +128,8 @@
 
   .slider {
     min-height 1px
+    position relative
     .slider-group {
-      position relative
       overflow hidden
       white-space nowrap
       &:after {
@@ -95,6 +145,23 @@
         img {
           width 100%
           display block
+        }
+      }
+    }
+    .dots {
+      position absolute
+      bottom 6px
+      left 50%
+      transform translateX(-50%)
+      .dot {
+        box-sizing border-box
+        padding 3px
+        margin 0 2.5px
+        display inline-block
+        border-radius 2.5px
+        background-color rgba(144, 144, 144, .8)
+        &.active {
+          background-color $color-theme
         }
       }
     }
