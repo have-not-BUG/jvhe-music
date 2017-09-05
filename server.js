@@ -12,7 +12,7 @@ apiRoutes.get('/getSliderData', function (req, res) {
     headers: {
       referer: 'https://m.y.qq.com/'
     }
-  }).then((response => { res.json(response.data) })).catch(err => {
+  }).then((response => { res.json(response.data) ; console.log("现在运行的是server.js") })).catch(err => {
 
     console.log(' 自建的代理出错!  ', err)
   })

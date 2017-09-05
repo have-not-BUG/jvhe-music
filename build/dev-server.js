@@ -25,7 +25,7 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 
 var apiRoutes = express.Router()
-apiRoutes.get('/getSliderData', function (req, res) {
+apiRoutes.get('/getQQSliderData', function (req, res) {
   var url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg?g_tk=135662383&uin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=h5&needNewCode=1&_=1504085676400'
 
   axios.get(url, {
