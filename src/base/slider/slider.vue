@@ -129,6 +129,7 @@
   .slider {
     min-height 1px
     position relative
+    overflow hidden
     .slider-group {
       overflow hidden
       white-space nowrap
