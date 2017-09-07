@@ -14,6 +14,9 @@
 
         <div class="recommend-list">
           <h1 class="recommend-list-title">热门歌单推荐</h1>
+          <div class="loading-wrapper" v-show="!qqhotSongList.length">
+            <loading></loading>
+          </div>
           <ul>
             <li v-for="item in qqhotSongList">
               <img v-lazy="item.imgurl" :alt="item.dissname">
@@ -29,6 +32,7 @@
 <script>
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
   import { getQQHotSongList } from 'api/recommend'
   import { ERROR_OK } from 'api/config'
   export default {
@@ -42,7 +46,8 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     },
     methods: {
       showQQSliderData: function () {
@@ -71,7 +76,9 @@
     },
     created: function () {
       this.showQQSliderData();
-      this._getQQHotSongList();
+        this._getQQHotSongList();
+
+
     }
 
   }
@@ -98,10 +105,21 @@
 
       .recommend-list {
         margin 15px
+        position relative
+
+
         .recommend-list-title {
           text-align center
           margin 10px
           color $color-theme
+        }
+        .loading-wrapper {
+          position absolute
+          top: 600%
+          left: 50%
+          transform translate(-50%,-50%)
+
+
         }
         ul {
           li {
