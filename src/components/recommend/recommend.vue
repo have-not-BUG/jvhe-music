@@ -6,7 +6,7 @@
           <slider>
             <div v-for="item in recommends">
               <a v-bind:href="item.linkUrl">
-                <img @load="loadImg" v-bind:src="item.picUrl" alt="代理获取的轮播图片">
+                <img @load="loadImg" class="needsclick" v-bind:src="item.picUrl" alt="代理获取的轮播图片">
               </a>
             </div>
           </slider>
