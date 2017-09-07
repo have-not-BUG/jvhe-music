@@ -16,7 +16,7 @@
           <h1 class="recommend-list-title">热门歌单推荐</h1>
           <ul>
             <li v-for="item in qqhotSongList">
-              <img :src="item.imgurl" :alt="item.dissname">
+              <img v-lazy="item.imgurl" :alt="item.dissname">
               <p v-html="item.dissname"></p>
             </li>
           </ul>
@@ -90,8 +90,6 @@
     .recommend-content {
       height 100%
       overflow: hidden
-      border 1px solid red
-
       .slider-wrapper {
         position: relative
         width: 100%
