@@ -23,6 +23,8 @@
   .tab {
     display flex
     justify-content center
+    max-height 40px
+    font-size $font-size-medium-x
     .tab-item {
       cursor pointer
       width 25%

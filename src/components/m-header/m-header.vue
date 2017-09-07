@@ -21,6 +21,8 @@ export default {
   .header{
     text-align center
     padding 10px 0
+    max-height 40px
+    font-size $font-size-large
   }
 
 </style>
