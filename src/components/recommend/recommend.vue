@@ -52,18 +52,19 @@
     methods: {
       showQQSliderData: function () {
         this.$http.get('/api/getQQSliderData').then(res => {
-          console.log("代理数据是。。。", res.data.data.slider);
           this.recommends = res.data.data.slider;
           return Promise.resolve(res.data.data.slider)
+        }).catch(err =>{
+          alert('获取QQ轮播数据出错了，请刷新重试或者联系本人',err)
         })
       },
       _getQQHotSongList: function () {
         getQQHotSongList().then(res => {
           if (res.code === ERROR_OK) {
             this.qqhotSongList = res.data.hotdiss.list
-            console.log(this.qqhotSongList)
           }
-
+        }).catch(err =>{
+          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人',err)
         })
       },
       loadImg: function () {
