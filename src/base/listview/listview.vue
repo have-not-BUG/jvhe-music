@@ -1,7 +1,12 @@
 <template>
-  <scroll class="list-view" :data="data" ref="listview">
+  <scroll class="list-view"
+          :data="data"
+          ref="listview"
+          :probeType="probeType"
+          @scroll="scroll"
+  >
     <ul class="singers-wrapper">
-      <li v-for="includeClassifiedData in data" ref="includeClassifiedData">
+      <li v-for="includeClassifiedData in data" ref="includeClassified">
         <h2 class="classified-title"> {{includeClassifiedData.title}}</h2>
         <ul class="under-classified-wrapper">
           <li class="under-classified-item" v-for=" item in includeClassifiedData.items">
@@ -15,7 +20,7 @@
         @touchstart="toInitialsSingers"
         @touchmove.stop.prevent="moveToInitialsSingers">
       <li v-for="(item,index) in singerInitials"
-          :data-index="index">
+          :data-index="index" :class="{'showcurrent':currentIndex===index}">
         {{item}}
       </li>
     </ul>
@@ -32,12 +37,21 @@
   let initialsNavigationSize = 16;
   export default {
     created(){
-      this.touch = {}
+      this.touch = {};
+      this.classifiedHeight = [];
+      this.listenScroll = true;
+      this.probeType = 3;
     },
     props: {
       data: {
         type: Array,
         default: []
+      }
+    },
+    data(){
+      return {
+        scrollY: -1,
+        currentIndex: 0
       }
     },
     components: {
@@ -56,7 +70,7 @@
           starttouch = e.touches[0];
         this.touch.pageY1 = starttouch.pageY;
         this.touch.startindex = startnum;
-        this.$refs.listview.scrollToElement(this.$refs.includeClassifiedData[startnum], 0);
+        this.$refs.listview.scrollToElement(this.$refs.includeClassified[startnum], 0);
         this.$Lazyload.lazyLoadHandler()
       },
       moveToInitialsSingers(e){
@@ -64,10 +78,52 @@
         this.touch.pageY2 = endtouch.pageY
         let movednum = (this.touch.pageY2 - this.touch.pageY1) / initialsNavigationSize | 0;
         let movetonum = parseInt(this.touch.startindex) + parseInt(movednum);
-        this.$refs.listview.scrollToElement(this.$refs.includeClassifiedData[movetonum], 0);
+        this.$refs.listview.scrollToElement(this.$refs.includeClassified[movetonum], 0);
         this.$Lazyload.lazyLoadHandler()
 
+      },
+      _computHeight(){
+        let includeClassified = this.$refs.includeClassified,
+          height = 0;
+        for (let i = 0; i < includeClassified.length; i++) {
+          height += includeClassified[i].clientHeight
+          this.classifiedHeight.push(height);
+        }
+        console.log('classifiedHeight', this.classifiedHeight)
+      },
+      scroll(pos){
+        this.scrollY = pos.y
+
       }
+
+    },
+    watch: {
+      data(){
+        setTimeout(() => {
+          this._computHeight()
+        }, 20)
+      },
+      scrollY(newY){
+        let classifiedHeight = this.classifiedHeight;
+        if (newY > 0 || newY === 0 || -newY < classifiedHeight[0]) {
+          this.currentIndex = 0
+          return
+        }
+        for (let i = 0; i < classifiedHeight.length - 1; i++) {
+          let height1 = classifiedHeight[i],
+            height2 = classifiedHeight[i + 1];
+          if (-newY > height1 && -newY < height2) {
+            this.currentIndex = i + 1
+            console.log(this.currentIndex);
+            return
+          }
+
+        }
+
+        this.currentIndex = classifiedHeight.length
+
+      }
+
     }
 
   }
@@ -124,6 +180,9 @@
         padding 1px 3px
         font-size $font-size-small-s
         color $color-text-l
+        &.showcurrent {
+          color: $color-theme
+        }
       }
 
     }

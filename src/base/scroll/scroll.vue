@@ -2,7 +2,6 @@
   <div ref="wrapper">
     <slot></slot>
   </div>
-
 </template>
 
 <script>
@@ -21,6 +20,10 @@
       data: {
         type: Array,
         default: null
+      },
+      listenScroll: {
+        type: Boolean,
+        default: true
       }
     },
     methods: {
@@ -32,6 +35,12 @@
           probeType: this.probeType,
           click: this.click
         })
+        if (this.listenScroll) {
+          let me = this;
+          this.scroll.on('scroll', (pos) => {
+            me.$emit('scroll', pos)
+          })
+        }
       },
       enable: function () {
         this.scroll && this.scroll.enable()
