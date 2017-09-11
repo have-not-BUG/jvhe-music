@@ -15,4 +15,19 @@ export function hasClass (el, className) {
 
 }
 
+export function getOrSetAttributeData (element, name, value) {
+
+  let prefix = 'data-',
+    fullname = prefix + name
+
+  if (value) {
+    return element.setAttribute(fullname, value)
+
+  } else {
+    return element.getAttribute(fullname)
+  }
+
+}
+
+
 

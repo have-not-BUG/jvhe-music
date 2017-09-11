@@ -41,6 +41,12 @@
       },
       refresh: function () {
         this.scroll && this.scroll.refresh()
+      },
+      scrollTo: function () {
+        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+      },
+      scrollToElement: function () {
+        this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
       }
 
     },
