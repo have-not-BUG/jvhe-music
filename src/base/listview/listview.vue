@@ -24,6 +24,13 @@
         {{item}}
       </li>
     </ul>
+    <div :class="{'classified-fixed-title':scrollY <0 }" ref="classifiedFixedTitle">
+      <h2>{{classifiedFixedTitle}}</h2>
+    </div>
+
+    <div class="loading-wrapper" v-show="!data.length">
+      <loading></loading>
+    </div>
 
   </scroll>
 
@@ -33,6 +40,7 @@
 <script>
   import Scroll from 'base/scroll/scroll'
   import { getOrSetAttributeData } from 'common/js/dom'
+  import Loading from  'base/loading/loading'
 
   let initialsNavigationSize = 16;
   export default {
@@ -55,13 +63,20 @@
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     },
     computed: {
       singerInitials(){
         return this.data.map((includeClassifiedData) => {
           return includeClassifiedData.title.substr(0, 1)
         })
+      },
+      classifiedFixedTitle(){
+
+//        return this.data[this.currentIndex].title
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
+
       }
     },
     methods: {
@@ -167,7 +182,7 @@
       }
       .under-classified-wrapper {
         .under-classified-item {
-          padding: 20px 0 0 30px
+          padding: 15px 0 15px 30px
           display flex
           align-items center
           .avatar {
@@ -190,6 +205,7 @@
       right 0
       padding 5px 2px
       background-color $color-background-d
+      z-index 999
       li {
         height 14px
         line-height 14px
@@ -200,6 +216,26 @@
           color: $color-theme
         }
       }
+
+    }
+    .classified-fixed-title {
+      position fixed
+      top 88px
+      left 0
+      color: $color-theme
+      background-color #333
+      padding-left 20px
+      line-height 30px
+      height 30px
+      font-size $font-size-small
+      width 100%
+
+    }
+    .loading-wrapper {
+      position absolute
+      top 50%
+      left 50%
+      transform translate(-50%, -50%)
 
     }
   }

@@ -24,7 +24,7 @@
   .loading-content{
     text-align center
     p{
-      color $color-text-l
+      color $color-text
       font-size $font-size-medium
     }
   }
