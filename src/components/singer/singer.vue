@@ -1,6 +1,7 @@
 <template>
   <div class="singer">
-  <listview :data="optimizedSingerList"></listview>
+    <listview :data="optimizedSingerList" @choose="chooseSinger"></listview>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -21,6 +22,12 @@
       }
     },
     methods: {
+      chooseSinger(singer){
+        this.$router.push({
+          path: `/singer/${singer.mid}`
+        })
+
+      },
       _getQQSingerList() {
         getQQSingerList().then(res => {
           if (res.code === ERROR_OK) {
@@ -105,7 +112,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
 
-  .singer{
+  .singer {
     position: fixed
     width: 100%
     top: 88px

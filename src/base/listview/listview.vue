@@ -9,7 +9,10 @@
       <li v-for="includeClassifiedData in data" ref="includeClassified">
         <h2 class="classified-title"> {{includeClassifiedData.title}}</h2>
         <ul class="under-classified-wrapper">
-          <li class="under-classified-item" v-for=" item in includeClassifiedData.items">
+          <li class="under-classified-item"
+              v-for=" item in includeClassifiedData.items"
+              @click="chooseItem(item)"
+          >
             <img class="avatar" v-lazy="item.avatar" :alt="item.name">
             <span>{{item.name}}</span>
           </li>
@@ -125,6 +128,9 @@
       scroll(pos){
         this.scrollY = pos.y
 
+      },
+      chooseItem(item){
+        this.$emit('choose', item)
       }
 
     },
@@ -205,7 +211,7 @@
       right 0
       padding 5px 2px
       background-color $color-background-d
-      z-index 999
+      z-index 9
       li {
         height 14px
         line-height 14px
