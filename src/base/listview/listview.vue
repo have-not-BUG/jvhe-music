@@ -69,17 +69,33 @@
         let startnum = getOrSetAttributeData(e.target, 'index'),
           starttouch = e.touches[0];
         this.touch.pageY1 = starttouch.pageY;
-        this.touch.startindex = startnum;
-        this.$refs.listview.scrollToElement(this.$refs.includeClassified[startnum], 0);
-        this.$Lazyload.lazyLoadHandler()
+        this.touch.startindex = parseInt(startnum);
+        this._scrollTo(startnum);
+
       },
       moveToInitialsSingers(e){
         let endtouch = e.touches[0];
         this.touch.pageY2 = endtouch.pageY
-        let movednum = (this.touch.pageY2 - this.touch.pageY1) / initialsNavigationSize | 0;
-        let movetonum = parseInt(this.touch.startindex) + parseInt(movednum);
-        this.$refs.listview.scrollToElement(this.$refs.includeClassified[movetonum], 0);
-        this.$Lazyload.lazyLoadHandler()
+        let movednum = parseInt((this.touch.pageY2 - this.touch.pageY1) / initialsNavigationSize | 0);
+        let movetonum = this.touch.startindex + movednum;
+        this._scrollTo(movetonum);
+      },
+      _scrollTo(index){
+        let num = parseInt(index)
+
+        if (num === 0 || num < 0) {
+          this.scrollY = 0;
+          num = 0;
+
+        } else if (num > this.classifiedHeight.length - 1) {
+          num = this.classifiedHeight.length - 1;
+          this.scrollY = -(this.classifiedHeight[num - 1]);
+        }
+        else {
+          this.scrollY = -(this.classifiedHeight[num - 1]);
+        }
+
+        this.$refs.listview.scrollToElement(this.$refs.includeClassified[num], 0);
 
       },
       _computHeight(){
@@ -112,7 +128,7 @@
         for (let i = 0; i < classifiedHeight.length - 1; i++) {
           let height1 = classifiedHeight[i],
             height2 = classifiedHeight[i + 1];
-          if (-newY > height1 && -newY < height2) {
+          if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i + 1
             console.log(this.currentIndex);
             return
