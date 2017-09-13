@@ -44,6 +44,7 @@
   import Scroll from 'base/scroll/scroll'
   import { getOrSetAttributeData } from 'common/js/dom'
   import Loading from  'base/loading/loading'
+  import { mapGetters } from 'vuex'
 
   let initialsNavigationSize = 16;
   export default {
@@ -52,6 +53,8 @@
       this.classifiedHeight = [];
       this.listenScroll = true;
       this.probeType = 3;
+      this.showSinger()
+
     },
     props: {
       data: {
@@ -76,11 +79,11 @@
         })
       },
       classifiedFixedTitle(){
-
-//        return this.data[this.currentIndex].title
         return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
 
-      }
+      },
+      ...mapGetters(['singer'])
+
     },
     methods: {
       toInitialsSingers(e){
@@ -131,6 +134,9 @@
       },
       chooseItem(item){
         this.$emit('choose', item)
+      },
+      showSinger() {
+        console.log(this.singer)
       }
 
     },

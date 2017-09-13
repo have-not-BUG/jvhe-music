@@ -10,6 +10,7 @@
   import { ERROR_OK } from 'api/config'
   import Singer from 'common/js/singer'
   import Listview from 'base/listview/listview'
+  import { mapMutations } from 'vuex'
 
   const SINGER_TYPE = '热门'
   const HOT_SINGER_LENGTH = 10
@@ -26,6 +27,7 @@
         this.$router.push({
           path: `/singer/${singer.mid}`
         })
+        this.setSinger(singer)
 
       },
       _getQQSingerList() {
@@ -96,7 +98,10 @@
 
         return hotSingerData.concat(initialsSingerData)
 
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
 
     },
     created: function () {

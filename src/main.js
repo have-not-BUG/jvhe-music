@@ -7,6 +7,7 @@ import fastclick from 'fastclick'
 import 'common/stylus/index.styl'
 
 import axios from 'axios'
+import store from './store/index'
 
 import VueLazyLoad from 'vue-lazyload'
 Vue.prototype.$http = axios
@@ -23,5 +24,6 @@ Vue.use(VueLazyLoad, {
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })
