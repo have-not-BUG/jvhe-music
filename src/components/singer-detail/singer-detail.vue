@@ -1,7 +1,6 @@
 <template>
   <transition name="slide">
     <div class="singer-detail-wrapper">
-      <h1>{{ msg }}</h1>
     </div>
   </transition>
 </template>
@@ -10,11 +9,13 @@
   import { mapGetters } from 'vuex'
   import { getQQSingerDetail }  from  'api/singer'
   import { ERROR_OK } from 'api/config'
+
+  import { createSong } from 'common/js/song'
   export default {
     name: 'singer-detail',
-    data () {
+    data() {
       return {
-        msg: '歌手详情页面'
+        songs: []
       }
     },
     computed: {
@@ -28,16 +29,32 @@
       _getQQSingerDetail(){
         if (!this.singer.mid) {
           this.$router.push('/singer')
+          return
         }
         getQQSingerDetail(this.singer.mid).then(res => {
           if (res.code === ERROR_OK) {
-            console.log('res.data.list是', res.data.list)
+            this.songs = this.optimizeQQSongs(res.data.list);
+            console.log('res.data.list是', res.data.list);
+            console.log('this.songs是第三大城市的速度', this.songs)
           }
 
         }).catch(err => {
-          console.log('获取歌手详情页出错了', err),
-            alert('获取歌手详情页出错了', err)
+          console.log('获取歌手详情页出错了', err);
+//          alert('获取歌手详情页出错了', err)
         })
+      },
+      optimizeQQSongs(list){
+        let optimized_data = [];
+        list.forEach((item) => {
+          let {musicData} = item;
+          if (musicData.songid && musicData.albummid) {
+            optimized_data.push(createSong(musicData))
+          }
+
+        })
+
+        return optimized_data
+
       }
     }
   }
