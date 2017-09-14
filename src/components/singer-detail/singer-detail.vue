@@ -1,6 +1,7 @@
 <template>
   <transition name="slide">
     <div class="singer-detail-wrapper">
+      <music-list :songs="songs" :title="title" :bg-image='bgImage'></music-list>
     </div>
   </transition>
 </template>
@@ -11,6 +12,9 @@
   import { ERROR_OK } from 'api/config'
 
   import { createSong } from 'common/js/song'
+
+  import musicList from 'components/music-list/music-list'
+
   export default {
     name: 'singer-detail',
     data() {
@@ -19,6 +23,15 @@
       }
     },
     computed: {
+      title(){
+        return this.singer.name
+
+      },
+      bgImage(){
+        return this.singer.avatar
+
+      },
+
       ...mapGetters(['singer'])
     },
     created(){
@@ -34,8 +47,8 @@
         getQQSingerDetail(this.singer.mid).then(res => {
           if (res.code === ERROR_OK) {
             this.songs = this.optimizeQQSongs(res.data.list);
-            console.log('res.data.list是', res.data.list);
-            console.log('this.songs是第三大城市的速度', this.songs)
+//            console.log('res.data.list是', res.data.list);
+//            console.log('this.songs是第三大城市的速度', this.songs)
           }
 
         }).catch(err => {
@@ -56,6 +69,9 @@
         return optimized_data
 
       }
+    },
+    components: {
+      musicList
     }
   }
 </script>
@@ -70,7 +86,7 @@
     left 0
     right 0
     bottom 0
-    background-color #000
+    background: $color-background
   }
 
   .slide-enter-active, .slide-leave-active {

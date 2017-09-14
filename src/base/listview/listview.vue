@@ -172,9 +172,9 @@
     overflow hidden
     position relative
     .singers-wrapper {
-      position: relative
-      width: 100%
-      overflow: hidden
+      position relative
+      width  100%
+      overflow  hidden
       .classified-title {
         color $color-text-l
         background-color #333
