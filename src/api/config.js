@@ -7,7 +7,8 @@ export const commonParams = {
   hostUin: 0,
   rnd: 59241861503262381,
   tpl: 'v12',
-  page: 'other'
+  page: 'other',
+  loginUin: 0
 }
 
 export const options = {

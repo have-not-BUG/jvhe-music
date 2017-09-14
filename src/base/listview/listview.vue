@@ -44,8 +44,6 @@
   import Scroll from 'base/scroll/scroll'
   import { getOrSetAttributeData } from 'common/js/dom'
   import Loading from  'base/loading/loading'
-  import { mapGetters } from 'vuex'
-
   let initialsNavigationSize = 16;
   export default {
     created(){
@@ -53,7 +51,6 @@
       this.classifiedHeight = [];
       this.listenScroll = true;
       this.probeType = 3;
-      this.showSinger()
 
     },
     props: {
@@ -81,8 +78,7 @@
       classifiedFixedTitle(){
         return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
 
-      },
-      ...mapGetters(['singer'])
+      }
 
     },
     methods: {
@@ -126,7 +122,6 @@
           height += includeClassified[i].clientHeight
           this.classifiedHeight.push(height);
         }
-        console.log('classifiedHeight', this.classifiedHeight)
       },
       scroll(pos){
         this.scrollY = pos.y
@@ -134,9 +129,6 @@
       },
       chooseItem(item){
         this.$emit('choose', item)
-      },
-      showSinger() {
-        console.log(this.singer)
       }
 
     },
@@ -157,7 +149,6 @@
             height2 = classifiedHeight[i + 1];
           if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i + 1
-            console.log(this.currentIndex);
             return
           }
 

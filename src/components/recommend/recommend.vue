@@ -55,6 +55,7 @@
           this.recommends = res.data.data.slider;
           return Promise.resolve(res.data.data.slider)
         }).catch(err =>{
+          console.log('获取QQ轮播数据出错了，请刷新重试或者联系本人',err)
           alert('获取QQ轮播数据出错了，请刷新重试或者联系本人',err)
         })
       },
@@ -64,7 +65,9 @@
             this.qqhotSongList = res.data.hotdiss.list
           }
         }).catch(err =>{
+          console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人',err)
           alert('获取QQ热门歌单出错了，请刷新重试或者联系本人',err)
+
         })
       },
       loadImg: function () {

@@ -6,12 +6,11 @@
 </template>
 
 <script>
-  import { getQQSingerList }  from  'api/qqSingerList'
+  import { getQQSingerList }  from  'api/singer'
   import { ERROR_OK } from 'api/config'
   import Singer from 'common/js/singer'
   import Listview from 'base/listview/listview'
   import { mapMutations } from 'vuex'
-
   const SINGER_TYPE = '热门'
   const HOT_SINGER_LENGTH = 10
 
@@ -30,11 +29,11 @@
         this.setSinger(singer)
 
       },
+
       _getQQSingerList() {
         getQQSingerList().then(res => {
           if (res.code === ERROR_OK) {
             this.optimizedSingerList = this.optimizeQQSingerList(res.data.list)
-            console.log('this.optimizedSingerList', this.optimizedSingerList)
           }
         }).catch(err => {
           alert('获取QQ歌手数据出错了,请刷新重试或者联系本人', err)
