@@ -37,16 +37,21 @@
   .song-list-wrapper {
 
     .song-ul {
+      position relative
 
       li {
-
+        padding   10px 30px
         .song-name {
           color $color-text
           line-height 20px
+          font-size $font-size-medium
+
+
         }
         .song-detail {
           color $color-text-d
           margin-top 4px
+          font-size $font-size-small
 
 
         }

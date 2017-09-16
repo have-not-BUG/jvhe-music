@@ -2,12 +2,20 @@
   <div class="music-list-wrapper">
     <div class="top-part" :style="bgStyle" ref="singerAvatar">
       <div class="singer-name">
-        <i> ico</i>
+        <i @click="goback"> < </i>
         <h2 v-html="title"></h2>
       </div>
       <div class="bg-cover"></div>
     </div>
-    <scroll :data="songs" class="scroll-song-list-part" ref="scrollSongList">
+    <div class="song-list-bg" ref="songListBg"></div>
+    <scroll :data="songs"
+            class="scroll-song-list-part"
+            ref="scrollSongList"
+            :probeType="probeType"
+            :listenScroll="listenScroll"
+            @scroll="scroll"
+
+    >
       <div class="song-list-wrapper">
         <song-list :songs="songs"></song-list>
       </div>
@@ -16,6 +24,7 @@
 </template>
 
 <script>
+  const singer_name_height = 40
   import songList from 'base/song-list/song-list'
   import scroll from 'base/scroll/scroll'
   export default {
@@ -42,8 +51,46 @@
         return `background-image:url(${this.bgImage})`
       }
     },
-    mounted(){
-      this.$refs.scrollSongList.$el.style.top = this.$refs.singerAvatar.clientHeight + 'px'
+    mounted() {
+      this.singerAvatarHeight = this.$refs.singerAvatar.clientHeight
+      this.$refs.scrollSongList.$el.style.top = this.singerAvatarHeight + 'px'
+    },
+    created() {
+      this.probeType = 3
+      this.listenScroll = true
+    },
+    data(){
+      return {
+        scrollY: 0
+      }
+    },
+    methods: {
+      goback(){
+        this.$router.back()
+      },
+      scroll(pos){
+        this.scrollY = pos.y
+      }
+
+    },
+    watch: {
+      scrollY(newY) {
+        let moveHeight = this.singerAvatarHeight - singer_name_height;
+//        let mintranslateY = Math.max(newY, -moveHeight);
+        if (-newY < moveHeight) {
+          this.$refs.songListBg.style.transform = `translate3d(0,${newY}px,0)`
+          this.$refs.singerAvatar.style.zIndex = 0
+          this.$refs.singerAvatar.style.paddingBottom = '70%'
+          this.$refs.singerAvatar.style.height = 0;
+
+        } else {
+          this.$refs.singerAvatar.style.zIndex = 30
+          this.$refs.singerAvatar.style.paddingBottom = 0
+          this.$refs.singerAvatar.style.height = singer_name_height +'px';
+
+        }
+
+      }
     }
   }
 
@@ -54,6 +101,8 @@
   @import "~common/stylus/variable"
 
   .music-list-wrapper {
+    height 100%
+    width 100%
     .top-part {
       position relative
       width 100%
@@ -62,10 +111,25 @@
       padding-bottom 70%
       .singer-name {
         z-index 40
-        color $color-text
+        color $color-theme
         position absolute
         text-align center
         width 100%
+        i {
+          left 30px
+          top 0
+          position absolute
+          display block
+          height 40px
+          line-height 40px
+          font-size $font-size-large-x
+        }
+        h2 {
+          font-size $font-size-large
+          line-height 40px
+          height 40px
+
+        }
 
       }
 
@@ -79,14 +143,20 @@
 
       }
     }
+    .song-list-bg {
+      background-color  $color-background
+      position relative
+      top 0
+      left 0
+      height 200%
+      width 100%
+    }
     .scroll-song-list-part {
       position fixed
-      top 0
       bottom 0
       width 100%
 
       .song-list-wrapper {
-
 
       }
 
