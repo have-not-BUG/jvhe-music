@@ -1,11 +1,11 @@
 <template>
   <div class="music-list-wrapper">
-    <div class="top-part" :style="bgStyle" ref="singerAvatar">
-      <div class="singer-name">
-        <i @click="goback"> < </i>
-        <h2 v-html="title"></h2>
-      </div>
-      <div class="bg-cover"></div>
+    <div class="singer-name">
+      <i @click="goback"> < </i>
+      <h2 v-html="title"></h2>
+    </div>
+    <div class="singerAvatar" :style="bgStyle" ref="singerAvatar">
+      <div class="bg-cover" ref="bgCover"></div>
     </div>
     <div class="song-list-bg" ref="songListBg"></div>
     <scroll :data="songs"
@@ -86,7 +86,18 @@
         } else {
           this.$refs.singerAvatar.style.zIndex = 30
           this.$refs.singerAvatar.style.paddingBottom = 0
-          this.$refs.singerAvatar.style.height = singer_name_height +'px';
+          this.$refs.singerAvatar.style.height = singer_name_height + 'px';
+
+        }
+        let scaleNum = 1 + (newY / this.singerAvatarHeight);
+        if (newY > 0) {
+          this.$refs.singerAvatar.style.transform = `scale(${scaleNum})`
+
+        } else {
+          let blur = Math.min(20 * ((-newY) / this.singerAvatarHeight), 20);
+          this.$refs.bgCover.style['backdrop-filter'] = `blur(${blur}px)` ;
+          this.$refs.bgCover.style['webkitBackdrop-filter'] = `blur(${blur}px)`;
+          console.log(this.$refs.bgCover.style)
 
         }
 
@@ -103,36 +114,38 @@
   .music-list-wrapper {
     height 100%
     width 100%
-    .top-part {
+    position relative
+    .singer-name {
+      z-index 40
+      color $color-theme
+      position absolute
+      text-align center
+      width 100%
+      i {
+        left 30px
+        top 0
+        position absolute
+        display block
+        height 40px
+        line-height 40px
+        font-size $font-size-large-x
+      }
+      h2 {
+        font-size $font-size-large
+        line-height 40px
+        height 40px
+
+      }
+
+    }
+
+    .singerAvatar {
       position relative
       width 100%
       height 0
       background-size cover
       padding-bottom 70%
-      .singer-name {
-        z-index 40
-        color $color-theme
-        position absolute
-        text-align center
-        width 100%
-        i {
-          left 30px
-          top 0
-          position absolute
-          display block
-          height 40px
-          line-height 40px
-          font-size $font-size-large-x
-        }
-        h2 {
-          font-size $font-size-large
-          line-height 40px
-          height 40px
-
-        }
-
-      }
-
+      transform-origin top
       .bg-cover {
         position absolute
         width 100%
@@ -144,7 +157,7 @@
       }
     }
     .song-list-bg {
-      background-color  $color-background
+      background-color $color-background
       position relative
       top 0
       left 0
