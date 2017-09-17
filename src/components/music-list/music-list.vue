@@ -6,6 +6,9 @@
     </div>
     <div class="singerAvatar" :style="bgStyle" ref="singerAvatar">
       <div class="bg-cover" ref="bgCover"></div>
+      <div class="random-play-all-wrap" ref="randomPlayAllWrap" v-if="songs.length>0">
+        <div class="random-play-all-button" @click="randomPlayAllMusic"><i>O</i> 随机播放全部</div>
+      </div>
     </div>
     <div class="song-list-bg" ref="songListBg"></div>
     <scroll :data="songs"
@@ -20,6 +23,10 @@
         <song-list :songs="songs"></song-list>
       </div>
     </scroll>
+    <div class="loading-wrapper" v-if=" !songs.length">
+      <loading></loading>
+    </div>
+
   </div>
 </template>
 
@@ -27,6 +34,11 @@
   const singer_name_height = 40
   import songList from 'base/song-list/song-list'
   import scroll from 'base/scroll/scroll'
+  import loading from 'base/loading/loading'
+  import { prefixStlye } from  'common/js/dom'
+  let prefixTransform = prefixStlye('transform')
+  let prefixBackdropFilter = prefixStlye('backdrop-filter')
+
   export default {
     props: {
       title: {
@@ -44,7 +56,8 @@
     },
     components: {
       songList,
-      scroll
+      scroll,
+      loading
     },
     computed: {
       bgStyle(){
@@ -70,6 +83,9 @@
       },
       scroll(pos){
         this.scrollY = pos.y
+      },
+      randomPlayAllMusic(){
+        console.log('随机播放全部音乐啦')
       }
 
     },
@@ -78,26 +94,27 @@
         let moveHeight = this.singerAvatarHeight - singer_name_height;
 //        let mintranslateY = Math.max(newY, -moveHeight);
         if (-newY < moveHeight) {
-          this.$refs.songListBg.style.transform = `translate3d(0,${newY}px,0)`
+          this.$refs.songListBg.style[prefixTransform] = `translate3d(0,${newY}px,0)`
           this.$refs.singerAvatar.style.zIndex = 0
           this.$refs.singerAvatar.style.paddingBottom = '70%'
           this.$refs.singerAvatar.style.height = 0;
+          this.$refs.randomPlayAllWrap.style.display = ''
 
         } else {
+
           this.$refs.singerAvatar.style.zIndex = 30
           this.$refs.singerAvatar.style.paddingBottom = 0
           this.$refs.singerAvatar.style.height = singer_name_height + 'px';
+          this.$refs.randomPlayAllWrap.style.display = 'none'
 
         }
         let scaleNum = 1 + (newY / this.singerAvatarHeight);
         if (newY > 0) {
-          this.$refs.singerAvatar.style.transform = `scale(${scaleNum})`
+          this.$refs.singerAvatar.style[prefixTransform] = `scale(${scaleNum})`
 
         } else {
           let blur = Math.min(20 * ((-newY) / this.singerAvatarHeight), 20);
-          this.$refs.bgCover.style['backdrop-filter'] = `blur(${blur}px)` ;
-          this.$refs.bgCover.style['webkitBackdrop-filter'] = `blur(${blur}px)`;
-          console.log(this.$refs.bgCover.style)
+          this.$refs.bgCover.style[prefixBackdropFilter] = `blur(${blur}px)`;
 
         }
 
@@ -155,6 +172,23 @@
         background: rgba(7, 17, 27, 0.4)
 
       }
+      .random-play-all-wrap {
+        position absolute
+        left 50%
+        bottom 20px
+        transform translate(-50%, 0)
+        text-align center
+        color $color-theme
+
+        .random-play-all-button {
+          box-sizing border-box
+          width 135px
+          padding 7px 0
+          border 1px solid $color-theme
+          border-radius 100px
+
+        }
+      }
     }
     .song-list-bg {
       background-color $color-background
@@ -172,6 +206,14 @@
       .song-list-wrapper {
 
       }
+
+    }
+    .loading-wrapper {
+      position absolute
+      left 50%
+      bottom 30%
+      z-index 50
+      transform translate(-50%, -50%)
 
     }
   }

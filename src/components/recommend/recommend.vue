@@ -1,6 +1,8 @@
 <template>
   <div class="recommend">
-    <scroll ref="scroll" class="recommend-content" :data="qqhotSongList">
+    <scroll ref="scroll"
+            class="recommend-content"
+            :data="qqhotSongList">
       <div>
         <div class="slider-wrapper" v-if="recommends.length">
           <slider>
@@ -14,9 +16,6 @@
 
         <div class="recommend-list">
           <h1 class="recommend-list-title">热门歌单推荐</h1>
-          <div class="loading-wrapper" v-show="!qqhotSongList.length">
-            <loading></loading>
-          </div>
           <ul>
             <li v-for="item in qqhotSongList">
               <img v-lazy="item.imgurl" :alt="item.dissname">
@@ -24,6 +23,9 @@
             </li>
           </ul>
         </div>
+      </div>
+      <div class="loading-wrapper" v-if="(!recommends.length) || (!qqhotSongList.length)">
+        <loading></loading>
       </div>
     </scroll>
   </div>
@@ -54,9 +56,9 @@
         this.$http.get('/api/getQQSliderData').then(res => {
           this.recommends = res.data.data.slider;
           return Promise.resolve(res.data.data.slider)
-        }).catch(err =>{
-          console.log('获取QQ轮播数据出错了，请刷新重试或者联系本人',err)
-          alert('获取QQ轮播数据出错了，请刷新重试或者联系本人',err)
+        }).catch(err => {
+          console.log('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
+          alert('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
         })
       },
       _getQQHotSongList: function () {
@@ -64,25 +66,26 @@
           if (res.code === ERROR_OK) {
             this.qqhotSongList = res.data.hotdiss.list
           }
-        }).catch(err =>{
-          console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人',err)
-          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人',err)
+        }).catch(err => {
+          console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
 
         })
       },
       loadImg: function () {
         if (!this.loadedImg) {
-          this.$refs.scroll.refresh();
-          this.loadedImg = true
+          this.loadedImg = true;
+          setTimeout(() => {
+            this.$refs.scroll.refresh();
+          }, 20)
+
         }
       }
 
     },
     created: function () {
       this.showQQSliderData();
-        this._getQQHotSongList();
-
-
+      this._getQQHotSongList();
     }
 
   }
@@ -97,54 +100,52 @@
     width: 100%
     top: 88px
     bottom: 0
-
+    /*border 1px solid #fff*/
+    box-sizing border-box
     .recommend-content {
       height 100%
       overflow: hidden
-      .slider-wrapper {
-        position: relative
-        width: 100%
-        overflow: hidden
-      }
-
-      .recommend-list {
-        margin 15px
-        position relative
-
-
-        .recommend-list-title {
-          text-align center
-          margin 10px
-          color $color-theme
+      /*border 1px solid red*/
+      div {
+        .slider-wrapper {
+          position: relative
+          width: 100%
+          overflow: hidden
+          /*border 1px solid green*/
         }
-        .loading-wrapper {
-          position absolute
-          top: 600%
-          left: 50%
-          transform translate(-50%,-50%)
-
-
-        }
-        ul {
-          li {
-            display flex;
-            align-items center;
-            margin 15px 0;
-            img {
-              width 60px
-              height 60px
-              margin-right 10px
+        .recommend-list {
+          margin 15px
+          position relative
+          /*border 1px solid blue*/
+          .recommend-list-title {
+            text-align center
+            margin 10px
+            color $color-theme
+          }
+          ul {
+            li {
+              display flex;
+              align-items center;
+              margin 15px 0;
+              img {
+                width 60px
+                height 60px
+                margin-right 10px
+              }
+              p {
+                color $color-text-ll
+                font-size $font-size-small
+              }
             }
-            p {
-              color $color-text-ll
-              font-size $font-size-small
-
-            }
-
           }
 
         }
-
+      }
+      .loading-wrapper {
+        position absolute
+        top: 50%
+        left: 50%
+        transform translate(-50%, -50%)
       }
     }
   }

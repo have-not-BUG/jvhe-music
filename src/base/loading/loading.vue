@@ -1,6 +1,6 @@
 <template>
   <div class="loading-content">
-    <img src="../../common/image/loading.svg" alt="loading-icon">
+    <img src="../../common/image/loading.gif" alt="loading-icon">
     <p>{{title}}</p>
   </div>
 
@@ -23,6 +23,10 @@
   @import "~common/stylus/variable"
   .loading-content{
     text-align center
+    img{
+      width 30px
+      height 30px
+    }
     p{
       color $color-text
       font-size $font-size-medium
