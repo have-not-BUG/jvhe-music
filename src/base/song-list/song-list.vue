@@ -1,7 +1,7 @@
 <template>
   <div class="song-list-wrapper">
     <ul class="song-ul">
-      <li v-for="song in songs">
+      <li v-for="(song , index) in songs" @click="chooseItem(song ,index)">
         <h2 class="song-name">{{song.name}}</h2>
         <p class="song-detail">{{songDetail(song)}} </p>
       </li>
@@ -21,9 +21,12 @@
       }
     },
     methods: {
-      songDetail(song){
+      songDetail(song) {
 //        return song.singer + '·' + song.album
         return `${song.singer}·${song.album}`
+      },
+      chooseItem(item, index) {
+        this.$emit('selectEvent', item, index)
       }
 
     }
@@ -40,19 +43,17 @@
       position relative
 
       li {
-        padding   10px 30px
+        padding 10px 30px
         .song-name {
           color $color-text
           line-height 20px
           font-size $font-size-medium
-
 
         }
         .song-detail {
           color $color-text-d
           margin-top 4px
           font-size $font-size-small
-
 
         }
 

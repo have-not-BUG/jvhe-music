@@ -20,7 +20,7 @@
 
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @selectEvent="selectItem"></song-list>
       </div>
     </scroll>
     <div class="loading-wrapper" v-if=" !songs.length">
@@ -36,6 +36,7 @@
   import scroll from 'base/scroll/scroll'
   import loading from 'base/loading/loading'
   import { prefixStlye } from  'common/js/dom'
+  import { mapActions } from 'vuex'
   let prefixTransform = prefixStlye('transform')
   let prefixBackdropFilter = prefixStlye('backdrop-filter')
 
@@ -86,7 +87,14 @@
       },
       randomPlayAllMusic(){
         console.log('随机播放全部音乐啦')
-      }
+      },
+      selectItem(item, index){
+        this.selectPlay({
+          list: this.songs,
+          index
+        })
+      },
+      ...mapActions(['selectPlay'])
 
     },
     watch: {

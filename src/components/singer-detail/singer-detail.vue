@@ -81,7 +81,7 @@
   @import "~common/stylus/variable"
   .singer-detail-wrapper {
     position fixed
-    z-index 9999
+    z-index 90
     top 0
     left 0
     right 0
