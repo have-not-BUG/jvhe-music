@@ -94,6 +94,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .recommend {
     position: fixed
@@ -127,6 +128,7 @@
               display flex;
               align-items center;
               margin 15px 0;
+
               img {
                 width 60px
                 height 60px
@@ -135,6 +137,7 @@
               p {
                 color $color-text-ll
                 font-size $font-size-small
+                no-wrap()
               }
             }
           }
