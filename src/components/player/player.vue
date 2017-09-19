@@ -9,7 +9,7 @@
         </div>
         <div class="player-middle">
           <div class="cd-wrap">
-            <div class="cd-border">
+            <div class="cd-border" :class="cdStateClass">
               <img :src="currentSong.image" :alt="currentSong.name">
             </div>
 
@@ -22,7 +22,7 @@
           <div class="control-part">
             <i class="icon-sequence"></i>
             <i class="icon-prev"></i>
-            <i class="needsclick icon-play"></i>
+            <i class="needsclick" :class="normalPlayStateClass" @click="changPlayState"></i>
             <i class="icon-next"></i>
             <i class="icon icon-not-favorite"></i>
           </div>
@@ -40,7 +40,7 @@
 
         </div>
         <div class="state-playlist">
-          <i class="icon-mini icon-pause-mini"></i>
+          <i class="icon-mini" :class="miniPlayStateClass" @click.stop="changPlayState"></i>
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -55,6 +55,15 @@
   export default {
     name: 'player',
     computed: {
+      normalPlayStateClass(){
+        return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      miniPlayStateClass(){
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      cdStateClass(){
+        return this.playing ? 'play' : 'play pause'
+      },
       ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong'])
     },
     data () {
@@ -67,15 +76,24 @@
       showFullScreen() {
         this.setFullScreen(true)
       },
+      changPlayState(){
+        this.setPlaying(!this.playing)
+      },
       ...mapMutations({
-        setFullScreen: 'SET_FULLSRCEEN'
+        setFullScreen: 'SET_FULLSRCEEN',
+        setPlaying: 'SET_PLAYING'
       })
     },
     watch: {
       currentSong(){
         this.$nextTick(() => {
           this.$refs.audio.play()
+          this.setPlaying(true)
         })
+      },
+      playing(){
+        let audio = this.$refs.audio;
+        this.playing ? audio.play() : audio.pause()
 
       }
     }
@@ -166,10 +184,16 @@
             border-radius 50%
             position absolute
             top 0
-            left 50%
+            left 10%
             width 80%
             height 100%
-            transform translate(-50%, 0)
+
+            &.play{
+              animation rotate 20s linear infinite
+            }
+            &.pause{
+                animation-play-state paused
+            }
 
             img {
               display block
@@ -260,6 +284,12 @@
 
     }
   }
+  @keyframes rotate
+    0%
+      transform: rotate(0)
+    100%
+      transform: rotate(360deg)
+
 
 
 </style>
