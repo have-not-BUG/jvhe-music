@@ -1,13 +1,13 @@
 <template>
   <div class="music-list-wrapper">
     <div class="singer-name">
-      <i @click="goback"> < </i>
+      <i class="icon-back" @click="goback"></i>
       <h2 v-html="title"></h2>
     </div>
     <div class="singerAvatar" :style="bgStyle" ref="singerAvatar">
       <div class="bg-cover" ref="bgCover"></div>
       <div class="random-play-all-wrap" ref="randomPlayAllWrap" v-if="songs.length>0">
-        <div class="random-play-all-button" @click="randomPlayAllMusic"><i>O</i> 随机播放全部</div>
+        <div class="random-play-all-button" @click="randomPlayAllMusic"><i class="icon-play"></i> 随机播放全部</div>
       </div>
     </div>
     <div class="song-list-bg" ref="songListBg"></div>
@@ -194,6 +194,7 @@
           padding 7px 0
           border 1px solid $color-theme
           border-radius 100px
+          font-size $font-size-medium-x
 
         }
       }

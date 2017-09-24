@@ -8,8 +8,8 @@
           <h1 class="singer">{{currentSong.singer}}</h1>
         </div>
         <div class="player-middle">
-          <div class="cd-wrap">
-            <div class="cd-border" :class="normalCdStateClass">
+          <div class="cd-wrap" ref="cdWrap">
+            <div class="cd-border" :class="normalCdStateClass" ref="cdBorder">
               <img :src="currentSong.image" :alt="currentSong.name">
             </div>
           </div>
@@ -21,7 +21,7 @@
           <div class="control-part">
             <i class="icon-sequence"></i>
             <i class="icon-prev" @click="playPrevSong" :class="disableClass"></i>
-            <i class="needsclick" :class="normalPlayStateClass" @click="changPlayState"></i>
+            <i class="needsclick" :class="normalPlayStateClass" @click="changePlayState"></i>
             <i class="icon-next" @click="playNextSong" :class="disableClass"></i>
             <i class="icon icon-not-favorite"></i>
           </div>
@@ -31,7 +31,9 @@
     <transition name="mini-player">
       <div class="mini-player-wrap" v-show="!fullScreen" @click="showFullScreen">
         <div class="image-name-singer">
-          <img :src="currentSong.image" :alt="currentSong.name" :class="miniCdStateClass">
+          <div class="mini-cd-wrap" ref="miniCdWrap">
+            <img :class="miniCdStateClass" :src="currentSong.image" :alt="currentSong.name">
+          </div>
           <div class="name-singer">
             <h2>{{currentSong.name}}</h2>
             <p>{{currentSong.singer}}</p>
@@ -39,7 +41,7 @@
 
         </div>
         <div class="state-playlist">
-          <i class="icon-mini" :class="miniPlayStateClass" @click.stop="changPlayState"></i>
+          <i class="icon-mini" :class="miniPlayStateClass" @click.stop="changePlayState"></i>
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -63,10 +65,10 @@
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
       normalCdStateClass(){
-        return this.playing ? 'play' : 'play pause'
+        return this.playing ? 'play' : ''
       },
       miniCdStateClass(){
-        return this.playing ? 'play' : 'play pause'
+        return this.playing ? 'play' : ''
       },
       disableClass(){
         return this.canplay ? '' : 'disable'
@@ -82,7 +84,9 @@
     data () {
       return {
         canplay: false,
-        currentTime: 0
+        currentTime: 0,
+        bigCdMiniPausedDeg: 0
+
       }
     },
     methods: {
@@ -92,9 +96,10 @@
       showFullScreen() {
         this.setFullScreen(true)
       },
-      changPlayState(){
+      changePlayState(){
         this.setPlaying(!this.playing)
-        console.log('this.currentTime', this.currentTime)
+//        console.log('this.$refs.cdBorder.style.traaaansformaaa', this.$refs.cdBorder.style.webkitTransform)
+
       },
       playPrevSong() {
         if (!this.canplay) {
@@ -105,7 +110,7 @@
           this.setCurrentIndex(this.playList.length - 1)
         }
         if (!this.playing) {
-          this.changPlayState()
+          this.changePlayState()
         }
         this.canplay = false
       },
@@ -118,7 +123,7 @@
         }
         this.setCurrentIndex(this.currentIndex + 1)
         if (!this.playing) {
-          this.changPlayState()
+          this.changePlayState()
         }
         this.canplay = false
         console.log('this.currentTime', this.currentTime)
@@ -145,6 +150,14 @@
         }
         return num
       },
+      getCurrentDeg(runningtime, animationLength){
+//        let currentDeg = ((360 / animationLength) * runningtime) % 360
+//        let cosVal = Math.cos(currentDeg * Math.PI / 180)
+//        let sinVal = Math.sin(currentDeg * Math.PI / 180)
+//        return 'matrix(' + cosVal.toFixed(6) + ',' + sinVal.toFixed(6) + ',' + (-1 * sinVal).toFixed(6) + ',' + cosVal.toFixed(6) + ',0,0)'
+//
+        return ((360 / animationLength) * runningtime) % 360
+      },
 
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
@@ -155,15 +168,55 @@
     watch: {
       currentSong() {
         this.$nextTick(() => {
-          this.$refs.audio.play()
+          this.setPlaying(false);
+          setTimeout(()=>{
+            this.$refs.audio.play();
+            this.setPlaying(true);
+            this.$refs.cdWrap.style.transform = `rotate(0deg)`
+            this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
+          },20)
+
         })
       },
       playing(newPlaying) {
         let audio = this.$refs.audio;
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
+          if (!newPlaying) {
+            let bigCdPauseDeg = this.getCurrentDeg(this.currentTime, 20);
+            let smallCdPauseDeg = this.getCurrentDeg(this.currentTime, 10);
+            this.$refs.cdWrap.style.transform = `rotate(${bigCdPauseDeg}deg)`
+            this.$refs.miniCdWrap.style.transform = `rotate(${smallCdPauseDeg}deg)`
+            console.log('ttt')
+          }
         })
+      },
+      fullScreen(newfullScreen) {
+        let pausedTime = this.currentTime;
+        this.bigCdMiniPausedDeg = this.getCurrentDeg(pausedTime, 20)
+        let smallCdShowDeg = this.getCurrentDeg(pausedTime, 10);
+        if (this.playing && !newfullScreen) {
+          this.$refs.miniCdWrap.style.transform = `rotate(${smallCdShowDeg}deg)`
+
+        }
+        if (this.playing && newfullScreen) {
+          this.$refs.cdWrap.style.transform = `rotate(${this.bigCdMiniPausedDeg}deg)`
+          console.log('设置角度this.bigCdMiniPausedDeg', this.bigCdMiniPausedDeg)
+
+//          console.log('this.bigCdMiniPausedDeg', this.bigCdMiniPausedDeg)
+        }
+
       }
+
+    },
+    mounted() {
+
+//      this.$refs.cdBorder.addEventListener('animationend', function () {
+//        console.log('动画介绍')
+//      })
+//      this.$refs.cdBorder.addEventListener('animationstart', function () {
+//        console.log('动画开始')
+//      })
     }
 
   }
@@ -193,8 +246,8 @@
 
       }
       /*z-index 100*/
-      width 100vw
-      height 100vh
+      width 100%
+      height 100%
       position fixed
       top 0
       left 0
@@ -206,8 +259,8 @@
         position absolute
         top 0
         left 0
-        width 100vw
-        height 100vh
+        width 100%
+        height 100%
         z-index -1
         filter blur(20px)
         img {
@@ -241,11 +294,11 @@
 
       }
       .player-middle {
-        width 100vw
+        width 100%
         .cd-wrap {
           padding-top 80%
           height 0
-          width 100vw
+          width 100%
           position relative
           .cd-border {
             box-sizing border-box
@@ -277,7 +330,7 @@
       .player-bottom {
         position absolute
         bottom 50px
-        width 100vw
+        width 100%
 
         .show-page {
           height 30px
@@ -309,7 +362,7 @@
     }
     .mini-player-wrap {
       color $color-theme
-      width 100vw
+      width 100%
       height 60px
       background-color $color-highlight-background
       display flex
@@ -321,16 +374,21 @@
       .image-name-singer {
         padding 0 0 0 20px
         position relative
-
-        img {
+        .mini-cd-wrap {
           width 40px
           height 40px
-          border-radius 50%
-          &.play {
-            animation rotate 20s linear infinite
-          }
-          &.pause {
-            animation-play-state paused
+          img {
+            width 40px
+            height 40px
+            border-radius 50%
+
+            &.play {
+              animation rotate 10s linear infinite
+            }
+            &.pause {
+              animation-play-state paused
+            }
+
           }
         }
         .name-singer {
@@ -366,11 +424,15 @@
     }
   }
 
-  @keyframes rotate
-    0%
+  @keyframes rotate {
+    0% {
       transform: rotate(0)
-    100%
-      transform: rotate(360deg)
+    }
+
+    to {
+      transform: rotate(1turn)
+    }
+  }
 
 
 </style>

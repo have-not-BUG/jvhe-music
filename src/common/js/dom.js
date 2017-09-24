@@ -15,6 +15,8 @@ export function hasClass (el, className) {
 
 }
 
+
+
 export function getOrSetAttributeData (element, name, value) {
 
   let prefix = 'data-',
