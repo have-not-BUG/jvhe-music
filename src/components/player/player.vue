@@ -17,7 +17,11 @@
         </div>
         <div class="player-bottom">
           <div class="show-page">分页</div>
-          <div class="progress-bar-wrap">{{runningTime}} | {{totalTime}} </div>
+          <div class="progress-bar-wrap">
+            <span>{{runningTime}}</span>
+            <progress-bar :percent="percent" @touchMoveTo="ontouchMoveTo"></progress-bar>
+            <span>{{totalTime}}</span>
+          </div>
           <div class="control-part">
             <i class="icon-sequence"></i>
             <i class="icon-prev" @click="playPrevSong" :class="disableClass"></i>
@@ -54,6 +58,7 @@
 
 <script>
   import { mapGetters, mapMutations } from 'vuex'
+  import progressBar from 'base/progress-bar/progress-bar'
 
   export default {
     name: 'player',
@@ -78,6 +83,9 @@
       },
       totalTime(){
         return this.showMinuteAndSecond(this.currentSong.duration)
+      },
+      percent(){
+        return this.currentTime / this.currentSong.duration
       },
       ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong', 'currentIndex'])
     },
@@ -158,7 +166,12 @@
 //
         return ((360 / animationLength) * runningtime) % 360
       },
-
+      ontouchMoveTo(touchMoveToPercent){
+        this.$refs.audio.currentTime = this.currentSong.duration * touchMoveToPercent
+        if (!this.playing) {
+          this.changePlayState()
+        }
+      },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
         setPlaying: 'SET_PLAYING',
@@ -169,12 +182,12 @@
       currentSong() {
         this.$nextTick(() => {
           this.setPlaying(false);
-          setTimeout(()=>{
+          setTimeout(() => {
             this.$refs.audio.play();
             this.setPlaying(true);
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
-          },20)
+          }, 20)
 
         })
       },
@@ -209,14 +222,8 @@
       }
 
     },
-    mounted() {
-
-//      this.$refs.cdBorder.addEventListener('animationend', function () {
-//        console.log('动画介绍')
-//      })
-//      this.$refs.cdBorder.addEventListener('animationstart', function () {
-//        console.log('动画开始')
-//      })
+    components: {
+      progressBar
     }
 
   }
@@ -330,18 +337,28 @@
       .player-bottom {
         position absolute
         bottom 50px
-        width 100%
+        left 50%
+        width 80%
+        margin 0 auto
+        transform translate(-50%, 0)
 
         .show-page {
           height 30px
         }
         .progress-bar-wrap {
+          display flex
+          /*width 80%*/
+          margin 0 auto
           height 30px
+          align-items center
+          span {
+            padding 0 10px
+          }
 
         }
         .control-part {
 
-          width 80%
+          /*width 80%*/
           margin 0 auto
           display flex
           justify-content space-around
