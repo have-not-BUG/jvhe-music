@@ -45,7 +45,9 @@
 
         </div>
         <div class="state-playlist">
-          <i class="icon-mini" :class="miniPlayStateClass" @click.stop="changePlayState"></i>
+          <progress-circle :percent="percent" :radius="radius">
+            <i class="icon-mini" :class="miniPlayStateClass" @click.stop="changePlayState"></i>
+          </progress-circle>
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -59,7 +61,7 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex'
   import progressBar from 'base/progress-bar/progress-bar'
-
+  import progressCircle from 'base/progress-circle/progress-circle'
   export default {
     name: 'player',
     computed: {
@@ -95,8 +97,8 @@
         currentTime: 0,
         bigCdMiniPausedDeg: 0,
         changeAudioProgressTime: 0,
-        changingAudioProgress: false
-
+        changingAudioProgress: false,
+        radius: 32
       }
     },
     methods: {
@@ -108,7 +110,6 @@
       },
       changePlayState(){
         this.setPlaying(!this.playing)
-//        console.log('this.$refs.cdBorder.style.traaaansformaaa', this.$refs.cdBorder.style.webkitTransform)
 
       },
       playPrevSong() {
@@ -136,7 +137,6 @@
           this.changePlayState()
         }
         this.canplay = false
-        console.log('this.currentTime', this.currentTime)
       },
       changeCanplay(){
         this.canplay = true
@@ -207,7 +207,6 @@
             let smallCdPauseDeg = this.getCurrentDeg(this.currentTime, 10);
             this.$refs.cdWrap.style.transform = `rotate(${bigCdPauseDeg}deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(${smallCdPauseDeg}deg)`
-            console.log('ttt')
           }
         })
       },
@@ -221,16 +220,14 @@
         }
         if (this.playing && newfullScreen) {
           this.$refs.cdWrap.style.transform = `rotate(${this.bigCdMiniPausedDeg}deg)`
-          console.log('设置角度this.bigCdMiniPausedDeg', this.bigCdMiniPausedDeg)
 
-//          console.log('this.bigCdMiniPausedDeg', this.bigCdMiniPausedDeg)
         }
 
       }
 
     },
     components: {
-      progressBar
+      progressBar, progressCircle
     }
 
   }
@@ -436,11 +433,18 @@
         }
       }
       .state-playlist {
-        color $color-theme
+        color $color-theme-d
         padding 0 10px 0 0
         font-size 30px
+        display flex
         .icon-mini {
           font-size 32px
+          position absolute
+          left 0
+          top 0
+        }
+        .icon-playlist {
+            padding-left 20px
         }
 
       }
