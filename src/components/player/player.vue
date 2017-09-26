@@ -19,7 +19,7 @@
           <div class="show-page">分页</div>
           <div class="progress-bar-wrap">
             <span>{{runningTime}}</span>
-            <progress-bar :percent="percent" @touchMoveTo="ontouchMoveTo"></progress-bar>
+            <progress-bar :percent="percent" @touchMoveTo="ontouchMoveTo" @touchMoving="ontouchMoving"></progress-bar>
             <span>{{totalTime}}</span>
           </div>
           <div class="control-part">
@@ -52,7 +52,7 @@
     </transition>
     <audio :src="currentSong.url" ref="audio"
            @canplay="changeCanplay" @error="playError"
-           @timeupdate="upDateTime"></audio>
+           @timeupdate="audioUpDateTime"></audio>
   </div>
 </template>
 
@@ -79,7 +79,7 @@
         return this.canplay ? '' : 'disable'
       },
       runningTime(){
-        return this.showMinuteAndSecond(this.currentTime)
+        return this.changingAudioProgress ? this.showMinuteAndSecond(this.changeAudioProgressTime) : this.showMinuteAndSecond(this.currentTime)
       },
       totalTime(){
         return this.showMinuteAndSecond(this.currentSong.duration)
@@ -93,7 +93,9 @@
       return {
         canplay: false,
         currentTime: 0,
-        bigCdMiniPausedDeg: 0
+        bigCdMiniPausedDeg: 0,
+        changeAudioProgressTime: 0,
+        changingAudioProgress: false
 
       }
     },
@@ -142,7 +144,7 @@
       playError() {
         this.canplay = true
       },
-      upDateTime(e) {
+      audioUpDateTime(e) {
         this.currentTime = e.target.currentTime
       },
       showMinuteAndSecond(time){
@@ -166,11 +168,16 @@
 //
         return ((360 / animationLength) * runningtime) % 360
       },
-      ontouchMoveTo(touchMoveToPercent){
-        this.$refs.audio.currentTime = this.currentSong.duration * touchMoveToPercent
+      ontouchMoveTo(touchPercent){
+        this.changingAudioProgress = false
+        this.$refs.audio.currentTime = this.currentSong.duration * touchPercent
         if (!this.playing) {
           this.changePlayState()
         }
+      },
+      ontouchMoving(touchPercent){
+        this.changingAudioProgress = true
+        this.changeAudioProgressTime = this.currentSong.duration * touchPercent
       },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',

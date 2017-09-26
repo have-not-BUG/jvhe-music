@@ -41,22 +41,23 @@
         }
         let touchMoveto = Math.min(this.$refs.progressBar.clientWidth, Math.max(0, this.touch.progressRunnedWidth + (e.touches[0].pageX - this.touch.touchStartX)))
         this.changeProgress(touchMoveto)
+        this.emitMove('touchMoving')
       },
       progressTouchEnd() {
         this.touch.init = false
-        this.emitMoveTo()
+        this.emitMove('touchMoveTo')
       },
       changeProgress(offset) {
         this.$refs.progress.style.width = offset + 'px'
         this.$refs.progressBtnWrap.style.left = offset - progressBtnWith / 2 + 'px'
       },
-      emitMoveTo() {
-        let touchMoveToPercent = this.$refs.progress.clientWidth / this.$refs.progressBar.clientWidth
-        this.$emit('touchMoveTo', touchMoveToPercent)
+      emitMove(emitEvent) {
+        let touchPercent = this.$refs.progress.clientWidth / this.$refs.progressBar.clientWidth
+        this.$emit(emitEvent, touchPercent)
       },
       clickProgress(e) {
         this.changeProgress(e.offsetX)
-        this.emitMoveTo()
+        this.emitMove('touchMoveTo')
       }
 
     }
