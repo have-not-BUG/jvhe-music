@@ -23,7 +23,7 @@
             <span>{{totalTime}}</span>
           </div>
           <div class="control-part">
-            <i class="icon-sequence"></i>
+            <i :class="playModeIco" @click="changePlayMode"></i>
             <i class="icon-prev" @click="playPrevSong" :class="disableClass"></i>
             <i class="needsclick" :class="normalPlayStateClass" @click="changePlayState"></i>
             <i class="icon-next" @click="playNextSong" :class="disableClass"></i>
@@ -54,7 +54,7 @@
     </transition>
     <audio :src="currentSong.url" ref="audio"
            @canplay="changeCanplay" @error="playError"
-           @timeupdate="audioUpDateTime"></audio>
+           @timeupdate="audioUpDateTime" @ended="audioEnded"></audio>
   </div>
 </template>
 
@@ -62,6 +62,8 @@
   import { mapGetters, mapMutations } from 'vuex'
   import progressBar from 'base/progress-bar/progress-bar'
   import progressCircle from 'base/progress-circle/progress-circle'
+  import { playMode } from 'common/js/config'
+  import { shuffle } from 'common/js/util'
   export default {
     name: 'player',
     computed: {
@@ -89,7 +91,10 @@
       percent(){
         return this.currentTime / this.currentSong.duration
       },
-      ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong', 'currentIndex'])
+      playModeIco(){
+        return this.mode === playMode.order ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+      },
+      ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong', 'currentIndex', 'mode', 'orderPlayList'])
     },
     data () {
       return {
@@ -179,14 +184,49 @@
         this.changingAudioProgress = true
         this.changeAudioProgressTime = this.currentSong.duration * touchPercent
       },
+      changePlayMode() {
+        const mode = (this.mode + 1) % 3
+        this.setPlayMode(mode)
+        let list = null
+        if (this.mode === playMode.random) {
+          list = shuffle(this.orderPlayList)
+        } else {
+          list = this.orderPlayList
+        }
+        this.restCurrentIndex(list)
+        this.setPlayList(list)
+      },
+      restCurrentIndex(list){
+        let index = list.findIndex((item) => {
+          return item.id === this.currentSong.id
+        })
+        this.setCurrentIndex(index)
+      },
+      runLoopMode(){
+        this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
+
+      },
+      audioEnded(){
+        if (this.mode === playMode.loop) {
+          this.runLoopMode()
+        } else {
+          this.playNextSong()
+        }
+      },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
         setPlaying: 'SET_PLAYING',
-        setCurrentIndex: 'SET_CURRENTINDEX'
+        setCurrentIndex: 'SET_CURRENTINDEX',
+        setPlayMode: 'SET_MODE',
+        setPlayList: 'SET_PLAYLIST'
       })
     },
     watch: {
-      currentSong() {
+      currentSong(newSong, oldSong) {
+        if (newSong.id === oldSong.id) {
+          return
+        }
         this.$nextTick(() => {
           this.setPlaying(false);
           setTimeout(() => {
@@ -444,7 +484,7 @@
           top 0
         }
         .icon-playlist {
-            padding-left 20px
+          padding-left 20px
         }
 
       }

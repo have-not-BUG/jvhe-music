@@ -47,13 +47,11 @@
         getQQSingerDetail(this.singer.mid).then(res => {
           if (res.code === ERROR_OK) {
             this.songs = this.optimizeQQSongs(res.data.list);
-//            console.log('res.data.list是', res.data.list);
-//            console.log('this.songs是第三大城市的速度', this.songs)
           }
 
         }).catch(err => {
           console.log('获取歌手详情页出错了', err);
-//          alert('获取歌手详情页出错了', err)
+          alert('获取歌手详情页出错了，请刷新重试', err)
         })
       },
       optimizeQQSongs(list){
