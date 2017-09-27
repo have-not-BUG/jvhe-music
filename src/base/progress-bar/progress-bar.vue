@@ -56,7 +56,9 @@
         this.$emit(emitEvent, touchPercent)
       },
       clickProgress(e) {
-        this.changeProgress(e.offsetX)
+        const position = this.$refs.progressBar.getBoundingClientRect()
+        const offsetWidth = e.pageX - position.left
+        this.changeProgress(offsetWidth)
         this.emitMove('touchMoveTo')
       }
 
