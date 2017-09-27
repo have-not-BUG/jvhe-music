@@ -7,7 +7,7 @@
     <div class="singerAvatar" :style="bgStyle" ref="singerAvatar">
       <div class="bg-cover" ref="bgCover"></div>
       <div class="random-play-all-wrap" ref="randomPlayAllWrap" v-if="songs.length>0">
-        <div class="random-play-all-button" @click="randomPlayAllMusic"><i class="icon-play"></i> 随机播放全部</div>
+        <div class="random-play-all-button" @click="randomPlayAllMusic(songs)"><i class="icon-play"></i> 随机播放全部</div>
       </div>
     </div>
     <div class="song-list-bg" ref="songListBg"></div>
@@ -37,6 +37,7 @@
   import loading from 'base/loading/loading'
   import { prefixStlye } from  'common/js/dom'
   import { mapActions } from 'vuex'
+  import { getBetweenRandom, shuffle } from 'common/js/util'
   let prefixTransform = prefixStlye('transform')
   let prefixBackdropFilter = prefixStlye('backdrop-filter')
 
@@ -85,8 +86,10 @@
       scroll(pos){
         this.scrollY = pos.y
       },
-      randomPlayAllMusic(){
-        console.log('随机播放全部音乐啦')
+      randomPlayAllMusic(item) {
+        this.randomPlay({
+          list: item
+        })
       },
       selectItem(item, index){
         this.selectPlay({
@@ -94,7 +97,7 @@
           index
         })
       },
-      ...mapActions(['selectPlay'])
+      ...mapActions(['selectPlay', 'randomPlay'])
 
     },
     watch: {
