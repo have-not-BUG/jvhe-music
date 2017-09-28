@@ -64,6 +64,7 @@
   import progressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
   import { shuffle } from 'common/js/util'
+  import QQLyric from 'lyric-parser'
   export default {
     name: 'player',
     computed: {
@@ -103,7 +104,8 @@
         bigCdMiniPausedDeg: 0,
         changeAudioProgressTime: 0,
         changingAudioProgress: false,
-        radius: 32
+        radius: 32,
+        currentLyric: null
       }
     },
     methods: {
@@ -214,6 +216,14 @@
           this.playNextSong()
         }
       },
+      getQQLyric() {
+        this.currentSong.getQQLyricInSongClass().then(res => {
+          this.currentLyric = new QQLyric(res)
+          console.log(this.currentLyric)
+        }).catch((err) => {
+          console.log('获取QQ音乐歌词出错了', err)
+        })
+      },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
         setPlaying: 'SET_PLAYING',
@@ -234,7 +244,7 @@
             this.setPlaying(true);
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
-            this.currentSong.getQQLyricInSongClass()
+            this.getQQLyric()
           }, 20)
 
         })

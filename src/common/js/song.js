@@ -15,12 +15,21 @@ export default class Song {
   }
 
   getQQLyricInSongClass () {
-    getQQLyric(this.mid).then((res) => {
-      if (res.retcode === ERROR_OK) {
-        this.lyric = Base64.decode(res.lyric)
-        console.log('里面的this.lyric', this.lyric)
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+        getQQLyric(this.mid).then((res) => {
+          if (res.retcode === ERROR_OK) {
+            this.lyric = Base64.decode(res.lyric)
+            resolve(this.lyric)
+          } else {
+            reject('get QQ music lyric error')
+          }
+        })
+
       }
-    })
+    )
 
   }
 }
