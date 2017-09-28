@@ -1,3 +1,5 @@
+import { getQQLyric } from 'api/lyric'
+import { ERROR_OK } from 'api/config'
 export default class Song {
   constructor ({id, mid, singer, name, album, duration, image, url}) {
     this.id = id
@@ -8,6 +10,17 @@ export default class Song {
     this.duration = duration
     this.image = image
     this.url = url
+
+  }
+
+  getQQLyricInSongClass () {
+    getQQLyric(this.mid).then((res) => {
+      console.log('res', res)
+      // if (res.retcode === ERROR_OK) {
+      //   this.lyric = res.lyric
+      //   console.log('里面的this.lyric', this.lyric)
+      // }
+    })
 
   }
 }

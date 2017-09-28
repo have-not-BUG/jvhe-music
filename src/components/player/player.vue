@@ -234,6 +234,7 @@
             this.setPlaying(true);
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
+            this.currentSong.getQQLyricInSongClass()
           }, 20)
 
         })

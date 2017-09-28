@@ -34,7 +34,22 @@ apiRoutes.get('/getQQSliderData', function (req, res) {
     }
   }).then((response => { res.json(response.data) })).catch(err => {
 
-    console.log(' 自建的代理出错!  ', err)
+    console.log(' 自建获取QQ音乐推荐歌单轮播图的代理出错!  ', err)
+  })
+
+})
+apiRoutes.get('/getQQLyric', function (req, res) {
+  var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/portal/player.html',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取QQ音乐歌词的代理出错!  ', err)
   })
 
 })
