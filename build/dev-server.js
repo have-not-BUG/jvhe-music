@@ -53,7 +53,6 @@ apiRoutes.get('/getQQLyric', function (req, res) {
       var reg = /^\w+\(({[^()]+})\)$/
 
       var jsondata = data.match(reg)
-      console.log('jsondata',jsondata)
       if (jsondata) {
         data = JSON.parse(jsondata[1])
       }
