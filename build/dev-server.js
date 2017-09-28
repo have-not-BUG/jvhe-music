@@ -47,7 +47,19 @@ apiRoutes.get('/getQQLyric', function (req, res) {
       host: 'c.y.qq.com'
     },
     params: req.query
-  }).then((response => { res.json(response.data) })).catch(err => {
+  }).then((response) => {
+    var data = response.data
+    if (typeof data === 'string') {
+      var reg = /^\w+\(({[^()]+})\)$/
+
+      var jsondata = data.match(reg)
+      console.log('jsondata',jsondata)
+      if (jsondata) {
+        data = JSON.parse(jsondata[1])
+      }
+    }
+    res.json(data)
+  }).catch(err => {
 
     console.log(' 自建获取QQ音乐歌词的代理出错!  ', err)
   })
