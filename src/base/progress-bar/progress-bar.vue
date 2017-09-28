@@ -12,6 +12,7 @@
 
 <script>
   const progressBtnWith = 16
+  import { mapGetters } from 'vuex'
   export default {
     props: {
       percent: {
@@ -24,7 +25,15 @@
         if (newPercent >= 0 && !this.touch.init) {
           this.changeProgress(newPercent * this.$refs.progressBar.clientWidth)
         }
+      },
+      fullScreen(newfullScreen) {
+        if (newfullScreen) {
+          if (!this.playing) {
+            this.changeProgress(this.percent * this.$refs.progressBar.clientWidth)
+          }
+        }
       }
+
     },
     created(){
       this.touch = {}
@@ -62,6 +71,9 @@
         this.emitMove('touchMoveTo')
       }
 
+    },
+    computed: {
+      ...mapGetters(['playing', 'fullScreen'])
     }
 
   }
