@@ -16,9 +16,16 @@
             </div>
             <div class="song-lyric">歌词</div>
           </div>
-          <scroll class="player-middle-right" :data="currentLyric && currentLyric.lines" v-if="currentLyric &&currentLyric.lines">
+          <scroll class="player-middle-right"
+                  :data="currentLyric && currentLyric.lines"
+                  v-if="currentLyric &&currentLyric.lines"
+                  ref="lyricScrollComponent"
+          >
             <div class="lyric-wrap">
-              <p v-for="(line,index) in currentLyric.lines" :class="{'light-current-line':index===currentLyricLineNum}">
+              <p v-for="(line,index) in currentLyric.lines"
+                 :class="{'light-current-line':index===currentLyricLineNum}"
+                 ref="lyricLine"
+              >
                 {{line.txt}} </p>
             </div>
           </scroll>
@@ -229,14 +236,21 @@
       getQQLyric() {
         this.currentSong.getQQLyricInSongClass().then(res => {
           this.currentLyric = new QQLyric(res, this.lyricHandle)
-          this.currentLyric.play()
+          if (this.playing) {
+            this.currentLyric.play()
+          }
         }).catch((err) => {
           console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
         })
       },
       lyricHandle({lineNum, txt}){
         this.currentLyricLineNum = lineNum
-
+        let showCurrentEle = this.$refs.lyricLine[lineNum - 5]
+        if (lineNum > 5) {
+          this.$refs.lyricScrollComponent.scrollToElement(showCurrentEle, 1000)
+        } else {
+          this.$refs.lyricScrollComponent.scrollTo(0, 0, 1000)
+        }
       },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
