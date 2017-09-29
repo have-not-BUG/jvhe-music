@@ -8,12 +8,20 @@
           <h1 class="singer">{{currentSong.singer}}</h1>
         </div>
         <div class="player-middle">
-          <div class="cd-wrap" ref="cdWrap">
-            <div class="cd-border" :class="normalCdStateClass" ref="cdBorder">
-              <img :src="currentSong.image" :alt="currentSong.name">
+          <div class="player-middle-left">
+            <div class="cd-wrap" ref="cdWrap">
+              <div class="cd-border" :class="normalCdStateClass" ref="cdBorder">
+                <img :src="currentSong.image" :alt="currentSong.name">
+              </div>
+            </div>
+            <div class="song-lyric">歌词</div>
+          </div>
+          <div class="player-middle-right" v-if="currentLyric &&currentLyric.lines">
+            <div class="lyric-wrap">
+              <p v-for="(line,index) in currentLyric.lines" :class="{'light-current-line':index===currentLyricLineNum}">
+                {{line.txt}} </p>
             </div>
           </div>
-          <div class="song-lyric">歌词</div>
         </div>
         <div class="player-bottom">
           <div class="show-page">分页</div>
@@ -105,7 +113,8 @@
         changeAudioProgressTime: 0,
         changingAudioProgress: false,
         radius: 32,
-        currentLyric: null
+        currentLyric: null,
+        currentLyricLineNum: 0
       }
     },
     methods: {
@@ -218,11 +227,15 @@
       },
       getQQLyric() {
         this.currentSong.getQQLyricInSongClass().then(res => {
-          this.currentLyric = new QQLyric(res)
-          console.log(this.currentLyric)
+          this.currentLyric = new QQLyric(res, this.lyricHandle)
+          this.currentLyric.play()
         }).catch((err) => {
-          console.log('获取QQ音乐歌词出错了', err)
+          console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
         })
+      },
+      lyricHandle({lineNum, txt}){
+        this.currentLyricLineNum = lineNum
+
       },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
@@ -325,6 +338,7 @@
         height 100%
         z-index -1
         filter blur(20px)
+        opacity:0.6
         img {
           width 100%
           height 100%
@@ -332,7 +346,8 @@
 
       }
       .player-top {
-        color $color-theme
+        color $color-text
+        position relative
         .song-name {
           font-size $font-size-large
           line-height 40px
@@ -345,6 +360,7 @@
             transform rotate(-90deg)
             left 20px
             font-size $font-size-large-x
+            color $color-theme
           }
           padding 0 50px
         }
@@ -356,39 +372,74 @@
 
       }
       .player-middle {
+        position fixed
+        top 80px
+        bottom  170px
+        white-space: nowrap
         width 100%
-        .cd-wrap {
-          padding-top 80%
-          height 0
+        .player-middle-left {
           width 100%
-          position relative
-          .cd-border {
-            box-sizing border-box
-            border 10px solid hsla(0, 0%, 100%, .1)
-            border-radius 50%
-            position absolute
-            top 0
-            left 10%
-            width 80%
-            height 100%
+          display inline-block
 
-            &.play {
-              animation rotate 20s linear infinite
-            }
-            &.pause {
-              animation-play-state paused
-            }
-
-            img {
-              display block
-              width 100%
-              height 100%
+          .cd-wrap {
+            padding-top 80%
+            height 0
+            width 100%
+            position relative
+            .cd-border {
+              box-sizing border-box
+              border 10px solid hsla(0, 0%, 100%, .1)
               border-radius 50%
+              position absolute
+              top 0
+              left 10%
+              width 80%
+              height 100%
+
+              &.play {
+                animation rotate 20s linear infinite
+              }
+              &.pause {
+                animation-play-state paused
+              }
+
+              img {
+                display block
+                width 100%
+                height 100%
+                border-radius 50%
+              }
             }
           }
+
+        }
+        .player-middle-right {
+          width 100%
+          height 100%
+          vertical-align:top
+          display inline-block
+          overflow hidden
+
+          .lyric-wrap {
+
+            .light-current-line {
+              color $color-text
+              font-weight 900
+            }
+            p {
+              overflow hidden
+              width 80%
+              margin 20px auto
+              font-size $font-size-medium
+              color $color-text-ll
+
+            }
+          }
+
         }
 
       }
+
       .player-bottom {
         position absolute
         bottom 50px
