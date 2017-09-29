@@ -16,12 +16,12 @@
             </div>
             <div class="song-lyric">歌词</div>
           </div>
-          <div class="player-middle-right" v-if="currentLyric &&currentLyric.lines">
+          <scroll class="player-middle-right" :data="currentLyric && currentLyric.lines" v-if="currentLyric &&currentLyric.lines">
             <div class="lyric-wrap">
               <p v-for="(line,index) in currentLyric.lines" :class="{'light-current-line':index===currentLyricLineNum}">
                 {{line.txt}} </p>
             </div>
-          </div>
+          </scroll>
         </div>
         <div class="player-bottom">
           <div class="show-page">分页</div>
@@ -73,6 +73,7 @@
   import { playMode } from 'common/js/config'
   import { shuffle } from 'common/js/util'
   import QQLyric from 'lyric-parser'
+  import Scroll from 'base/scroll/scroll'
   export default {
     name: 'player',
     computed: {
@@ -291,7 +292,7 @@
 
     },
     components: {
-      progressBar, progressCircle
+      progressBar, progressCircle, Scroll
     }
 
   }
@@ -338,7 +339,7 @@
         height 100%
         z-index -1
         filter blur(20px)
-        opacity:0.6
+        opacity: 0.6
         img {
           width 100%
           height 100%
@@ -374,7 +375,7 @@
       .player-middle {
         position fixed
         top 80px
-        bottom  170px
+        bottom 170px
         white-space: nowrap
         width 100%
         .player-middle-left {
@@ -416,7 +417,7 @@
         .player-middle-right {
           width 100%
           height 100%
-          vertical-align:top
+          vertical-align: top
           display inline-block
           overflow hidden
 
