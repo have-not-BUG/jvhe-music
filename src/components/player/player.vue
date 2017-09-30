@@ -7,8 +7,13 @@
           <h1 class="song-name"><i class="icon-back" @click="showMiniPlayer"></i>{{currentSong.name}}</h1>
           <h1 class="singer">{{currentSong.singer}}</h1>
         </div>
-        <div class="player-middle">
-          <div class="player-middle-left">
+        <div class="player-middle"
+             @touchstart="middleTouchStart"
+             @touchmove="middleTouchMove"
+             @touchend="middleTouchEnd"
+             ref="playMiddle"
+        >
+          <div class="player-middle-left" ref="playerMiddleLeft">
             <div class="cd-wrap" ref="cdWrap">
               <div class="cd-border" :class="normalCdStateClass" ref="cdBorder">
                 <img :src="currentSong.image" :alt="currentSong.name">
@@ -19,7 +24,7 @@
           <scroll class="player-middle-right"
                   :data="currentLyric && currentLyric.lines"
                   v-if="currentLyric &&currentLyric.lines"
-                  ref="lyricScrollComponent"
+                  ref="playerMiddleRight"
           >
             <div class="lyric-wrap">
               <p v-for="(line,index) in currentLyric.lines"
@@ -31,8 +36,12 @@
           </scroll>
         </div>
         <div class="player-bottom">
-          <div class="show-page">分页</div>
-          <div class="progress-bar-wrap">
+          <div class="show-page">
+            <div class="dot" :class="{active:showCurrentPage==='cd'}"></div>
+            <div class="dot" :class="{active:showCurrentPage==='lyric'}"></div>
+          </div>
+          <div class=" progress-bar-wrap
+            ">
             <span>{{runningTime}}</span>
             <progress-bar :percent="percent" @touchMoveTo="ontouchMoveTo" @touchMoving="ontouchMoving"></progress-bar>
             <span>{{totalTime}}</span>
@@ -81,6 +90,9 @@
   import { shuffle } from 'common/js/util'
   import QQLyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
+  import { prefixStlye } from 'common/js/dom'
+  let transform = prefixStlye('transform')
+  let translate = prefixStlye('translate')
   export default {
     name: 'player',
     computed: {
@@ -111,6 +123,9 @@
       playModeIco(){
         return this.mode === playMode.order ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
       },
+      showCurrentPage(){
+        return this.currentPage === 'cd' ? 'cd' : 'lyric'
+      },
       ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong', 'currentIndex', 'mode', 'orderPlayList'])
     },
     data () {
@@ -122,7 +137,8 @@
         changingAudioProgress: false,
         radius: 32,
         currentLyric: null,
-        currentLyricLineNum: 0
+        currentLyricLineNum: 0,
+        currentPage: 'cd'
       }
     },
     methods: {
@@ -134,7 +150,6 @@
       },
       changePlayState(){
         this.setPlaying(!this.playing)
-
       },
       playPrevSong() {
         if (!this.canplay) {
@@ -247,10 +262,54 @@
         this.currentLyricLineNum = lineNum
         let showCurrentEle = this.$refs.lyricLine[lineNum - 5]
         if (lineNum > 5) {
-          this.$refs.lyricScrollComponent.scrollToElement(showCurrentEle, 1000)
+          this.$refs.playerMiddleRight.scrollToElement(showCurrentEle, 1000)
         } else {
-          this.$refs.lyricScrollComponent.scrollTo(0, 0, 1000)
+          this.$refs.playerMiddleRight.scrollTo(0, 0, 1000)
         }
+      },
+      middleTouchStart(e){
+        this.touch.init = true
+        this.touch.startPageX = e.touches[0].pageX
+        this.touch.startPageY = e.touches[0].pageY
+
+      },
+      middleTouchMove(e){
+        if (!this.touch.init) {
+          return
+        }
+        this.touch.EndPageX = e.touches[0].pageX
+        this.touch.EndPageY = e.touches[0].pageY
+        let movedPageX = this.touch.EndPageX - this.touch.startPageX
+        let movedPageY = this.touch.EndPageY - this.touch.startPageY
+        if (Math.abs(movedPageX) > Math.abs(movedPageY)) {
+          let left = this.currentPage === 'cd' ? 0 : -window.innerWidth
+          let offsetWidth = Math.min(0, Math.max(-window.innerWidth, movedPageX + left))
+          this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+          this.touch.percent = offsetWidth / -window.innerWidth
+        }
+      },
+      middleTouchEnd(){
+        if (this.currentPage === 'cd') {
+          if (this.touch.percent > 0.1) {
+            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${-window.innerWidth}px,0,0)`
+            this.currentPage = 'lyric'
+            this.$refs.playerMiddleLeft.style.opacity = 0
+
+          } else {
+            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(0,0,0)`
+          }
+        } else {
+          if (this.touch.percent < 0.9) {
+            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(0,0,0)`
+            this.currentPage = 'cd'
+            this.$refs.playerMiddleLeft.style.opacity = 1
+          } else {
+            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${-window.innerWidth}px,0,0)`
+
+          }
+
+        }
+
       },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
@@ -304,6 +363,9 @@
 
       }
 
+    },
+    created(){
+      this.touch = {}
     },
     components: {
       progressBar, progressCircle, Scroll
@@ -440,6 +502,7 @@
             .light-current-line {
               color $color-text
               font-weight 900
+              font-size $font-size-large
             }
             p {
               overflow hidden
@@ -464,7 +527,22 @@
         transform translate(-50%, 0)
 
         .show-page {
-          height 30px
+          .dot {
+            width 8px
+            height 8px
+            border-radius 50%
+            background-color $color-text-l
+            display inline-block
+            vertical-align middle
+            font-size 0
+            margin 0 4px
+            &.active {
+              width 20px
+              border-radius 5px
+              background-color $color-text-ll
+            }
+          }
+
         }
         .progress-bar-wrap {
           display flex
