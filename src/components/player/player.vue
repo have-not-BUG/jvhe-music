@@ -92,7 +92,7 @@
   import Scroll from 'base/scroll/scroll'
   import { prefixStlye } from 'common/js/dom'
   let transform = prefixStlye('transform')
-  let translate = prefixStlye('translate')
+  let transitionDuration = prefixStlye('transitionDuration')
   export default {
     name: 'player',
     computed: {
@@ -271,44 +271,56 @@
         this.touch.init = true
         this.touch.startPageX = e.touches[0].pageX
         this.touch.startPageY = e.touches[0].pageY
+        this.touch.moved = false
 
       },
       middleTouchMove(e){
         if (!this.touch.init) {
           return
         }
-        this.touch.EndPageX = e.touches[0].pageX
-        this.touch.EndPageY = e.touches[0].pageY
-        let movedPageX = this.touch.EndPageX - this.touch.startPageX
-        let movedPageY = this.touch.EndPageY - this.touch.startPageY
-        if (Math.abs(movedPageX) > Math.abs(movedPageY)) {
+        if (!this.touch.moved) {
+          this.touch.moved = true
+        }
+
+        this.touch.movedPageX = e.touches[0].pageX - this.touch.startPageX
+        this.touch.movedPageY = e.touches[0].pageY - this.touch.startPageY
+        if (Math.abs(this.touch.movedPageX) > Math.abs(this.touch.movedPageY)) {
           let left = this.currentPage === 'cd' ? 0 : -window.innerWidth
-          let offsetWidth = Math.min(0, Math.max(-window.innerWidth, movedPageX + left))
+          let offsetWidth = Math.min(0, Math.max(-window.innerWidth, this.touch.movedPageX + left))
           this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
           this.touch.percent = offsetWidth / -window.innerWidth
+          this.$refs.playerMiddleLeft.style.opacity = 1 - this.touch.percent
         }
       },
       middleTouchEnd(){
-        if (this.currentPage === 'cd') {
-          if (this.touch.percent > 0.1) {
-            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${-window.innerWidth}px,0,0)`
-            this.currentPage = 'lyric'
-            this.$refs.playerMiddleLeft.style.opacity = 0
+        if (!this.touch.moved) {
+          return
+        }
+        if (Math.abs(this.touch.movedPageX) > Math.abs(this.touch.movedPageY)) {
+          if (this.currentPage === 'cd') {
+            if (this.touch.percent > 0.1) {
+              this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${-window.innerWidth}px,0,0)`
+              this.currentPage = 'lyric'
+              this.$refs.playerMiddleLeft.style.opacity = 0
 
+            } else {
+              this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(0,0,0)`
+            }
           } else {
-            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(0,0,0)`
-          }
-        } else {
-          if (this.touch.percent < 0.9) {
-            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(0,0,0)`
-            this.currentPage = 'cd'
-            this.$refs.playerMiddleLeft.style.opacity = 1
-          } else {
-            this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${-window.innerWidth}px,0,0)`
+            if (this.touch.percent < 0.9) {
+              this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(0,0,0)`
+              this.currentPage = 'cd'
+              this.$refs.playerMiddleLeft.style.opacity = 1
+            } else {
+              this.$refs.playerMiddleRight.$el.style[transform] = `translate3d(${-window.innerWidth}px,0,0)`
 
+            }
           }
+          this.$refs.playerMiddleRight.$el.style[transitionDuration] = '300ms'
 
         }
+
+        this.touch.init = false
 
       },
       ...mapMutations({
@@ -539,7 +551,7 @@
             &.active {
               width 20px
               border-radius 5px
-              background-color $color-text-ll
+              background-color $color-text
             }
           }
 
