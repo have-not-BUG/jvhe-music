@@ -19,7 +19,9 @@
                 <img :src="currentSong.image" :alt="currentSong.name">
               </div>
             </div>
-            <div class="song-lyric">歌词</div>
+            <div class="song-lyric-wrap">
+              <p class="playing-lyric">{{playingLyric}}</p>
+            </div>
           </div>
           <scroll class="player-middle-right"
                   :data="currentLyric && currentLyric.lines"
@@ -138,7 +140,8 @@
         radius: 32,
         currentLyric: null,
         currentLyricLineNum: 0,
-        currentPage: 'cd'
+        currentPage: 'cd',
+        playingLyric: ''
       }
     },
     methods: {
@@ -150,6 +153,10 @@
       },
       changePlayState(){
         this.setPlaying(!this.playing)
+        if (this.currentLyric) {
+          this.currentLyric.togglePlay()
+        }
+
       },
       playPrevSong() {
         if (!this.canplay) {
@@ -208,8 +215,12 @@
         return ((360 / animationLength) * runningtime) % 360
       },
       ontouchMoveTo(touchPercent){
+        let currentTimeByPercent = this.currentSong.duration * touchPercent
         this.changingAudioProgress = false
-        this.$refs.audio.currentTime = this.currentSong.duration * touchPercent
+        this.$refs.audio.currentTime = currentTimeByPercent
+        if (this.currentLyric) {
+          this.currentLyric.seek(currentTimeByPercent * 1000)
+        }
         if (!this.playing) {
           this.changePlayState()
         }
@@ -217,6 +228,10 @@
       ontouchMoving(touchPercent){
         this.changingAudioProgress = true
         this.changeAudioProgressTime = this.currentSong.duration * touchPercent
+        if (this.currentLyric) {
+          this.currentLyric.seek(this.changeAudioProgressTime * 1000)
+        }
+
       },
       changePlayMode() {
         const mode = (this.mode + 1) % 3
@@ -238,6 +253,9 @@
       },
       runLoopMode(){
         this.$refs.audio.currentTime = 0
+        if (this.currentLyric) {
+          this.currentLyric.seek(0)
+        }
         this.$refs.audio.play()
 
       },
@@ -266,6 +284,7 @@
         } else {
           this.$refs.playerMiddleRight.scrollTo(0, 0, 1000)
         }
+        this.playingLyric = txt
       },
       middleTouchStart(e){
         this.touch.init = true
@@ -343,7 +362,11 @@
             this.setPlaying(true);
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
+            if (this.currentLyric) {
+              this.currentLyric.stop()
+            }
             this.getQQLyric()
+
           }, 20)
 
         })
@@ -501,6 +524,17 @@
             }
           }
 
+          .song-lyric-wrap {
+            font-size $font-size-medium
+            color $color-text-l
+            margin 30px 0 0 0
+            .playing-lyric {
+              width 80%
+              margin 0 auto
+              overflow hidden
+            }
+          }
+
         }
         .player-middle-right {
           width 100%
@@ -513,8 +547,8 @@
 
             .light-current-line {
               color $color-text
-              font-weight 900
-              font-size $font-size-large
+              font-weight bold
+              font-size $font-size-medium
             }
             p {
               overflow hidden
