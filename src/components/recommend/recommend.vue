@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" ref="recommend">
     <scroll ref="scroll"
             class="recommend-content"
             :data="qqhotSongList">
@@ -37,7 +37,9 @@
   import Loading from 'base/loading/loading'
   import { getQQHotSongList } from 'api/recommend'
   import { ERROR_OK } from 'api/config'
+  import { playListMixin } from 'common/js/mixin'
   export default {
+    mixins: [playListMixin],
     name: 'recommend',
     data () {
       return {
@@ -52,6 +54,12 @@
       Loading
     },
     methods: {
+      handlePlayList(playList){
+        const bottomValue = playList.length > 0 ? '60px' : ''
+        this.$refs.recommend.style.bottom = bottomValue
+        this.$refs.scroll.refresh()
+
+      },
       showQQSliderData: function () {
         this.$http.get('/api/getQQSliderData').then(res => {
           this.recommends = res.data.data.slider;

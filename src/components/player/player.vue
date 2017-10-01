@@ -162,25 +162,36 @@
         if (!this.canplay) {
           return
         }
-        this.setCurrentIndex(this.currentIndex - 1)
-        if (this.currentIndex === -1) {
-          this.setCurrentIndex(this.playList.length - 1)
-        }
-        if (!this.playing) {
-          this.changePlayState()
+
+        if (this.playList.length === 1) {
+          this.runLoopMode()
+        } else {
+
+          this.setCurrentIndex(this.currentIndex - 1)
+          if (this.currentIndex === -1) {
+            this.setCurrentIndex(this.playList.length - 1)
+          }
+          if (!this.playing) {
+            this.changePlayState()
+          }
         }
         this.canplay = false
+
       },
       playNextSong(){
         if (!this.canplay) {
           return
         }
-        if (this.currentIndex === this.playList.length - 1) {
-          this.setCurrentIndex(-1)
-        }
-        this.setCurrentIndex(this.currentIndex + 1)
-        if (!this.playing) {
-          this.changePlayState()
+        if (this.playList.length === 1) {
+          this.runLoopMode()
+        } else {
+          if (this.currentIndex === this.playList.length - 1) {
+            this.setCurrentIndex(-1)
+          }
+          this.setCurrentIndex(this.currentIndex + 1)
+          if (!this.playing) {
+            this.changePlayState()
+          }
         }
         this.canplay = false
       },
@@ -273,6 +284,10 @@
             this.currentLyric.play()
           }
         }).catch((err) => {
+          this.currentLyric = null
+          this.playingLyric = ''
+          this.currentLyricLineNum = 0
+
           console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
         })
       },
@@ -358,17 +373,15 @@
         this.$nextTick(() => {
           this.setPlaying(false);
           setTimeout(() => {
+            if (this.currentLyric) {
+              this.currentLyric.stop()
+            }
             this.$refs.audio.play();
             this.setPlaying(true);
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
-            if (this.currentLyric) {
-              this.currentLyric.stop()
-            }
             this.getQQLyric()
-
-          }, 20)
-
+          }, 500)
         })
       },
       playing(newPlaying) {
