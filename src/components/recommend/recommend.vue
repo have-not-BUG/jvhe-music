@@ -17,7 +17,7 @@
         <div class="recommend-list">
           <h1 class="recommend-list-title">热门歌单推荐</h1>
           <ul>
-            <li v-for="item in qqhotSongList">
+            <li v-for="item in qqhotSongList" @click="chooseItem(item)">
               <img v-lazy="item.imgurl" :alt="item.dissname">
               <p v-html="item.dissname"></p>
             </li>
@@ -28,6 +28,7 @@
         <loading></loading>
       </div>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -54,6 +55,13 @@
       Loading
     },
     methods: {
+      chooseItem(item){
+        this.$router.push({
+          path:`/recommend/${item.dissid}`
+        })
+        console.log(item)
+
+      },
       handlePlayList(playList){
         const bottomValue = playList.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottomValue
