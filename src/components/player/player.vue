@@ -498,7 +498,7 @@
       }
       .player-middle {
         position fixed
-        top 80px
+        top 70px
         bottom 170px
         white-space: nowrap
         width 100%
@@ -540,7 +540,7 @@
           .song-lyric-wrap {
             font-size $font-size-medium
             color $color-text-l
-            margin 30px 0 0 0
+            margin 10px 0 0 0
             .playing-lyric {
               width 80%
               margin 0 auto
@@ -579,7 +579,7 @@
 
       .player-bottom {
         position absolute
-        bottom 50px
+        bottom 15px
         left 50%
         width 80%
         margin 0 auto
