@@ -1,6 +1,6 @@
 <template>
-  <div class="singer">
-    <listview :data="optimizedSingerList" @choose="chooseSinger"></listview>
+  <div class="singer" ref="singer">
+    <listview :data="optimizedSingerList" @choose="chooseSinger" ref="singerListView"></listview>
     <router-view></router-view>
   </div>
 </template>
@@ -10,11 +10,13 @@
   import { ERROR_OK } from 'api/config'
   import Singer from 'common/js/singer'
   import Listview from 'base/listview/listview'
+  import { playListMixin } from 'common/js/mixin'
   import { mapMutations } from 'vuex'
   const SINGER_TYPE = '热门'
   const HOT_SINGER_LENGTH = 10
 
   export default {
+    mixins: [playListMixin],
     name: 'singer',
     data () {
       return {
@@ -22,6 +24,12 @@
       }
     },
     methods: {
+      handlePlayList(playList) {
+        const bottomValue = playList.length > 0 ? '60px' : ''
+        this.$refs.singer.style.bottom = bottomValue
+        this.$refs.singerListView.refresh()
+
+      },
       chooseSinger(singer){
         this.$router.push({
           path: `/singer/${singer.mid}`
@@ -119,7 +127,7 @@
   .singer {
     position: fixed
     width: 100%
-    top: 88px
+    top: 90px
     bottom: 0
   }
 

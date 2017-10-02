@@ -9,7 +9,7 @@ export default {
   name: 'header',
   data () {
     return {
-      msg: '聚合音乐'
+      msg: '巨盒音乐'
     }
   }
 }
@@ -20,8 +20,10 @@ export default {
   @import "~common/stylus/variable"
   .header{
     text-align center
-    padding 10px 0
-    max-height 40px
+    padding 5px 0
+    height 40px
+    line-height 40px
+    box-sizing border-box
     font-size $font-size-large
   }
 

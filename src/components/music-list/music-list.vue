@@ -1,5 +1,5 @@
 <template>
-  <div class="music-list-wrapper">
+  <div class="music-list-wrapper" ref="musicListWrapper">
     <div class="singer-name">
       <i class="icon-back" @click="goback"></i>
       <h2 v-html="title"></h2>
@@ -37,11 +37,12 @@
   import loading from 'base/loading/loading'
   import { prefixStlye } from  'common/js/dom'
   import { mapActions } from 'vuex'
-  import { getBetweenRandom, shuffle } from 'common/js/util'
+  import { playListMixin } from 'common/js/mixin'
   let prefixTransform = prefixStlye('transform')
   let prefixBackdropFilter = prefixStlye('backdrop-filter')
 
   export default {
+    mixins: [playListMixin],
     props: {
       title: {
         type: String,
@@ -80,6 +81,12 @@
       }
     },
     methods: {
+      handlePlayList(playList) {
+        const bottomValue = playList.length > 0 ? '60px' : ''
+        this.$refs.scrollSongList.$el.style.bottom = bottomValue
+        this.$refs.scrollSongList.refresh()
+
+      },
       goback(){
         this.$router.back()
       },

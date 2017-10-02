@@ -82,6 +82,9 @@
 
     },
     methods: {
+      refresh(){
+        this.$refs.listview.refresh()
+      },
       toInitialsSingers(e){
         let startnum = getOrSetAttributeData(e.target, 'index'),
           starttouch = e.touches[0];
@@ -173,8 +176,8 @@
     position relative
     .singers-wrapper {
       position relative
-      width  100%
-      overflow  hidden
+      width 100%
+      overflow hidden
       .classified-title {
         color $color-text-l
         background-color #333
@@ -223,16 +226,15 @@
     }
     .classified-fixed-title {
       position fixed
-      top 88px
+      top 90px
       left 0
-      color: $color-theme
-      background-color #333
+      width 100%
       padding-left 20px
+      background-color #333
+      color: $color-theme
       line-height 30px
       height 30px
       font-size $font-size-small
-      width 100%
-
     }
     .loading-wrapper {
       position absolute
