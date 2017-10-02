@@ -8,7 +8,7 @@ export const currentIndex = state => state.currentIndex
 export const currentSong = (state) => {
   return state.playList[state.currentIndex] || {}
 }
-
+export const disc = state => state.disc
 
 
 

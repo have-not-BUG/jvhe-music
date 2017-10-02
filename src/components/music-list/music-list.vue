@@ -145,6 +145,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .music-list-wrapper {
     height 100%
@@ -156,8 +157,8 @@
       position absolute
       text-align center
       width 100%
-      i {
-        left 30px
+      .icon-back {
+        left 25px
         top 0
         position absolute
         display block
@@ -169,6 +170,8 @@
         font-size $font-size-large
         line-height 40px
         height 40px
+        padding 0 50px
+        no-wrap()
 
       }
 

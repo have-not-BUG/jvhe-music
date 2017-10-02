@@ -1,16 +1,32 @@
 <template>
   <transition name="slide">
     <div class="recomment-list-wrapper">
-      music-listmusic-list
+      <music-list :songs="songs" :title="title" :bg-image='bgImage'></music-list>
     </div>
   </transition>
 </template>
 
 <script>
+  import musicList from 'components/music-list/music-list'
+  import { mapGetters } from 'vuex'
 
   export default {
     data() {
       return {}
+    },
+    computed: {
+      title(){
+        return this.disc.dissname
+      },
+      bgImage(){
+        return this.disc.imgurl
+      },
+
+      ...mapGetters(['disc'])
+
+    },
+    components: {
+      musicList
     }
   }
 </script>

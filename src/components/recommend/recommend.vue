@@ -39,6 +39,7 @@
   import { getQQHotSongList } from 'api/recommend'
   import { ERROR_OK } from 'api/config'
   import { playListMixin } from 'common/js/mixin'
+  import { mapMutations } from 'vuex'
   export default {
     mixins: [playListMixin],
     name: 'recommend',
@@ -57,9 +58,9 @@
     methods: {
       chooseItem(item){
         this.$router.push({
-          path:`/recommend/${item.dissid}`
+          path: `/recommend/${item.dissid}`
         })
-        console.log(item)
+        this.setDisc(item)
 
       },
       handlePlayList(playList){
@@ -96,7 +97,10 @@
           }, 20)
 
         }
-      }
+      },
+      ...mapMutations({
+        setDisc: 'SET_DISC'
+      })
 
     },
     created: function () {
