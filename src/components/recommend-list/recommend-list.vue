@@ -9,6 +9,7 @@
 <script>
   import musicList from 'components/music-list/music-list'
   import { mapGetters } from 'vuex'
+  import { getQQHotSongListDetail } from 'api/recommend'
 
   export default {
     data() {
@@ -27,6 +28,18 @@
     },
     components: {
       musicList
+    },
+    created(){
+      this._getQQHotSongListDetail()
+    },
+    methods: {
+      _getQQHotSongListDetail(){
+        getQQHotSongListDetail(this.disc.dissid).then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.log('获取热门歌单详情失败:getQQHotSongListDetail', err)
+        })
+      }
     }
   }
 </script>
