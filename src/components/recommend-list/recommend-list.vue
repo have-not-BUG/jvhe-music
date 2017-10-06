@@ -10,10 +10,14 @@
   import musicList from 'components/music-list/music-list'
   import { mapGetters } from 'vuex'
   import { getQQHotSongListDetail } from 'api/recommend'
+  import { ERROR_OK }  from 'api/config'
+  import { createSong }  from 'common/js/song'
 
   export default {
     data() {
-      return {}
+      return {
+        songs: []
+      }
     },
     computed: {
       title(){
@@ -34,12 +38,42 @@
     },
     methods: {
       _getQQHotSongListDetail(){
+        if (!this.disc.dissid) {
+          this.$router.push('/recommend')
+          return
+        }
         getQQHotSongListDetail(this.disc.dissid).then(res => {
-          console.log(res)
+          if (ERROR_OK === res.code) {
+            this.songs = this.optimizeQQHotSongList(res.cdlist[0].songlist)
+            console.log(res.cdlist[0])
+          } else {
+            console.log('获取热门歌单详情失败：res.code不为0')
+          }
         }).catch(err => {
           console.log('获取热门歌单详情失败:getQQHotSongListDetail', err)
         })
+      },
+      optimizeQQHotSongList(list){
+        let ret = []
+        list.forEach((item) => {
+          if (item.mid) {
+            ret.push(createSong(this.convertSongData(item)))
+          }
+        })
+        return ret
+      },
+      convertSongData(originData){
+        let convertedData = {};
+        convertedData.songid = originData.id
+        convertedData.songmid = originData.mid
+        convertedData.singer = originData.singer
+        convertedData.songname = originData.name
+        convertedData.albumname = originData.album.name
+        convertedData.albummid = originData.album.mid
+        convertedData.interval = originData.interval
+        return convertedData
       }
+
     }
   }
 </script>

@@ -47,6 +47,7 @@
         getQQSingerDetail(this.singer.mid).then(res => {
           if (res.code === ERROR_OK) {
             this.songs = this.optimizeQQSongs(res.data.list);
+            console.log(res.data.list)
           }
 
         }).catch(err => {
