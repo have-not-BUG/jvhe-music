@@ -5,14 +5,26 @@
 </template>
 
 <script>
-export default {
-  name: 'rank',
-  data () {
-    return {
-      msg: '排行页面'
+  import { getQQAllRankData } from 'api/rank'
+  export default {
+    data () {
+      return {
+        msg: '排行页面'
+      }
+    },
+    created(){
+      this._getQQAllRankData()
+    },
+    methods: {
+      _getQQAllRankData(){
+        getQQAllRankData().then(res => {
+          console.log(res.data)
+        }).catch(err => {
+          console.log('获取QQ音乐所有排行榜数据出错', err)
+        })
+      }
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
