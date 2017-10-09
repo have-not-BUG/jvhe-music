@@ -48,11 +48,13 @@
           if (res.code === ERROR_OK) {
             this.songs = this.optimizeQQSongs(res.data.list);
             console.log(res.data.list)
+          } else {
+            console.log('获取QQ歌手详情数据失败：res.code不为0')
           }
 
         }).catch(err => {
-          console.log('获取歌手详情页出错了', err);
-          alert('获取歌手详情页出错了，请刷新重试', err)
+          console.log('获取歌手详情数据出错了', err);
+          alert('获取歌手详情数据出错了，请刷新重试', err)
         })
       },
       optimizeQQSongs(list){

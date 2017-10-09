@@ -8,7 +8,7 @@ const state = {
   mode: playMode.order,
   currentIndex: -1,
   disc: {},
-  topList: {}
+  rankList: {}
 }
 export default state
 

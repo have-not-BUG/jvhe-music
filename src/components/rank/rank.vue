@@ -39,7 +39,6 @@
         const bottomValue = playList.length > 0 ? '60px' : ''
         this.$refs.rankWrap.style.bottom = bottomValue
         this.$refs.rankScroll.refresh()
-        console.log('rankWraprankWraprankWraprankWrap')
       },
       _getQQAllRankData(){
         getQQAllRankData().then(res => {
@@ -52,10 +51,10 @@
         this.$router.push({
           path: `/rank/${id}`
         })
-        this.setTopList(id)
+        this.setRankList(id)
       },
       ...mapMutations({
-        setTopList: 'SET_TOPLIST'
+        setRankList: 'SET_RANKLIST'
       })
     },
     components: {

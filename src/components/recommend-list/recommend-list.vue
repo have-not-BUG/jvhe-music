@@ -47,10 +47,10 @@
             this.songs = this.optimizeQQHotSongList(res.cdlist[0].songlist)
             console.log(res.cdlist[0])
           } else {
-            console.log('获取热门歌单详情失败：res.code不为0')
+            console.log('获取热门歌单详情数据失败：res.code不为0')
           }
         }).catch(err => {
-          console.log('获取热门歌单详情失败:getQQHotSongListDetail', err)
+          console.log('获取热门歌单详情数据失败:getQQHotSongListDetail', err)
         })
       },
       optimizeQQHotSongList(list){

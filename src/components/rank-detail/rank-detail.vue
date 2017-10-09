@@ -11,20 +11,57 @@
   import { ERROR_OK } from 'api/config'
   import { createSong } from 'common/js/song'
   import musicList from 'components/music-list/music-list'
+  import { getQQRankListDetail } from 'api/rank'
 
   export default {
     data() {
       return {
-        songs: []
+        songs: [],
+        rankTitleAndPic: {
+          title: '',
+          pic: ''
+        }
       }
     },
     computed: {
-      ...mapGetters(['topList'])
+      title() {
+        return this.rankTitleAndPic.title
+      },
+      bgImage() {
+        return this.rankTitleAndPic.pic
+      },
+      ...mapGetters(['rankList'])
     },
     created() {
-      console.log(this.topList)
+      this._getQQRankListDetail()
     },
-    methods: {},
+    methods: {
+      _getQQRankListDetail(){
+        getQQRankListDetail(this.rankList).then(res => {
+          if (res.code === ERROR_OK) {
+            this.rankTitleAndPic.title = res.topinfo.ListName
+            this.songs = this.optimizeQQRankListSongs(res.songlist)
+            this.rankTitleAndPic.pic = this.songs[0].image
+            console.log(this.songs)
+          } else {
+            console.log('获取QQ排行榜详情数据失败：res.code不为0')
+          }
+        }).catch(err => {
+          console.log('获取QQ排行榜详情数据出错了', err)
+        })
+      },
+      optimizeQQRankListSongs(list){
+        let ret = []
+        list.forEach((item) => {
+          let musicData = item.data
+          if (musicData.songid && musicData.albummid) {
+            ret.push(createSong(musicData))
+          }
+
+        })
+        return ret
+      }
+    },
     components: {
       musicList
     }
