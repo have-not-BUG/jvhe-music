@@ -2,7 +2,7 @@
   <div class="rank-wrap" ref="rankWrap">
     <scroll class="rank-scroll" :data="topList" ref="rankScroll">
       <ul class="rank-ul">
-        <li v-for="item in topList " v-if="topList.length" class="ranklist-wrap">
+        <li v-for="item in topList " v-if="topList.length" class="ranklist-wrap" @click="chooseRank(item.id)">
           <div class="rank-icon">
             <img :src="item.picUrl" :alt="item.topTitle">
           </div>
@@ -14,6 +14,7 @@
         </li>
       </ul>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -45,6 +46,12 @@
         }).catch(err => {
           console.log('获取QQ音乐所有排行榜数据出错', err)
         })
+      },
+      chooseRank(id) {
+        this.$router.push({
+          path: `/rank/${id}`
+        })
+
       }
     },
     components: {
