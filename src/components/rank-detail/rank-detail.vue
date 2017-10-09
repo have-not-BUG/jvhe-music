@@ -37,12 +37,15 @@
     },
     methods: {
       _getQQRankListDetail(){
-        getQQRankListDetail(this.rankList).then(res => {
+        if (!this.rankList.id) {
+          this.$router.push('/rank')
+          return
+        }
+        getQQRankListDetail(this.rankList.id).then(res => {
           if (res.code === ERROR_OK) {
             this.rankTitleAndPic.title = res.topinfo.ListName
             this.songs = this.optimizeQQRankListSongs(res.songlist)
             this.rankTitleAndPic.pic = this.songs[0].image
-            console.log(this.songs)
           } else {
             console.log('获取QQ排行榜详情数据失败：res.code不为0')
           }
