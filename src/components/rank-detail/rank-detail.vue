@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <div class="rank-detail-wrapper">
-    <music-list :songs="songs" :title="title" :bg-image='bgImage'></music-list>
+      <music-list :songs="songs" :title="title" :bg-image='bgImage'></music-list>
     </div>
   </transition>
 </template>
@@ -18,8 +18,12 @@
         songs: []
       }
     },
-    computed: {},
-    created() {},
+    computed: {
+      ...mapGetters(['topList'])
+    },
+    created() {
+      console.log(this.topList)
+    },
     methods: {},
     components: {
       musicList

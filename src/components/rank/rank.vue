@@ -22,6 +22,7 @@
   import { getQQAllRankData } from 'api/rank'
   import Scroll from 'base/scroll/scroll'
   import { playListMixin } from 'common/js/mixin'
+  import { mapMutations } from 'vuex'
 
   export default {
     mixins: [playListMixin],
@@ -51,8 +52,11 @@
         this.$router.push({
           path: `/rank/${id}`
         })
-
-      }
+        this.setTopList(id)
+      },
+      ...mapMutations({
+        setTopList: 'SET_TOPLIST'
+      })
     },
     components: {
       Scroll
