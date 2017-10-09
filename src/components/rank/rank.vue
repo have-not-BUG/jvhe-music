@@ -1,6 +1,6 @@
 <template>
-  <div class="rank-wrap">
-    <scroll class="rank-scroll" :data="topList">
+  <div class="rank-wrap" ref="rankWrap">
+    <scroll class="rank-scroll" :data="topList" ref="rankScroll">
       <ul class="rank-ul">
         <li v-for="item in topList " v-if="topList.length" class="ranklist-wrap">
           <div class="rank-icon">
@@ -20,7 +20,10 @@
 <script>
   import { getQQAllRankData } from 'api/rank'
   import Scroll from 'base/scroll/scroll'
+  import { playListMixin } from 'common/js/mixin'
+
   export default {
+    mixins: [playListMixin],
     data () {
       return {
         topList: []
@@ -30,6 +33,12 @@
       this._getQQAllRankData()
     },
     methods: {
+      handlePlayList(playList) {
+        const bottomValue = playList.length > 0 ? '60px' : ''
+        this.$refs.rankWrap.style.bottom = bottomValue
+        this.$refs.rankScroll.refresh()
+        console.log('rankWraprankWraprankWraprankWrap')
+      },
       _getQQAllRankData(){
         getQQAllRankData().then(res => {
           this.topList = res.data.topList
@@ -51,12 +60,11 @@
   .rank-wrap {
     position fixed
     top 100px
-    bottom  0
+    bottom 0
     left 0
     right 0
-    height 100%
     .rank-scroll {
-      height calc(100% - 100px)
+      height 100%
       overflow hidden
       .rank-ul {
         .ranklist-wrap {
