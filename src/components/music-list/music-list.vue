@@ -20,7 +20,7 @@
 
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs" @selectEvent="selectItem"></song-list>
+        <song-list :songs="songs" @selectEvent="selectItem" :rank="rank"></song-list>
       </div>
     </scroll>
     <div class="loading-wrapper" v-if=" !songs.length">
@@ -55,7 +55,12 @@
       songs: {
         type: Array,
         default: []
+      },
+      rank: {
+        type: Boolean,
+        default: false
       }
+
     },
     components: {
       songList,
@@ -66,6 +71,7 @@
       bgStyle(){
         return `background-image:url(${this.bgImage})`
       }
+
     },
     mounted() {
       this.singerAvatarHeight = this.$refs.singerAvatar.clientHeight

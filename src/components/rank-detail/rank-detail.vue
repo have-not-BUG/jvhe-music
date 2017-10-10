@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <div class="rank-detail-wrapper">
-      <music-list :songs="songs" :title="title" :bg-image='bgImage'></music-list>
+      <music-list :songs="songs" :title="title" :bg-image='bgImage' :rank="rank"></music-list>
     </div>
   </transition>
 </template>
@@ -21,6 +21,12 @@
           title: '',
           pic: ''
         }
+      }
+    },
+    props: {
+      rank: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {
