@@ -4,7 +4,7 @@
       <ul class="rank-ul">
         <li v-for="item in topList " v-if="topList.length" class="ranklist-wrap" @click="chooseRank(item)">
           <div class="rank-icon">
-            <img :src="item.picUrl" :alt="item.topTitle">
+            <img v-lazy="item.picUrl" :alt="item.topTitle">
           </div>
           <div class="rank-detail">
             <p v-for="(detail,index) in item.songList ">
@@ -15,6 +15,10 @@
       </ul>
     </scroll>
     <router-view></router-view>
+    <div class="loading" v-if="!topList.length>0">
+      <loading></loading>
+    </div>
+
   </div>
 </template>
 
@@ -23,6 +27,7 @@
   import Scroll from 'base/scroll/scroll'
   import { playListMixin } from 'common/js/mixin'
   import { mapMutations } from 'vuex'
+  import Loading from 'base/loading/loading'
 
   export default {
     mixins: [playListMixin],
@@ -58,7 +63,7 @@
       })
     },
     components: {
-      Scroll
+      Scroll, Loading
     }
   }
 </script>
@@ -105,6 +110,13 @@
         }
 
       }
+    }
+    .loading {
+      position fixed
+      top 50%
+      left 50%
+      transform translate(-50%, -50%)
+
     }
 
   }
