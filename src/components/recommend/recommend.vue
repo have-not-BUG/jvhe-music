@@ -36,7 +36,7 @@
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import { getQQHotSongList } from 'api/recommend'
+  import { getQQHotSongList ,getQQSliderData } from 'api/recommend'
   import { ERROR_OK } from 'api/config'
   import { playListMixin } from 'common/js/mixin'
   import { mapMutations } from 'vuex'
@@ -70,9 +70,12 @@
 
       },
       showQQSliderData: function () {
-        this.$http.get('/api/getQQSliderData').then(res => {
-          this.recommends = res.data.data.slider;
-          return Promise.resolve(res.data.data.slider)
+        getQQSliderData().then(res => {
+          if (res.code === ERROR_OK) {
+            this.recommends = res.data.slider;
+          }else {
+            console.log('getQQSliderData里的res.code 不为0')
+          }
         }).catch(err => {
           console.log('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
           alert('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
@@ -82,6 +85,8 @@
         getQQHotSongList().then(res => {
           if (res.code === ERROR_OK) {
             this.qqhotSongList = res.data.hotdiss.list
+          }else {
+           console.log('getQQHotSongList里的res.code 不为0')
           }
         }).catch(err => {
           console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
