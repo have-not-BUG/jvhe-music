@@ -4,7 +4,7 @@ import axios from 'axios'
 // 歌词完整地址
 // https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?callback=MusicJsonCallback_lrc&pcachetime=1506582583415&songmid=003tbRjy4V1wRt&g_tk=1733932805&jsonpCallback=MusicJsonCallback_lrc&loginUin=1036583615&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0
 export function getQQLyric (mid) {
-  const url = '/api/getQQLyric'
+  const url = '/api/getQQLyricProxy'
   const paramsvalue = Object.assign({}, commonParams, {
     pcachetime: Date.now(),
     songmid: mid,

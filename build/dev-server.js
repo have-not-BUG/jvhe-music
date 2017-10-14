@@ -25,7 +25,7 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 
 var apiRoutes = express.Router()
-apiRoutes.get('/getQQSliderData', function (req, res) {
+apiRoutes.get('/getQQSliderDataProxy', function (req, res) {
   var url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
 
   axios.get(url, {
@@ -39,7 +39,7 @@ apiRoutes.get('/getQQSliderData', function (req, res) {
   })
 
 })
-apiRoutes.get('/getQQLyric', function (req, res) {
+apiRoutes.get('/getQQLyricProxy', function (req, res) {
   var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
 
   axios.get(url, {
@@ -65,7 +65,7 @@ apiRoutes.get('/getQQLyric', function (req, res) {
   })
 
 })
-apiRoutes.get('/getQQHotSongListDetail', function (req, res) {
+apiRoutes.get('/getQQRecommendSongListDetailProxy', function (req, res) {
   const url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
   axios.get(url, {
     headers: {
@@ -83,6 +83,24 @@ apiRoutes.get('/getQQHotSongListDetail', function (req, res) {
   })
 
 })
+// apiRoutes.get('/getQQSearch', function (req, res) {
+//   const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+//   axios.get(url, {
+//     headers: {
+//       origin:'https://m.y.qq.com',
+//       referer:'https://m.y.qq.com/',
+//       host: 'c.y.qq.com'
+//     },
+//     params: req.query
+//   }).then((response) => {
+//     // res.json(response.data)
+//     res.json(response.data)
+//
+//   }).catch(err => {
+//     console.log(' 自建获取QQ音乐歌手及歌曲检索的代理出错!  ', err)
+//   })
+//
+// })
 
 app.use('/api', apiRoutes)
 

@@ -3,7 +3,7 @@ import { commonParams, options } from './config'
 import axios from 'axios'
 
 export function getQQSliderData () {
-  const url = '/api/getQQSliderData'
+  const url = '/api/getQQSliderDataProxy'
   const data = Object.assign({}, commonParams, {
     g_tk: 135662383,
     uin: 0,
@@ -34,10 +34,10 @@ export function getQQHotSongList () {
   return jsonp(url, data, options)
 }
 
-export function getQQHotSongListDetail (disstid) {
+export function getQQRecommendSongListDetail (disstid) {
   // 热门歌单详情
   // https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?g_tk=1733932805&uin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=h5&needNewCode=1&new_format=1&pic=500&disstid=2683023981&type=1&json=1&utf8=1&onlysong=0&nosign=1&_=1506989372829
-  const url = '/api/getQQHotSongListDetail'
+  const url = '/api/getQQRecommendSongListDetailProxy'
   const data = Object.assign({}, commonParams, {
     g_tk: 1733932805,
     uin: 0,

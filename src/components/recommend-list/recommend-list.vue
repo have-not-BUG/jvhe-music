@@ -9,7 +9,7 @@
 <script>
   import musicList from 'components/music-list/music-list'
   import { mapGetters } from 'vuex'
-  import { getQQHotSongListDetail } from 'api/recommend'
+  import { getQQRecommendSongListDetail } from 'api/recommend'
   import { ERROR_OK }  from 'api/config'
   import { createSong }  from 'common/js/song'
 
@@ -34,15 +34,15 @@
       musicList
     },
     created(){
-      this._getQQHotSongListDetail()
+      this._getQQRecommendSongListDetail()
     },
     methods: {
-      _getQQHotSongListDetail(){
+      _getQQRecommendSongListDetail(){
         if (!this.disc.dissid) {
           this.$router.push('/recommend')
           return
         }
-        getQQHotSongListDetail(this.disc.dissid).then(res => {
+        getQQRecommendSongListDetail(this.disc.dissid).then(res => {
           if (ERROR_OK === res.code) {
             this.songs = this.optimizeQQHotSongList(res.cdlist[0].songlist)
             console.log(res.cdlist[0])
@@ -50,7 +50,7 @@
             console.log('获取热门歌单详情数据失败：res.code不为0')
           }
         }).catch(err => {
-          console.log('获取热门歌单详情数据失败:getQQHotSongListDetail', err)
+          console.log('获取热门歌单详情数据失败:getQQRecommendSongListDetail', err)
         })
       },
       optimizeQQHotSongList(list){
