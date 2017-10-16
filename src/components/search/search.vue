@@ -3,7 +3,7 @@
     <div class="search-box-wrap">
       <search-box ref="searchBox" @inputWord="showInputWord"></search-box>
     </div>
-    <div class="search-hotkeys-wrap">
+    <div class="search-hotkeys-wrap" v-show="!newInputWord">
       <h1>热门搜索</h1>
       <ul class="search-hotkeys-ul">
         <li v-for="hotkey in hotkeys" @click="changeWord(hotkey.k)"> {{hotkey.k}} </li>
@@ -21,6 +21,7 @@
   import { getQQSearchHotKey } from 'api/search'
   import { ERROR_OK } from 'api/config'
   import Suggest from 'components/suggest/suggest'
+
 
   export default {
     data() {
@@ -81,6 +82,9 @@
           color $color-text-d
         }
       }
+
+    }
+    .suggest-wrap {
 
     }
   }

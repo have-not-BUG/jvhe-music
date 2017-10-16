@@ -55,6 +55,9 @@ function filterSinger (singer) {
   if (!singer) {
     return ''
   }
+  if (typeof singer === 'string') {
+    return singer
+  }
 
   singer.forEach((item) => {
     meger_singer.push(item.name)
