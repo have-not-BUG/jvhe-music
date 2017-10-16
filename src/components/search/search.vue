@@ -67,6 +67,8 @@
       margin 20px 0
     }
     .search-hotkeys-wrap {
+      z-index 2
+      position relative
       h1 {
         margin-bottom 20px
         color $color-text-l

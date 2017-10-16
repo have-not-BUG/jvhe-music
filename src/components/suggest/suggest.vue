@@ -2,13 +2,17 @@
   <scroll class="suggest"
           :data="songOrSingerArry"
           :pullup="pullup"
-          @scrollToEnd="MoreSearch">
+          @scrollToEnd="MoreSearch"
+          ref="scroll"
+  >
     <ul class="suggest-ul">
       <li v-for=" item in songOrSingerArry">
         <i :class="getIcon(item)" class="icon"></i> <span class="singer-song" v-html="getSingerOrSong(item)"></span>
       </li>
+      <loading :title="title" class="loading-wrap" v-show="hasMore && newInputWord"></loading>
     </ul>
-    <p v-show="newInputWord &&!songOrSingerArry.length">抱歉暂无搜索结果...</p>
+
+    <p v-show="newInputWord &&!songOrSingerArry.length" class="no-result">抱歉！暂无搜索结果...</p>
   </scroll>
 </template>
 
@@ -17,6 +21,8 @@
   import { getQQSearchAll } from 'api/search'
   import { createSong } from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
+  const perPageNum = 20
   export default {
     computed: {},
     props: {
@@ -29,11 +35,13 @@
       return {
         pageNum: 1,
         songOrSingerArry: [],
-        pullup: true
+        pullup: true,
+        hasMore: true,
+        title: ""
       }
     },
     components: {
-      Scroll
+      Scroll, Loading
     },
     watch: {
       newInputWord(){
@@ -42,11 +50,15 @@
     },
     methods: {
       _getQQSearchAll(){
-        getQQSearchAll(this.newInputWord, true, 20, this.pageNum).then(res => {
+        this.pageNum = 1
+        this.hasMore = true
+        this.$refs.scroll.scrollTo(0, 0)
+        getQQSearchAll(this.newInputWord, true, perPageNum, this.pageNum).then(res => {
           if (res.code === ERROR_OK) {
             this.songOrSingerArry = this.concatSongAndSingerData(res.data)
             console.log('res.data', res.data)
             console.log('this.songOrSingerArry', this.songOrSingerArry)
+            this.checkMore(res.data)
           } else {
             console.log('res.code不为0')
           }
@@ -112,7 +124,30 @@
         }
       },
       MoreSearch() {
+        if (!this.hasMore) {
+          return
+        }
+        this.hasMore = true
+        this.pageNum++
+        getQQSearchAll(this.newInputWord, true, perPageNum, this.pageNum).then(res => {
+          if (res.code === ERROR_OK) {
+            this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(res.data.song.list))
+            console.log('res.data', res.data)
+            console.log('this.songOrSingerArry', this.songOrSingerArry)
+            this.checkMore(res.data)
+          } else {
+            console.log('res.code不为0')
+          }
+        }).catch(err => {
+          console.log('获取QQ歌手及歌曲检索数据出错了', err)
+        })
         console.log("要加载更多")
+      },
+      checkMore(data){
+        const song = data.song
+        if (!song.list.length || song.curnum + song.curpage * perPageNum >= song.totalnum) {
+          this.hasMore = false
+        }
       }
     }
 
@@ -127,22 +162,32 @@
     position fixed
     top 160px
     bottom 0
+    left 20px
+    right 20px
     overflow hidden
     .suggest-ul {
       font-size $font-size-medium
       color $color-text-d
+      no-wrap()
       li {
         padding-bottom 20px
         no-wrap()
         .icon {
-
         }
         .singer-song {
-
+          no-wrap()
         }
 
       }
+      .loading-wrap {
 
+      }
+
+    }
+    .no-result {
+      padding 10px
+      margin 0 auto
+      color $color-text-d
     }
   }
 </style>
