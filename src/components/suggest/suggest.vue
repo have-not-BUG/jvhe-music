@@ -1,5 +1,8 @@
 <template>
-  <scroll class="suggest" :data="songOrSingerArry">
+  <scroll class="suggest"
+          :data="songOrSingerArry"
+          :pullup="pullup"
+          @scrollToEnd="MoreSearch">
     <ul class="suggest-ul">
       <li v-for=" item in songOrSingerArry">
         <i :class="getIcon(item)" class="icon"></i> <span class="singer-song" v-html="getSingerOrSong(item)"></span>
@@ -26,6 +29,7 @@
       return {
         pageNum: 1,
         songOrSingerArry: [],
+        pullup: true
       }
     },
     components: {
@@ -99,15 +103,16 @@
         } else {
           return 'icon-music'
         }
-
       },
-      getSingerOrSong(item){
+      getSingerOrSong(item) {
         if (item.type && item.type === 'singer') {
           return item.singerName
         } else {
           return `${item.name}--${item.singer}`
         }
-
+      },
+      MoreSearch() {
+        console.log("要加载更多")
       }
     }
 
