@@ -8,6 +8,8 @@
 </template>
 
 <script>
+  import { debounce } from 'common/js/util'
+
   export default {
     props: {
       placeholder: {
@@ -15,25 +17,25 @@
         default: '搜索歌曲、歌手'
       }
     },
-    data() {
+    data () {
       return {
         inputWord: ''
       }
     },
     methods: {
-      clearInput() {
+      clearInput () {
         if (this.inputWord) {
           this.inputWord = ''
         }
       },
-      setInput(word) {
+      setInput (word) {
         this.inputWord = word
       }
     },
-    created() {
-      this.$watch('inputWord', (newInputWord) => {
+    created () {
+      this.$watch('inputWord', debounce((newInputWord) => {
         this.$emit('inputWord', newInputWord)
-      })
+      }, 200))
     }
 
   }

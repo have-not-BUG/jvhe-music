@@ -21,7 +21,6 @@
   import { ERROR_OK } from 'api/config'
   import Suggest from 'components/suggest/suggest'
 
-
   export default {
     data() {
       return {

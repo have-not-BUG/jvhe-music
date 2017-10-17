@@ -11,7 +11,9 @@
       </li>
       <loading :title="title" class="loading-wrap" v-show="hasMore && newInputWord"></loading>
     </ul>
-    <p v-show="newInputWord &&!songOrSingerArry.length" class="no-result">抱歉！暂无搜索结果...</p>
+    <div class="no-result-wrap" v-show="newInputWord &&!songOrSingerArry.length">
+      <no-result title="抱歉！暂无搜索结果，您可更换搜索词重试。"></no-result>
+    </div>
     <router-view></router-view>
   </scroll>
 </template>
@@ -22,8 +24,10 @@
   import { createSong } from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import  Singer from 'common/js/singer'
+  import noResult from 'base/no-result/no-result'
+  import Singer from 'common/js/singer'
   import { mapMutations } from 'vuex'
+
   const perPageNum = 20
   export default {
     computed: {},
@@ -33,25 +37,25 @@
         default: ''
       }
     },
-    data(){
+    data () {
       return {
         pageNum: 1,
         songOrSingerArry: [],
         pullup: true,
         hasMore: true,
-        title: ""
+        title: ''
       }
     },
     components: {
-      Scroll, Loading
+      Scroll, Loading, noResult
     },
     watch: {
-      newInputWord(){
+      newInputWord () {
         this._getQQSearchAll()
       }
     },
     methods: {
-      _getQQSearchAll(){
+      _getQQSearchAll () {
         this.pageNum = 1
         this.hasMore = true
         this.$refs.scroll.scrollTo(0, 0)
@@ -68,7 +72,7 @@
           console.log('获取QQ歌手及歌曲检索数据出错了', err)
         })
       },
-      concatSongAndSingerData(data){
+      concatSongAndSingerData (data) {
         let ret = []
         if (data.zhida.zhida_singer && data.zhida.zhida_singer.singerMID) {
           ret.push({...data.zhida.zhida_singer, ...{type: 'singer'}})
@@ -79,7 +83,7 @@
         }
         return ret
       },
-      optimizeSongData(songData){
+      optimizeSongData (songData) {
 
         let ret = []
         songData.forEach(item => {
@@ -111,14 +115,14 @@
         })
         return ret
       },
-      getIcon(item) {
+      getIcon (item) {
         if (item.type && item.type === 'singer') {
           return 'icon-mine'
         } else {
           return 'icon-music'
         }
       },
-      selectItem(item){
+      selectItem (item) {
         if (item.type && item.type === 'singer') {
 
           const singer = new Singer({
@@ -129,16 +133,18 @@
             path: `/search/${singer.mid}`
           })
           this.setSinger(singer)
+        } else {
+
         }
       },
-      getSingerOrSong(item) {
+      getSingerOrSong (item) {
         if (item.type && item.type === 'singer') {
           return item.singerName
         } else {
           return `${item.name}--${item.singer}`
         }
       },
-      MoreSearch() {
+      MoreSearch () {
         if (!this.hasMore) {
           return
         }
@@ -156,9 +162,9 @@
         }).catch(err => {
           console.log('获取QQ歌手及歌曲检索数据出错了', err)
         })
-        console.log("要加载更多")
+        console.log('要加载更多')
       },
-      checkMore(data){
+      checkMore (data) {
         const song = data.song
         if (!song.list.length || song.curnum + song.curpage * perPageNum >= song.totalnum) {
           this.hasMore = false
@@ -202,10 +208,9 @@
       }
 
     }
-    .no-result {
+    .no-result-wrap {
       padding 10px
       margin 0 auto
-      color $color-text-d
     }
   }
 </style>
