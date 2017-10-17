@@ -428,6 +428,8 @@
   @import "~common/stylus/mixin"
   .player {
     text-align center
+    z-index: 9
+    position relative
     .normal-player-wrap {
       &.normal-player-enter-active, &.normal-player-leave-active {
         transition all 0.4s

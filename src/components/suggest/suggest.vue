@@ -6,13 +6,13 @@
           ref="scroll"
   >
     <ul class="suggest-ul">
-      <li v-for=" item in songOrSingerArry">
+      <li v-for=" item in songOrSingerArry" @click="selectItem(item)">
         <i :class="getIcon(item)" class="icon"></i> <span class="singer-song" v-html="getSingerOrSong(item)"></span>
       </li>
       <loading :title="title" class="loading-wrap" v-show="hasMore && newInputWord"></loading>
     </ul>
-
     <p v-show="newInputWord &&!songOrSingerArry.length" class="no-result">抱歉！暂无搜索结果...</p>
+    <router-view></router-view>
   </scroll>
 </template>
 
@@ -22,6 +22,8 @@
   import { createSong } from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
+  import  Singer from 'common/js/singer'
+  import { mapMutations } from 'vuex'
   const perPageNum = 20
   export default {
     computed: {},
@@ -116,6 +118,19 @@
           return 'icon-music'
         }
       },
+      selectItem(item){
+        if (item.type && item.type === 'singer') {
+
+          const singer = new Singer({
+            mid: item.singerMID,
+            name: item.singerName
+          })
+          this.$router.push({
+            path: `/search/${singer.mid}`
+          })
+          this.setSinger(singer)
+        }
+      },
       getSingerOrSong(item) {
         if (item.type && item.type === 'singer') {
           return item.singerName
@@ -148,7 +163,10 @@
         if (!song.list.length || song.curnum + song.curpage * perPageNum >= song.totalnum) {
           this.hasMore = false
         }
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     }
 
   }

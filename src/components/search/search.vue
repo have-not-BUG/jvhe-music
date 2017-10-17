@@ -12,7 +12,6 @@
     <div class="suggest-wrap">
       <suggest :newInputWord="newInputWord"></suggest>
     </div>
-
   </div>
 </template>
 
