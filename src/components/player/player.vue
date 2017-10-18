@@ -4,8 +4,9 @@
       <div class="normal-player-wrap" v-show="fullScreen">
         <div class="player-bg"><img :src="currentSong.image" :alt="currentSong.name"></div>
         <div class="player-top">
-          <h1 class="song-name"><i class="icon-back" @click="showMiniPlayer"></i>{{currentSong.name}}</h1>
-          <h1 class="singer">{{currentSong.singer}}</h1>
+          <i class="icon-back" @click="showMiniPlayer"></i>
+          <h1 class="song-name" v-html="currentSong.name"></h1>
+          <h1 class="singer" v-html="currentSong.singer"></h1>
         </div>
         <div class="player-middle"
              @touchstart="middleTouchStart"
@@ -93,39 +94,40 @@
   import QQLyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import { prefixStlye } from 'common/js/dom'
+
   let transform = prefixStlye('transform')
   let transitionDuration = prefixStlye('transitionDuration')
   export default {
     name: 'player',
     computed: {
-      normalPlayStateClass(){
+      normalPlayStateClass () {
         return this.playing ? 'icon-pause' : 'icon-play'
       },
-      miniPlayStateClass(){
+      miniPlayStateClass () {
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
-      normalCdStateClass(){
+      normalCdStateClass () {
         return this.playing ? 'play' : ''
       },
-      miniCdStateClass(){
+      miniCdStateClass () {
         return this.playing ? 'play' : ''
       },
-      disableClass(){
+      disableClass () {
         return this.canplay ? '' : 'disable'
       },
-      runningTime(){
+      runningTime () {
         return this.changingAudioProgress ? this.showMinuteAndSecond(this.changeAudioProgressTime) : this.showMinuteAndSecond(this.currentTime)
       },
-      totalTime(){
+      totalTime () {
         return this.showMinuteAndSecond(this.currentSong.duration)
       },
-      percent(){
+      percent () {
         return this.currentTime / this.currentSong.duration
       },
-      playModeIco(){
+      playModeIco () {
         return this.mode === playMode.order ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
       },
-      showCurrentPage(){
+      showCurrentPage () {
         return this.currentPage === 'cd' ? 'cd' : 'lyric'
       },
       ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong', 'currentIndex', 'mode', 'orderPlayList'])
@@ -145,20 +147,20 @@
       }
     },
     methods: {
-      showMiniPlayer() {
+      showMiniPlayer () {
         this.setFullScreen(false)
       },
-      showFullScreen() {
+      showFullScreen () {
         this.setFullScreen(true)
       },
-      changePlayState(){
+      changePlayState () {
         this.setPlaying(!this.playing)
         if (this.currentLyric) {
           this.currentLyric.togglePlay()
         }
 
       },
-      playPrevSong() {
+      playPrevSong () {
         if (!this.canplay) {
           return
         }
@@ -178,7 +180,7 @@
         this.canplay = false
 
       },
-      playNextSong(){
+      playNextSong () {
         if (!this.canplay) {
           return
         }
@@ -195,29 +197,29 @@
         }
         this.canplay = false
       },
-      changeCanplay(){
+      changeCanplay () {
         this.canplay = true
       },
-      playError() {
+      playError () {
         this.canplay = true
       },
-      audioUpDateTime(e) {
+      audioUpDateTime (e) {
         this.currentTime = e.target.currentTime
       },
-      showMinuteAndSecond(time){
-        const minute = time / 60 | 0;
-        const second = this.addDigits(time % 60 | 0);
+      showMinuteAndSecond (time) {
+        const minute = time / 60 | 0
+        const second = this.addDigits(time % 60 | 0)
         return `${minute}:${second}`
       },
-      addDigits(num, n = 2) {
-        let numLength = num.toString().length;
+      addDigits (num, n = 2) {
+        let numLength = num.toString().length
         while (numLength < n) {
           num = '0' + num
           numLength++
         }
         return num
       },
-      getCurrentDeg(runningtime, animationLength){
+      getCurrentDeg (runningtime, animationLength) {
 //        let currentDeg = ((360 / animationLength) * runningtime) % 360
 //        let cosVal = Math.cos(currentDeg * Math.PI / 180)
 //        let sinVal = Math.sin(currentDeg * Math.PI / 180)
@@ -225,7 +227,7 @@
 //
         return ((360 / animationLength) * runningtime) % 360
       },
-      ontouchMoveTo(touchPercent){
+      ontouchMoveTo (touchPercent) {
         let currentTimeByPercent = this.currentSong.duration * touchPercent
         this.changingAudioProgress = false
         this.$refs.audio.currentTime = currentTimeByPercent
@@ -236,7 +238,7 @@
           this.changePlayState()
         }
       },
-      ontouchMoving(touchPercent){
+      ontouchMoving (touchPercent) {
         this.changingAudioProgress = true
         this.changeAudioProgressTime = this.currentSong.duration * touchPercent
         if (this.currentLyric) {
@@ -244,7 +246,7 @@
         }
 
       },
-      changePlayMode() {
+      changePlayMode () {
         const mode = (this.mode + 1) % 3
         this.setPlayMode(mode)
         let list = null
@@ -256,13 +258,13 @@
         this.restCurrentIndex(list)
         this.setPlayList(list)
       },
-      restCurrentIndex(list){
+      restCurrentIndex (list) {
         let index = list.findIndex((item) => {
           return item.id === this.currentSong.id
         })
         this.setCurrentIndex(index)
       },
-      runLoopMode(){
+      runLoopMode () {
         this.$refs.audio.currentTime = 0
         if (this.currentLyric) {
           this.currentLyric.seek(0)
@@ -270,14 +272,14 @@
         this.$refs.audio.play()
 
       },
-      audioEnded(){
+      audioEnded () {
         if (this.mode === playMode.loop) {
           this.runLoopMode()
         } else {
           this.playNextSong()
         }
       },
-      getQQLyric() {
+      getQQLyric () {
         this.currentSong.getQQLyricInSongClass().then(res => {
           this.currentLyric = new QQLyric(res, this.lyricHandle)
           if (this.playing) {
@@ -291,7 +293,7 @@
           console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
         })
       },
-      lyricHandle({lineNum, txt}){
+      lyricHandle ({lineNum, txt}) {
         this.currentLyricLineNum = lineNum
         let showCurrentEle = this.$refs.lyricLine[lineNum - 5]
         if (lineNum > 5) {
@@ -301,14 +303,14 @@
         }
         this.playingLyric = txt
       },
-      middleTouchStart(e){
+      middleTouchStart (e) {
         this.touch.init = true
         this.touch.startPageX = e.touches[0].pageX
         this.touch.startPageY = e.touches[0].pageY
         this.touch.moved = false
 
       },
-      middleTouchMove(e){
+      middleTouchMove (e) {
         if (!this.touch.init) {
           return
         }
@@ -326,7 +328,7 @@
           this.$refs.playerMiddleLeft.style.opacity = 1 - this.touch.percent
         }
       },
-      middleTouchEnd(){
+      middleTouchEnd () {
         if (!this.touch.moved) {
           return
         }
@@ -366,40 +368,40 @@
       })
     },
     watch: {
-      currentSong(newSong, oldSong) {
+      currentSong (newSong, oldSong) {
         if (newSong.id === oldSong.id) {
           return
         }
         this.$nextTick(() => {
-          this.setPlaying(false);
+          this.setPlaying(false)
           setTimeout(() => {
             if (this.currentLyric) {
               this.currentLyric.stop()
             }
-            this.$refs.audio.play();
-            this.setPlaying(true);
+            this.$refs.audio.play()
+            this.setPlaying(true)
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
             this.getQQLyric()
           }, 500)
         })
       },
-      playing(newPlaying) {
-        let audio = this.$refs.audio;
+      playing (newPlaying) {
+        let audio = this.$refs.audio
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
           if (!newPlaying) {
-            let bigCdPauseDeg = this.getCurrentDeg(this.currentTime, 20);
-            let smallCdPauseDeg = this.getCurrentDeg(this.currentTime, 10);
+            let bigCdPauseDeg = this.getCurrentDeg(this.currentTime, 20)
+            let smallCdPauseDeg = this.getCurrentDeg(this.currentTime, 10)
             this.$refs.cdWrap.style.transform = `rotate(${bigCdPauseDeg}deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(${smallCdPauseDeg}deg)`
           }
         })
       },
-      fullScreen(newfullScreen) {
-        let pausedTime = this.currentTime;
+      fullScreen (newfullScreen) {
+        let pausedTime = this.currentTime
         this.bigCdMiniPausedDeg = this.getCurrentDeg(pausedTime, 20)
-        let smallCdShowDeg = this.getCurrentDeg(pausedTime, 10);
+        let smallCdShowDeg = this.getCurrentDeg(pausedTime, 10)
         if (this.playing && !newfullScreen) {
           this.$refs.miniCdWrap.style.transform = `rotate(${smallCdShowDeg}deg)`
 
@@ -412,7 +414,7 @@
       }
 
     },
-    created(){
+    created () {
       this.touch = {}
     },
     components: {
@@ -428,7 +430,7 @@
   @import "~common/stylus/mixin"
   .player {
     text-align center
-    z-index: 9
+    z-index: 91
     position relative
     .normal-player-wrap {
       &.normal-player-enter-active, &.normal-player-leave-active {
@@ -475,20 +477,21 @@
       .player-top {
         color $color-text
         position relative
+        .icon-back {
+          position absolute
+          top 40%
+          transform rotate(-90deg)
+          left 20px
+          font-size $font-size-large-x
+          color $color-theme
+          z-index 1
+        }
         .song-name {
           font-size $font-size-large
           line-height 40px
           height 40px
           position relative
           no-wrap()
-          .icon-back {
-            position absolute
-            top 40%
-            transform rotate(-90deg)
-            left 20px
-            font-size $font-size-large-x
-            color $color-theme
-          }
           padding 0 50px
         }
         .singer {

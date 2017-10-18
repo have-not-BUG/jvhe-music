@@ -44,7 +44,7 @@
           click: this.click
         })
         if (this.listenScroll) {
-          let me = this;
+          let me = this
           this.scroll.on('scroll', (pos) => {
             me.$emit('scroll', pos)
           })
@@ -80,7 +80,7 @@
       }, 20)
     },
     watch: {
-      data() {
+      data () {
         setTimeout(() => {
           this.refresh()
         }, this.refreshDelay)

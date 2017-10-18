@@ -12,6 +12,7 @@
     <div class="suggest-wrap">
       <suggest :newInputWord="newInputWord"></suggest>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 

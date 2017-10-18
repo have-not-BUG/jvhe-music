@@ -66,9 +66,7 @@
           }
 
         })
-
         return optimized_data
-
       }
     },
     components: {

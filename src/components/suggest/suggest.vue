@@ -14,7 +14,7 @@
     <div class="no-result-wrap" v-show="newInputWord &&!songOrSingerArry.length">
       <no-result title="抱歉！暂无搜索结果，您可更换搜索词重试。"></no-result>
     </div>
-    <router-view></router-view>
+
   </scroll>
 </template>
 
@@ -26,7 +26,7 @@
   import Loading from 'base/loading/loading'
   import noResult from 'base/no-result/no-result'
   import Singer from 'common/js/singer'
-  import { mapMutations } from 'vuex'
+  import { mapMutations, mapActions } from 'vuex'
 
   const perPageNum = 20
   export default {
@@ -134,7 +134,7 @@
           })
           this.setSinger(singer)
         } else {
-
+          this.insertSong(item)
         }
       },
       getSingerOrSong (item) {
@@ -172,7 +172,10 @@
       },
       ...mapMutations({
         setSinger: 'SET_SINGER'
-      })
+      }),
+      ...mapActions([
+        'insertSong'
+      ])
     }
 
   }
