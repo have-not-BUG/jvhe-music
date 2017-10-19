@@ -6,6 +6,7 @@
           ref="scroll"
           :beforeScroll="beforeScroll"
           @beforeScroll="pushBlur"
+          v-show="newInputWord"
   >
     <ul class="suggest-ul">
       <li v-for=" item in songOrSingerArry" @click="selectItem(item)">
@@ -13,7 +14,7 @@
       </li>
       <loading :title="title" class="loading-wrap" v-show="hasMore && newInputWord"></loading>
     </ul>
-    <div class="no-result-wrap" v-show="newInputWord &&!songOrSingerArry.length">
+    <div class="no-result-wrap" v-show="newInputWord &&!songOrSingerArry.length && !hasMore">
       <no-result title="抱歉！暂无搜索结果，您可更换搜索词重试。"></no-result>
     </div>
 
@@ -139,6 +140,7 @@
         } else {
           this.insertSong(item)
         }
+        this.$emit('chooseIt')
       },
       getSingerOrSong (item) {
         if (item.type && item.type === 'singer') {

@@ -10,7 +10,14 @@
       </ul>
     </div>
     <div class="suggest-wrap">
-      <suggest :newInputWord="newInputWord" @pushBlur="getBlur"></suggest>
+      <suggest :newInputWord="newInputWord"
+               @pushBlur="getBlur"
+               @chooseIt="saveHistory">
+      </suggest>
+    </div>
+    <div class="search-history-wrap" v-show="!newInputWord">
+      <h1>搜索历史</h1>
+      <history-list></history-list>
     </div>
     <router-view></router-view>
   </div>
@@ -21,6 +28,8 @@
   import { getQQSearchHotKey } from 'api/search'
   import { ERROR_OK } from 'api/config'
   import Suggest from 'components/suggest/suggest'
+  import HistoryList from 'base/history-list/history-list'
+  import { mapActions } from 'vuex'
 
   export default {
     data () {
@@ -30,7 +39,7 @@
       }
     },
     components: {
-      searchBox, Suggest
+      searchBox, Suggest, HistoryList
     },
     created () {
       this._getQQSearchHotKey()
@@ -55,7 +64,11 @@
       },
       getBlur () {
         this.$refs.searchBox.blur()
-      }
+      },
+      saveHistory () {
+        this.saveSearchHistory(this.newInputWord)
+      },
+      ...mapActions(['saveSearchHistory'])
     }
   }
 </script>
@@ -90,6 +103,13 @@
     }
     .suggest-wrap {
 
+    }
+    .search-history-wrap {
+      z-index 2
+      h1 {
+        margin 20px 0
+        color $color-text-l
+      }
     }
   }
 

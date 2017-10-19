@@ -1,4 +1,5 @@
 import { playMode } from 'common/js/config'
+
 const state = {
   singer: {},
   playing: false,
@@ -8,7 +9,8 @@ const state = {
   mode: playMode.order,
   currentIndex: -1,
   disc: {},
-  rankList: {}
+  rankList: {},
+  searchHistory: []
 }
 export default state
 
