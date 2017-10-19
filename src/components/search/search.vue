@@ -10,7 +10,7 @@
       </ul>
     </div>
     <div class="suggest-wrap">
-      <suggest :newInputWord="newInputWord"></suggest>
+      <suggest :newInputWord="newInputWord" @pushBlur="getBlur"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -23,7 +23,7 @@
   import Suggest from 'components/suggest/suggest'
 
   export default {
-    data() {
+    data () {
       return {
         hotkeys: [],
         newInputWord: ''
@@ -32,11 +32,11 @@
     components: {
       searchBox, Suggest
     },
-    created(){
+    created () {
       this._getQQSearchHotKey()
     },
     methods: {
-      _getQQSearchHotKey() {
+      _getQQSearchHotKey () {
         getQQSearchHotKey().then(res => {
           if (res.code === ERROR_OK) {
             this.hotkeys = res.data.hotkey.slice(0, 10)
@@ -47,11 +47,14 @@
           console.log('QQ热门搜索关键词数据获取失败', err)
         })
       },
-      changeWord(key){
+      changeWord (key) {
         this.$refs.searchBox.setInput(key)
       },
-      showInputWord(newInputWord){
+      showInputWord (newInputWord) {
         this.newInputWord = newInputWord
+      },
+      getBlur () {
+        this.$refs.searchBox.blur()
       }
     }
   }

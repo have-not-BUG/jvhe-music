@@ -1,7 +1,9 @@
 <template>
   <div class="search-box">
     <i class="icon-search"></i>
-    <input class="search-input" :placeholder="placeholder" v-model="inputWord">
+    <input class="search-input"
+           v-model="inputWord"
+           ref="searchInput" :placeholder="placeholder">
     <i class="icon-dismiss" @click="clearInput" v-show="inputWord"></i>
   </div>
 
@@ -14,7 +16,7 @@
     props: {
       placeholder: {
         type: String,
-        default: '搜索歌曲、歌手'
+        default: '搜索歌手、歌曲'
       }
     },
     data () {
@@ -30,6 +32,9 @@
       },
       setInput (word) {
         this.inputWord = word
+      },
+      blur () {
+        this.$refs.searchInput.blur()
       }
     },
     created () {

@@ -4,6 +4,8 @@
           :pullup="pullup"
           @scrollToEnd="MoreSearch"
           ref="scroll"
+          :beforeScroll="beforeScroll"
+          @beforeScroll="pushBlur"
   >
     <ul class="suggest-ul">
       <li v-for=" item in songOrSingerArry" @click="selectItem(item)">
@@ -43,7 +45,8 @@
         songOrSingerArry: [],
         pullup: true,
         hasMore: true,
-        title: ''
+        title: '',
+        beforeScroll: true
       }
     },
     components: {
@@ -169,6 +172,9 @@
         if (!song.list.length || song.curnum + song.curpage * perPageNum >= song.totalnum) {
           this.hasMore = false
         }
+      },
+      pushBlur () {
+        this.$emit('pushBlur')
       },
       ...mapMutations({
         setSinger: 'SET_SINGER'
