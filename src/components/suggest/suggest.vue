@@ -178,6 +178,12 @@
       pushBlur () {
         this.$emit('pushBlur')
       },
+      refresh () {
+        this.$refs.scroll.refresh()
+      },
+      changeBottom (val) {
+        this.$refs.scroll.$el.style.bottom = val
+      },
       ...mapMutations({
         setSinger: 'SET_SINGER'
       }),

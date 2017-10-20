@@ -3,24 +3,30 @@
     <div class="search-box-wrap">
       <search-box ref="searchBox" @inputWord="showInputWord"></search-box>
     </div>
-    <div class="search-hotkeys-wrap" v-show="!newInputWord">
-      <h1>热门搜索</h1>
-      <ul class="search-hotkeys-ul">
-        <li v-for="hotkey in hotkeys" @click="changeWord(hotkey.k)"> {{hotkey.k}} </li>
-      </ul>
-    </div>
-    <div class="suggest-wrap">
+    <div class="suggest-wrap" v-show="newInputWord">
       <suggest :newInputWord="newInputWord"
                @pushBlur="getBlur"
-               @chooseIt="saveHistory">
+               @chooseIt="saveHistory" ref="suggest">
       </suggest>
     </div>
-    <div class="search-history-wrap" v-show="!newInputWord && searchHistory &&searchHistory.length">
-      <div class="search-history-title">
-        <h1>搜索历史</h1> <span @click="clearAllHistory"> <i class="icon-clear"></i> </span>
+    <scroll class="hotkeys-history-scroll"
+            :data="hotkeysAndsearchHistory"
+            v-show="!newInputWord" ref="hotkeysHistoryScroll">
+      <div class="hotkeys-history-wrap">
+        <div class="search-hotkeys-wrap">
+          <h1>热门搜索</h1>
+          <ul class="search-hotkeys-ul">
+            <li v-for="hotkey in hotkeys" @click="changeWord(hotkey.k)"> {{hotkey.k}} </li>
+          </ul>
+        </div>
+        <div class="search-history-wrap" v-show="!newInputWord && searchHistory &&searchHistory.length">
+          <div class="search-history-title">
+            <h1>搜索历史</h1> <span @click="clearAllHistory"> <i class="icon-clear"></i> </span>
+          </div>
+          <history-list :searches="searchHistory" @chooseIt="deleteOne" @clickSavedWord="changeWord"></history-list>
+        </div>
       </div>
-      <history-list :searches="searchHistory" @chooseIt="deleteOne" @clickSavedWord="changeWord"></history-list>
-    </div>
+    </scroll>
     <router-view></router-view>
   </div>
 </template>
@@ -31,9 +37,12 @@
   import { ERROR_OK } from 'api/config'
   import Suggest from 'components/suggest/suggest'
   import HistoryList from 'base/history-list/history-list'
+  import Scroll from 'base/scroll/scroll'
+  import { playListMixin } from 'common/js/mixin'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
+    mixins: [playListMixin],
     data () {
       return {
         hotkeys: [],
@@ -41,12 +50,20 @@
       }
     },
     components: {
-      searchBox, Suggest, HistoryList
+      searchBox, Suggest, HistoryList, Scroll
     },
     created () {
       this._getQQSearchHotKey()
     },
     methods: {
+      handlePlayList (playlist) {
+        let bottom = playlist.length > 0 ? '60px' : 0
+        this.$refs.hotkeysHistoryScroll.$el.style.bottom = bottom
+        this.$refs.hotkeysHistoryScroll.refresh()
+        this.$refs.suggest.changeBottom(bottom)
+        this.$refs.suggest.refresh()
+
+      },
       _getQQSearchHotKey () {
         getQQSearchHotKey().then(res => {
           if (res.code === ERROR_OK) {
@@ -84,7 +101,19 @@
 
     },
     computed: {
+      hotkeysAndsearchHistory () {
+        return this.hotkeys.concat(this.searchHistory)
+      },
       ...mapGetters(['searchHistory'])
+    },
+    watch: {
+      newInputWord (newWord) {
+        if (!newWord) {
+          setTimeout(() => {
+            this.$refs.hotkeysHistoryScroll.refresh()
+          }, 20)
+        }
+      }
     }
   }
 </script>
@@ -95,50 +124,63 @@
   .search-wrap {
     margin 0 20px
     .search-box-wrap {
-      margin 20px 0
-    }
-    .search-hotkeys-wrap {
-      z-index 2
-      position relative
-      h1 {
-        margin-bottom 20px
-        color $color-text
-      }
-      .search-hotkeys-ul {
-        display flex
-        flex-wrap wrap
-        li {
-          background-color $color-highlight-background
-          padding 5px 10px
-          margin 5px 10px
-          border-radius 6px
-          color $color-text-d
-        }
-      }
+      padding 20px 0
 
     }
-    .suggest-wrap {
+    .hotkeys-history-scroll {
+      position fixed
+      top 160px
+      bottom 0
+      left 20px
+      right 20px
+      z-index -1
 
-    }
-    .search-history-wrap {
-      z-index 2
-      .search-history-title {
-        display flex
-        justify-content space-between
-        align-items center
-        color $color-text
-
-        h1 {
-          margin 20px 0
-          font-size $font-size-medium
+      .hotkeys-history-wrap {
+        .search-hotkeys-wrap {
+          z-index 2
+          position relative
+          h1 {
+            margin-bottom 20px
+            color $color-text
+          }
+          .search-hotkeys-ul {
+            display flex
+            flex-wrap wrap
+            li {
+              background-color $color-highlight-background
+              padding 5px 10px
+              margin 5px 10px
+              border-radius 6px
+              color $color-text-d
+            }
+          }
 
         }
-        i {
-          color $color-text-l
+
+        .search-history-wrap {
+          z-index 2
+          .search-history-title {
+            display flex
+            justify-content space-between
+            align-items center
+            color $color-text
+
+            h1 {
+              margin 20px 0
+              font-size $font-size-medium
+
+            }
+            i {
+              color $color-text-l
+            }
+          }
+
         }
+
       }
 
     }
+
   }
 
 </style>
