@@ -15,9 +15,11 @@
                @chooseIt="saveHistory">
       </suggest>
     </div>
-    <div class="search-history-wrap" v-show="!newInputWord">
-      <h1>搜索历史</h1>
-      <history-list></history-list>
+    <div class="search-history-wrap" v-show="!newInputWord && searchHistory &&searchHistory.length">
+      <div class="search-history-title">
+        <h1>搜索历史</h1> <span @click="clearAllHistory"> <i class="icon-clear"></i> </span>
+      </div>
+      <history-list :searches="searchHistory" @chooseIt="deleteOne" @clickSavedWord="changeWord"></history-list>
     </div>
     <router-view></router-view>
   </div>
@@ -29,7 +31,7 @@
   import { ERROR_OK } from 'api/config'
   import Suggest from 'components/suggest/suggest'
   import HistoryList from 'base/history-list/history-list'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     data () {
@@ -68,7 +70,21 @@
       saveHistory () {
         this.saveSearchHistory(this.newInputWord)
       },
-      ...mapActions(['saveSearchHistory'])
+      clearAllHistory () {
+        if (confirm('您确定要清空搜索历史吗？')) {
+          this.clearAllSearchHistory()
+        } else {
+          return
+        }
+      },
+      deleteOne (item) {
+        this.deleteOneSearchHistory(item)
+      },
+      ...mapActions(['saveSearchHistory', 'clearAllSearchHistory', 'deleteOneSearchHistory'])
+
+    },
+    computed: {
+      ...mapGetters(['searchHistory'])
     }
   }
 </script>
@@ -86,7 +102,7 @@
       position relative
       h1 {
         margin-bottom 20px
-        color $color-text-l
+        color $color-text
       }
       .search-hotkeys-ul {
         display flex
@@ -106,10 +122,22 @@
     }
     .search-history-wrap {
       z-index 2
-      h1 {
-        margin 20px 0
-        color $color-text-l
+      .search-history-title {
+        display flex
+        justify-content space-between
+        align-items center
+        color $color-text
+
+        h1 {
+          margin 20px 0
+          font-size $font-size-medium
+
+        }
+        i {
+          color $color-text-l
+        }
       }
+
     }
   }
 

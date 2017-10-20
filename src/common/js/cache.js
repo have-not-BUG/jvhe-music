@@ -26,3 +26,23 @@ export function saveHistory (val) {
   storage.set(SEARCH_HISTORY_KET, savedSearchHistory)
   return savedSearchHistory
 }
+
+export function getSearchHistoryStorage () {
+  return storage.get(SEARCH_HISTORY_KET, [])
+}
+
+export function clearAllHistory () {
+  storage.remove(SEARCH_HISTORY_KET)
+  return []
+}
+
+export function deleteOneHistory (one) {
+  let savedSearchHistory = storage.get(SEARCH_HISTORY_KET, [])
+  let deleteIndex = savedSearchHistory.findIndex((item) => {
+    return item === one
+  })
+  savedSearchHistory.splice(deleteIndex, 1)
+  storage.set(SEARCH_HISTORY_KET, savedSearchHistory)
+  return savedSearchHistory
+
+}

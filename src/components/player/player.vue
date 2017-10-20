@@ -498,6 +498,9 @@
           font-size $font-size-medium-size-large
           line-height 20px
           height 20px
+          width 80%
+          margin 0 auto
+          no-wrap()
         }
 
       }
@@ -687,6 +690,7 @@
           p {
             color $color-text-d
             font-size $font-size-small
+
           }
 
         }
