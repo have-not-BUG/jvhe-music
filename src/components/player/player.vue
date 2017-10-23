@@ -75,13 +75,14 @@
           <progress-circle :percent="percent" :radius="radius">
             <i class="icon-mini" :class="miniPlayStateClass" @click.stop="changePlayState"></i>
           </progress-circle>
-          <i class="icon-playlist"></i>
+          <i class="icon-playlist" @click.stop="showPlayList"></i>
         </div>
       </div>
     </transition>
     <audio :src="currentSong.url" ref="audio"
            @canplay="changeCanplay" @error="playError"
            @timeupdate="audioUpDateTime" @ended="audioEnded"></audio>
+    <play-list ref="playList"></play-list>
   </div>
 </template>
 
@@ -94,11 +95,11 @@
   import QQLyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import { prefixStlye } from 'common/js/dom'
+  import PlayList from 'components/play-list/play-list'
 
   let transform = prefixStlye('transform')
   let transitionDuration = prefixStlye('transitionDuration')
   export default {
-    name: 'player',
     computed: {
       normalPlayStateClass () {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -147,6 +148,9 @@
       }
     },
     methods: {
+      showPlayList () {
+        this.$refs.playList.show()
+      },
       showMiniPlayer () {
         this.setFullScreen(false)
       },
@@ -418,7 +422,7 @@
       this.touch = {}
     },
     components: {
-      progressBar, progressCircle, Scroll
+      progressBar, progressCircle, Scroll, PlayList
     }
 
   }

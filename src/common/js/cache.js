@@ -15,9 +15,7 @@ function insertArray (arr, val, compare, maxLen) {
   if (maxLen && arr.length > maxLen) {
     arr.pop()
   }
-
 }
-
 export function saveHistory (val) {
   let savedSearchHistory = storage.get(SEARCH_HISTORY_KET, [])
   insertArray(savedSearchHistory, val, (item) => {
