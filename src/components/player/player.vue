@@ -408,15 +408,11 @@
         let smallCdShowDeg = this.getCurrentDeg(pausedTime, 10)
         if (this.playing && !newfullScreen) {
           this.$refs.miniCdWrap.style.transform = `rotate(${smallCdShowDeg}deg)`
-
         }
         if (this.playing && newfullScreen) {
           this.$refs.cdWrap.style.transform = `rotate(${this.bigCdMiniPausedDeg}deg)`
-
         }
-
       }
-
     },
     created () {
       this.touch = {}

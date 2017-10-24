@@ -9,8 +9,8 @@
         <i class="icon-clear"></i>
       </div>
       <scroll class="all-play-list" ref="allPlayList" :data="orderPlayList">
-        <ul>
-          <li class="play-list-li" ref="playListLi"
+        <transition-group tag="ul" name="list">
+          <li :key="item.mid" class="play-list-li" ref="playListLi"
               v-for="(item,index) in orderPlayList"
               @click="selectItem(item,index)">
             <div class="icon-song-name">
@@ -21,7 +21,7 @@
               <i class="icon-delete" @click.stop="deleteOne(item)"></i>
             </div>
           </li>
-        </ul>
+        </transition-group>
       </scroll>
       <div class="add-song-wrap">
         <p>
@@ -147,6 +147,12 @@
       .all-play-list {
         max-height 240px
         overflow hidden
+        .list-enter-active,.list-leave-active {
+          transition all 0.2s linear
+        }
+        .list-enter, .list-leave-to {
+          height 0
+        }
         .play-list-li {
           display flex
           justify-content space-between
