@@ -10,10 +10,12 @@
       </div>
       <scroll class="all-play-list" ref="allPlayList" :data="orderPlayList">
         <ul>
-          <li class="play-list-li" v-for="(item,index) in orderPlayList">
+          <li class="play-list-li" ref="playListLi"
+              v-for="(item,index) in orderPlayList"
+              @click="selectItem(item,index)">
             <div class="icon-song-name">
               <i :class="{'icon-play':item.mid===currentSong.mid}"></i>
-              <p>{{item.name}}</p>
+              <p :class="{'play-current-song':item.mid===currentSong.mid}"> {{index + 1}}. {{item.name}}</p>
             </div>
             <div class="favorite-delete">
               <i class="icon-not-favorite"></i>
@@ -32,14 +34,13 @@
         <p>关闭</p>
       </div>
     </div>
-
-
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapMutations } from 'vuex'
   import Scroll from 'base/scroll/scroll'
+  import { playMode } from 'common/js/config'
 
   export default {
     data () {
@@ -48,7 +49,7 @@
       }
     },
     computed: {
-      ...mapGetters(['orderPlayList', 'currentSong'])
+      ...mapGetters(['orderPlayList', 'currentSong', 'mode', 'playList'])
     },
     components: {
       Scroll
@@ -59,14 +60,41 @@
       },
       hide () {
         this.isShow = false
-      }
+      },
+      selectItem (item, index) {
+        if (this.mode === playMode.random) {
+          index = this.playList.findIndex((song) => {
+            return item.mid === song.mid
+          })
+        }
+        this.setCurrentIndex(index)
+        this.setPlaying(true)
+      },
+      scrollToCurrentSong (current) {
+        let index = this.orderPlayList.findIndex((song) => {
+          return song.mid === current.mid
+        })
+        this.$refs.allPlayList.scrollToElement(this.$refs.playListLi[index], 300)
+      },
+      ...mapMutations({
+        setCurrentIndex: 'SET_CURRENTINDEX',
+        setPlaying: 'SET_PLAYING'
+      })
     },
     watch: {
       isShow (isShowNew) {
         if (isShowNew) {
           setTimeout(() => {
             this.$refs.allPlayList.refresh()
+            this.scrollToCurrentSong(this.currentSong)
           }, 20)
+        }
+      },
+      currentSong (newSong, oldSong) {
+        if (!this.isShow || newSong.mid === oldSong.mid) {
+          return
+        } else {
+          this.scrollToCurrentSong(newSong)
         }
       }
     }
@@ -123,19 +151,18 @@
             no-wrap()
             text-align left
             flex 1
-            .icon-play {
+            .icon-play, .play-current-song {
               color $color-theme
             }
             p {
               display inline
               no-wrap()
             }
-
           }
           .favorite-delete {
+
           }
         }
-
       }
       .add-song-wrap {
         margin 25px auto
@@ -153,15 +180,11 @@
           }
         }
       }
-
       .playlist-close-btn {
         padding 15px 0
         background-color $color-background
-
       }
-
     }
-
   }
 
 </style>
