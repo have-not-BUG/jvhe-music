@@ -6,7 +6,7 @@
           <i class="icon-sequence"></i>
           <span>顺序播放</span>
         </div>
-        <i class="icon-clear"></i>
+        <i class="icon-clear" @click="clearAllSongs"></i>
       </div>
       <scroll class="all-play-list" ref="allPlayList" :data="orderPlayList">
         <transition-group tag="ul" name="list">
@@ -56,6 +56,10 @@
     methods: {
       show () {
         this.isShow = true
+        setTimeout(() => {
+          this.$refs.allPlayList.refresh()
+          this.scrollToCurrentSong(this.currentSong)
+        }, 20)
       },
       hide () {
         this.isShow = false
@@ -81,21 +85,23 @@
           this.hide()
         }
       },
+      clearAllSongs () {
+        if (confirm('您确实要清除播放列表中的所有的歌曲吗？')) {
+          this.clearAll()
+          if (!this.playList.length) {
+            this.hide()
+          }
+        } else {
+          return
+        }
+      },
       ...mapMutations({
         setCurrentIndex: 'SET_CURRENTINDEX',
         setPlaying: 'SET_PLAYING'
       }),
-      ...mapActions(['deleteOneSong'])
+      ...mapActions(['deleteOneSong', 'clearAll'])
     },
     watch: {
-      isShow (isShowNew) {
-        if (isShowNew) {
-          setTimeout(() => {
-            this.$refs.allPlayList.refresh()
-            this.scrollToCurrentSong(this.currentSong)
-          }, 20)
-        }
-      },
       currentSong (newSong, oldSong) {
         if (!this.isShow || newSong.mid === oldSong.mid) {
           return
@@ -147,7 +153,7 @@
       .all-play-list {
         max-height 240px
         overflow hidden
-        .list-enter-active,.list-leave-active {
+        .list-enter-active, .list-leave-active {
           transition all 0.2s linear
         }
         .list-enter, .list-leave-to {

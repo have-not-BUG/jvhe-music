@@ -98,5 +98,11 @@ export const deleteOneSong = function ({commit, state}, song) {
   } else {
     commit(types.SET_PLAYING, true)
   }
+}
 
+export const clearAll = function ({commit, state}) {
+  commit(types.SET_PLAYLIST, [])
+  commit(types.SET_ORDERPLAYLIST, [])
+  commit(types.SET_CURRENTINDEX, -1)
+  commit(types.SET_PLAYING, false)
 }
