@@ -14,7 +14,6 @@
               v-for="(item,index) in orderPlayList"
               @click="selectItem(item,index)">
             <div class="icon-song-name">
-              <i :class="{'icon-play':item.mid===currentSong.mid}"></i>
               <p :class="{'play-current-song':item.mid===currentSong.mid}"> {{index + 1}}. {{item.name}}</p>
             </div>
             <div class="favorite-delete">
@@ -151,7 +150,7 @@
             no-wrap()
             text-align left
             flex 1
-            .icon-play, .play-current-song {
+            .play-current-song {
               color $color-theme
             }
             p {
