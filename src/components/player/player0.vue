@@ -61,12 +61,15 @@
     </transition>
     <transition name="mini-player">
       <div class="mini-player-wrap" v-show="!fullScreen" @click="showFullScreen">
-        <div class="mini-cd-wrap" ref="miniCdWrap">
-          <img :class="miniCdStateClass" :src="currentSong.image" :alt="currentSong.name">
-        </div>
-        <div class="name-singer">
-          <h2>{{currentSong.name}}</h2>
-          <p>{{currentSong.singer}}</p>
+        <div class="image-name-singer">
+          <div class="mini-cd-wrap" ref="miniCdWrap">
+            <img :class="miniCdStateClass" :src="currentSong.image" :alt="currentSong.name">
+          </div>
+          <div class="name-singer">
+            <h2>{{currentSong.name}}</h2>
+            <p>{{currentSong.singer}}</p>
+          </div>
+
         </div>
         <div class="state-playlist">
           <progress-circle :percent="percent" :radius="radius">
@@ -649,55 +652,56 @@
       width 100%
       height 60px
       background-color $color-highlight-background
-      padding 0 10px
-      box-sizing border-box
       display flex
+      justify-content space-between
       align-items center
       position fixed
       bottom 0
       left 0
-      .mini-cd-wrap {
-        width 40px
-        height 40px
-        img {
+      .image-name-singer {
+        padding 0 0 0 20px
+        position relative
+        .mini-cd-wrap {
           width 40px
           height 40px
-          border-radius 50%
+          img {
+            width 40px
+            height 40px
+            border-radius 50%
 
-          &.play {
-            animation rotate 10s linear infinite
+            &.play {
+              animation rotate 10s linear infinite
+            }
+            &.pause {
+              animation-play-state paused
+            }
+
           }
-          &.pause {
-            animation-play-state paused
+        }
+        .name-singer {
+          position absolute
+          left 70px
+          top 50%
+          transform translate(0, -50%)
+          width 100%
+          white-space nowrap
+          word-wrap normal
+          h2 {
+            color $color-text
+            font-size $font-size-medium
+            margin-bottom 5px
+          }
+          p {
+            color $color-text-d
+            font-size $font-size-small
+
           }
 
         }
       }
-      .name-singer {
-        white-space nowrap
-        word-wrap normal
-        flex 1
-        max-width calc(100% - 130px)
-        padding 0 5px
-        text-align left
-        no-wrap()
-        h2 {
-          color $color-text
-          font-size $font-size-medium
-          margin-bottom 5px
-          no-wrap()
-        }
-        p {
-          color $color-text-d
-          font-size $font-size-small
-          no-wrap()
-
-        }
-
-      }
-
       .state-playlist {
         color $color-theme-d
+        padding 0 10px 0 0
         font-size 30px
         display flex
         .icon-mini {
