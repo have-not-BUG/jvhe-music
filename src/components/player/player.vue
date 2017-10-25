@@ -88,15 +88,17 @@
   import progressBar from 'base/progress-bar/progress-bar'
   import progressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
-  import { shuffle } from 'common/js/util'
+  //  import { shuffle } from 'common/js/util'
   import QQLyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import { prefixStlye } from 'common/js/dom'
   import PlayList from 'components/play-list/play-list'
+  import { playModeMixin } from 'common/js/mixin'
 
   let transform = prefixStlye('transform')
   let transitionDuration = prefixStlye('transitionDuration')
   export default {
+    mixins: [playModeMixin],
     computed: {
       normalPlayStateClass () {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -122,9 +124,9 @@
       percent () {
         return this.currentTime / this.currentSong.duration
       },
-      playModeIco () {
-        return this.mode === playMode.order ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-      },
+//      playModeIco () {
+//        return this.mode === playMode.order ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+//      },
       showCurrentPage () {
         return this.currentPage === 'cd' ? 'cd' : 'lyric'
       },
@@ -247,24 +249,24 @@
         }
 
       },
-      changePlayMode () {
-        const mode = (this.mode + 1) % 3
-        this.setPlayMode(mode)
-        let list = null
-        if (this.mode === playMode.random) {
-          list = shuffle(this.orderPlayList)
-        } else {
-          list = this.orderPlayList
-        }
-        this.restCurrentIndex(list)
-        this.setPlayList(list)
-      },
-      restCurrentIndex (list) {
-        let index = list.findIndex((item) => {
-          return item.id === this.currentSong.id
-        })
-        this.setCurrentIndex(index)
-      },
+//      changePlayMode () {
+//        const mode = (this.mode + 1) % 3
+//        this.setPlayMode(mode)
+//        let list = null
+//        if (this.mode === playMode.random) {
+//          list = shuffle(this.orderPlayList)
+//        } else {
+//          list = this.orderPlayList
+//        }
+//        this.restCurrentIndex(list)
+//        this.setPlayList(list)
+//      },
+//      restCurrentIndex (list) {
+//        let index = list.findIndex((item) => {
+//          return item.id === this.currentSong.id
+//        })
+//        this.setCurrentIndex(index)
+//      },
       runLoopMode () {
         this.$refs.audio.currentTime = 0
         if (this.currentLyric) {
@@ -363,9 +365,9 @@
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
         setPlaying: 'SET_PLAYING',
-        setCurrentIndex: 'SET_CURRENTINDEX',
-        setPlayMode: 'SET_MODE',
-        setPlayList: 'SET_PLAYLIST'
+        setCurrentIndex: 'SET_CURRENTINDEX'
+//        setPlayMode: 'SET_MODE',
+//        setPlayList: 'SET_PLAYLIST'
       })
     },
     watch: {

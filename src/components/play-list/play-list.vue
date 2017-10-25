@@ -3,8 +3,8 @@
     <div class="play-list-ct" @click.stop>
       <div class="play-list-mode-clear">
         <div class="play-mode">
-          <i class="icon-sequence"></i>
-          <span>顺序播放</span>
+          <i :class="playModeIco" @click="changePlayMode"></i>
+          <span>{{playModeText}}</span>
         </div>
         <i class="icon-clear" @click="clearAllSongs"></i>
       </div>
@@ -40,14 +40,19 @@
   import { mapGetters, mapMutations, mapActions } from 'vuex'
   import Scroll from 'base/scroll/scroll'
   import { playMode } from 'common/js/config'
+  import { playModeMixin } from 'common/js/mixin'
 
   export default {
+    mixins: [playModeMixin],
     data () {
       return {
         isShow: false
       }
     },
     computed: {
+      playModeText () {
+        return this.mode === playMode.order ? '顺序播放' : this.mode === playMode.loop ? '单曲循环' : '随机播放'
+      },
       ...mapGetters(['orderPlayList', 'currentSong', 'mode', 'playList'])
     },
     components: {
