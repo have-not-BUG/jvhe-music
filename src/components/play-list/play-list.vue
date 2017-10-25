@@ -24,7 +24,7 @@
         </transition-group>
       </scroll>
       <div class="add-song-wrap">
-        <p>
+        <p @click.stop="showAddSong">
           <span><i class="icon-add"></i></span>
           增加歌曲到该列表中
         </p>
@@ -33,6 +33,7 @@
         <p>关闭</p>
       </div>
     </div>
+    <add-song ref="addSong"></add-song>
   </div>
 </template>
 
@@ -41,6 +42,7 @@
   import Scroll from 'base/scroll/scroll'
   import { playMode } from 'common/js/config'
   import { playModeMixin } from 'common/js/mixin'
+  import AddSong from 'components/add-song/add-song'
 
   export default {
     mixins: [playModeMixin],
@@ -56,7 +58,7 @@
       ...mapGetters(['orderPlayList', 'currentSong', 'mode', 'playList'])
     },
     components: {
-      Scroll
+      Scroll, AddSong
     },
     methods: {
       show () {
@@ -99,6 +101,9 @@
         } else {
           return
         }
+      },
+      showAddSong () {
+        this.$refs.addSong.show()
       },
       ...mapMutations({
         setCurrentIndex: 'SET_CURRENTINDEX',
