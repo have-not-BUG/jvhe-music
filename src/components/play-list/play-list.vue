@@ -9,7 +9,7 @@
         <i class="icon-clear" @click="clearAllSongs"></i>
       </div>
       <scroll class="all-play-list" ref="allPlayList" :data="orderPlayList">
-        <transition-group tag="ul" name="list">
+        <transition-group tag="ul" name="list" ref="playListUl">
           <li :key="item.mid" class="play-list-li" ref="playListLi"
               v-for="(item,index) in orderPlayList"
               @click="selectItem(item,index)">
@@ -77,7 +77,7 @@
         let index = this.orderPlayList.findIndex((song) => {
           return song.mid === current.mid
         })
-        this.$refs.allPlayList.scrollToElement(this.$refs.playListLi[index], 300)
+        this.$refs.allPlayList.scrollToElement(this.$refs.playListUl.$el.children[index], 300)
       },
       deleteOne (song) {
         this.deleteOneSong(song)
