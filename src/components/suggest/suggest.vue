@@ -38,6 +38,10 @@
       newInputWord: {
         type: String,
         default: ''
+      },
+      showSinger: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -63,7 +67,7 @@
         this.pageNum = 1
         this.hasMore = true
         this.$refs.scroll.scrollTo(0, 0)
-        getQQSearchAll(this.newInputWord, true, perPageNum, this.pageNum).then(res => {
+        getQQSearchAll(this.newInputWord, this.showSinger, perPageNum, this.pageNum).then(res => {
           if (res.code === ERROR_OK) {
             this.songOrSingerArry = this.concatSongAndSingerData(res.data)
             console.log('res.data', res.data)

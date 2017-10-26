@@ -38,15 +38,15 @@
   import Suggest from 'components/suggest/suggest'
   import HistoryList from 'base/history-list/history-list'
   import Scroll from 'base/scroll/scroll'
-  import { playListMixin } from 'common/js/mixin'
+  import { playListMixin, searchMixin } from 'common/js/mixin'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, searchMixin],
     data () {
       return {
-        hotkeys: [],
-        newInputWord: ''
+        hotkeys: []
+//        newInputWord: ''
       }
     },
     components: {
@@ -78,15 +78,15 @@
       changeWord (key) {
         this.$refs.searchBox.setInput(key)
       },
-      showInputWord (newInputWord) {
-        this.newInputWord = newInputWord
-      },
-      getBlur () {
-        this.$refs.searchBox.blur()
-      },
-      saveHistory () {
-        this.saveSearchHistory(this.newInputWord)
-      },
+//      showInputWord (newInputWord) {
+//        this.newInputWord = newInputWord
+//      },
+//      getBlur () {
+//        this.$refs.searchBox.blur()
+//      },
+//      saveHistory () {
+//        this.saveSearchHistory(this.newInputWord)
+//      },
       clearAllHistory () {
         if (confirm('您确定要清空搜索历史吗？')) {
           this.clearAllSearchHistory()
@@ -126,6 +126,8 @@
     .search-box-wrap {
       padding 20px 0
 
+    }
+    .suggest-wrap {
     }
     .hotkeys-history-scroll {
       position fixed

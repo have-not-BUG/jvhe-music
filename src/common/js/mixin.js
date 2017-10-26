@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { playMode } from 'common/js/config'
 import { shuffle } from 'common/js/util'
 
@@ -56,6 +56,27 @@ export const playModeMixin = {
       setCurrentIndex: 'SET_CURRENTINDEX'
 
     })
+
+  }
+}
+
+export const searchMixin = {
+  data () {
+    return {
+      newInputWord: ''
+    }
+  },
+  methods: {
+    showInputWord (newInputWord) {
+      this.newInputWord = newInputWord
+    },
+    getBlur () {
+      this.$refs.searchBox.blur()
+    },
+    saveHistory () {
+      this.saveSearchHistory(this.newInputWord)
+    },
+    ...mapActions(['saveSearchHistory'])
 
   }
 }
