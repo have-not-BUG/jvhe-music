@@ -18,8 +18,11 @@
                  ref="suggest"
         ></suggest>
       </div>
-      <div class="tabs">
-
+      <div class="switch-wrap">
+        <switches-tabs :switches="switches"
+                       :currentIndex="currentIndex"
+                       @select="chooseItem"
+        ></switches-tabs>
       </div>
 
     </div>
@@ -30,12 +33,18 @@
   import SearchBox from 'base/search-box/search-box'
   import Suggest from 'components/suggest/suggest'
   import { searchMixin } from 'common/js/mixin'
+  import SwitchesTabs from 'base/switches/switches'
 
   export default {
     mixins: [searchMixin],
     data () {
       return {
-        isShow: false
+        isShow: false,
+        switches: [
+          {name: '最近播放'},
+          {name: '搜索历史'}
+        ],
+        currentIndex: 0
       }
     },
     methods: {
@@ -44,10 +53,13 @@
       },
       hide () {
         this.isShow = false
+      },
+      chooseItem (index) {
+        this.currentIndex = index
       }
     },
     components: {
-      SearchBox, Suggest
+      SearchBox, Suggest, SwitchesTabs
     }
   }
 </script>
@@ -89,6 +101,9 @@
         top 114px !important
         text-align left
       }
+    }
+    .switch-wrap {
+      margin 25px auto
     }
   }
 
