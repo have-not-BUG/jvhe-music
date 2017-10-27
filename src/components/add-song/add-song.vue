@@ -18,11 +18,18 @@
                  ref="suggest"
         ></suggest>
       </div>
-      <div class="switch-wrap">
+      <div class="switch-wrap" v-show="!newInputWord">
         <switches-tabs :switches="switches"
                        :currentIndex="currentIndex"
                        @select="chooseItem"
         ></switches-tabs>
+      </div>
+      <div class="play-search-history-wrap">
+        <scroll ref="songListScroll" class="song-list-scroll" :data="playHistory" v-if="currentIndex===0">
+          <div class="song-list-wrap">
+            <song-list :songs="playHistory" @selectEvent="playSelectSong"></song-list>
+          </div>
+        </scroll>
       </div>
 
     </div>
@@ -34,6 +41,10 @@
   import Suggest from 'components/suggest/suggest'
   import { searchMixin } from 'common/js/mixin'
   import SwitchesTabs from 'base/switches/switches'
+  import { mapGetters, mapActions } from 'vuex'
+  import Scroll from 'base/scroll/scroll'
+  import SongList from 'base/song-list/song-list'
+  import Song from 'common/js/song'
 
   export default {
     mixins: [searchMixin],
@@ -47,19 +58,32 @@
         currentIndex: 0
       }
     },
+    computed: {
+      ...mapGetters(['playHistory'])
+    },
     methods: {
       show () {
         this.isShow = true
+        setTimeout(() => {
+          this.$refs.songListScroll.refresh()
+        }, 20)
       },
       hide () {
         this.isShow = false
       },
       chooseItem (index) {
         this.currentIndex = index
-      }
+      },
+      playSelectSong (song, index) {
+        if (index > 0) {
+          this.insertSong(new Song(song))
+        }
+      },
+      ...mapActions(['insertSong'])
+
     },
     components: {
-      SearchBox, Suggest, SwitchesTabs
+      SearchBox, Suggest, SwitchesTabs, Scroll, SongList
     }
   }
 </script>
@@ -104,6 +128,21 @@
     }
     .switch-wrap {
       margin 25px auto
+    }
+    .play-search-history-wrap {
+      .song-list-scroll {
+        position fixed
+        top 166px
+        bottom 0
+        left 20px
+        right 20px
+        text-align left
+        overflow hidden
+        .song-list-wrap {
+
+        }
+      }
+
     }
   }
 

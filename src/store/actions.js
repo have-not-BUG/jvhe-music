@@ -1,7 +1,7 @@
 import * as types from './mutations-types'
 import { playMode } from 'common/js/config'
 import { shuffle } from 'common/js/util'
-import { saveHistory, clearAllHistory, deleteOneHistory } from 'common/js/cache'
+import { saveHistorySearch, clearAllHistorySearch, deleteOneHistorySearch, saveHistoryPlay } from 'common/js/cache'
 
 function findIndex (list, song) {
   return list.findIndex((item) => {
@@ -70,15 +70,15 @@ export const insertSong = function ({commit, state}, song) {
 }
 
 export const saveSearchHistory = function ({commit}, searchWord) {
-  commit(types.SET_SEARCH_HISTORY, saveHistory(searchWord))
+  commit(types.SET_SEARCH_HISTORY, saveHistorySearch(searchWord))
 }
 export const clearAllSearchHistory = function ({commit}) {
-  commit(types.SET_SEARCH_HISTORY, clearAllHistory())
+  commit(types.SET_SEARCH_HISTORY, clearAllHistorySearch())
 }
 export const deleteOneSearchHistory = function ({commit}, item) {
-  commit(types.SET_SEARCH_HISTORY, deleteOneHistory(item))
+  commit(types.SET_SEARCH_HISTORY, deleteOneHistorySearch(item))
 }
-export const deleteOneSong = function ({commit, state}, song) {
+export const deleteOneSongOnPlayList = function ({commit, state}, song) {
   let playList = state.playList.slice()
   let orderPlayList = state.orderPlayList.slice()
   let currentIndex = state.currentIndex
@@ -100,9 +100,13 @@ export const deleteOneSong = function ({commit, state}, song) {
   }
 }
 
-export const clearAll = function ({commit, state}) {
+export const clearAllPlayList = function ({commit, state}) {
   commit(types.SET_PLAYLIST, [])
   commit(types.SET_ORDERPLAYLIST, [])
   commit(types.SET_CURRENTINDEX, -1)
   commit(types.SET_PLAYING, false)
+}
+
+export const savePlayHistory = function ({commit}, song) {
+  commit(types.SET_PLAY_HISTORY, saveHistoryPlay(song))
 }

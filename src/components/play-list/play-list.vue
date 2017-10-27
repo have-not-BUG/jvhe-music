@@ -87,14 +87,14 @@
         this.$refs.allPlayList.scrollToElement(this.$refs.playListUl.$el.children[index], 300)
       },
       deleteOne (song) {
-        this.deleteOneSong(song)
+        this.deleteOneSongOnPlayList(song)
         if (!this.playList.length) {
           this.hide()
         }
       },
       clearAllSongs () {
         if (confirm('您确实要清除播放列表中的所有的歌曲吗？')) {
-          this.clearAll()
+          this.clearAllPlayList()
           if (!this.playList.length) {
             this.hide()
           }
@@ -109,7 +109,7 @@
         setCurrentIndex: 'SET_CURRENTINDEX',
         setPlaying: 'SET_PLAYING'
       }),
-      ...mapActions(['deleteOneSong', 'clearAll'])
+      ...mapActions(['deleteOneSongOnPlayList', 'clearAllPlayList'])
     },
     watch: {
       currentSong (newSong, oldSong) {

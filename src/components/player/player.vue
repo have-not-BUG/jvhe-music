@@ -84,7 +84,7 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
   import progressBar from 'base/progress-bar/progress-bar'
   import progressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
@@ -202,6 +202,7 @@
       },
       changeCanplay () {
         this.canplay = true
+        this.savePlayHistory(this.currentSong)
       },
       playError () {
         this.canplay = true
@@ -368,7 +369,8 @@
         setCurrentIndex: 'SET_CURRENTINDEX'
 //        setPlayMode: 'SET_MODE',
 //        setPlayList: 'SET_PLAYLIST'
-      })
+      }),
+      ...mapActions(['savePlayHistory'])
     },
     watch: {
       currentSong (newSong, oldSong) {
