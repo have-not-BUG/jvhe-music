@@ -1,13 +1,12 @@
 <template>
   <div class="history-list" v-show="searches.length">
-    <ul>
-      <li v-for="item in searches" class="search-li" @click="inputSavedWord(item)">
+    <transition-group tag="ul" name="animation">
+      <li :key="item" v-for="item in searches" class="search-li" @click="inputSavedWord(item)">
         <p>{{item}}</p>
         <span @click.stop="clickThis(item)"> <i class="icon-delete"></i> </span>
       </li>
-    </ul>
+    </transition-group>
   </div>
-
 </template>
 
 <script>
@@ -44,6 +43,12 @@
       padding 10px 0
       p {
         no-wrap()
+      }
+      &.animation-enter-active, &.animation-leave-active {
+        transition all 0.2s
+      }
+      &.animation-enter, &.animation-leave-to {
+        height 0
       }
     }
   }

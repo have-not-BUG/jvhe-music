@@ -76,7 +76,16 @@ export const searchMixin = {
     saveHistory () {
       this.saveSearchHistory(this.newInputWord)
     },
-    ...mapActions(['saveSearchHistory'])
+    deleteOne (item) {
+      this.deleteOneSearchHistory(item)
+    },
+    changeWord (key) {
+      this.$refs.searchBox.setInput(key)
+    },
+    ...mapActions(['saveSearchHistory', 'deleteOneSearchHistory'])
 
+  },
+  computed: {
+    ...mapGetters(['searchHistory'])
   }
 }

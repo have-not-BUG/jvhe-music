@@ -75,9 +75,7 @@
           console.log('QQ热门搜索关键词数据获取失败', err)
         })
       },
-      changeWord (key) {
-        this.$refs.searchBox.setInput(key)
-      },
+
 //      showInputWord (newInputWord) {
 //        this.newInputWord = newInputWord
 //      },
@@ -94,17 +92,14 @@
           return
         }
       },
-      deleteOne (item) {
-        this.deleteOneSearchHistory(item)
-      },
-      ...mapActions(['saveSearchHistory', 'clearAllSearchHistory', 'deleteOneSearchHistory'])
+
+      ...mapActions(['saveSearchHistory', 'clearAllSearchHistory'])
 
     },
     computed: {
       hotkeysAndsearchHistory () {
         return this.hotkeys.concat(this.searchHistory)
-      },
-      ...mapGetters(['searchHistory'])
+      }
     },
     watch: {
       newInputWord (newWord) {

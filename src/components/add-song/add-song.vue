@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="add-song" v-show="isShow" @click.stop>
       <div class="title-close">
-        <h1>添加歌曲到播放列表中</h1>
+        <h1>点击歌曲添至播放列表中</h1>
         <div class="close">
           <i class="icon-close" @click="hide"></i>
         </div>
@@ -10,7 +10,7 @@
       <div class="search-box-wrap">
         <search-box ref="searchBox" @inputWord="showInputWord" placeholder="搜索歌曲"></search-box>
       </div>
-      <div class="suggest-wrap" v-show="newInputWord">
+      <div class="suggest-wrap" v-if="newInputWord">
         <suggest :newInputWord="newInputWord"
                  @pushBlur="getBlur"
                  @chooseIt="saveHistory"
@@ -24,14 +24,18 @@
                        @select="chooseItem"
         ></switches-tabs>
       </div>
-      <div class="play-search-history-wrap">
+      <div class="play-search-history-wrap" v-if="!newInputWord">
         <scroll ref="songListScroll" class="song-list-scroll" :data="playHistory" v-if="currentIndex===0">
           <div class="song-list-wrap">
             <song-list :songs="playHistory" @selectEvent="playSelectSong"></song-list>
           </div>
         </scroll>
+        <scroll ref="historyListScroll" class="history-list-scroll" :data="searchHistory" v-if="currentIndex===1">
+          <div class="history-list-wrap">
+            <history-list :searches="searchHistory" @chooseIt="deleteOne" @clickSavedWord="changeWord"></history-list>
+          </div>
+        </scroll>
       </div>
-
     </div>
   </transition>
 </template>
@@ -45,6 +49,7 @@
   import Scroll from 'base/scroll/scroll'
   import SongList from 'base/song-list/song-list'
   import Song from 'common/js/song'
+  import HistoryList from 'base/history-list/history-list'
 
   export default {
     mixins: [searchMixin],
@@ -65,7 +70,12 @@
       show () {
         this.isShow = true
         setTimeout(() => {
-          this.$refs.songListScroll.refresh()
+          if (this.currentIndex === 0) {
+            this.$refs.songListScroll.refresh()
+          }
+          if (this.currentIndex === 1) {
+            this.$refs.historyListScroll.refresh()
+          }
         }, 20)
       },
       hide () {
@@ -83,7 +93,7 @@
 
     },
     components: {
-      SearchBox, Suggest, SwitchesTabs, Scroll, SongList
+      SearchBox, Suggest, SwitchesTabs, Scroll, SongList, HistoryList
     }
   }
 </script>
@@ -113,7 +123,7 @@
         font-size 20px
         color $color-theme
         position absolute
-        right 10px
+        right 5px
         top 22px
         transform translate(0, -50%)
       }
@@ -134,15 +144,22 @@
         position fixed
         top 166px
         bottom 0
+        left 0
+        right 0
+        text-align left
+        overflow hidden
+      }
+
+      .history-list-scroll {
+        position fixed
+        top 166px
+        bottom 0
         left 20px
         right 20px
         text-align left
         overflow hidden
-        .song-list-wrap {
 
-        }
       }
-
     }
   }
 
