@@ -1,6 +1,12 @@
 <template>
   <transition name="slide">
     <div class="add-song" v-show="isShow" @click.stop>
+      <top-tips ref="topTips" class="top-tips">
+        <div class="top-tips-icon-title">
+          <i class="icon-ok"></i>
+          <span class="top-tips-title">一首歌曲已被添至播放列表</span>
+        </div>
+      </top-tips>
       <div class="title-close">
         <h1>点击歌曲添至播放列表中</h1>
         <div class="close">
@@ -10,7 +16,7 @@
       <div class="search-box-wrap">
         <search-box ref="searchBox" @inputWord="showInputWord" placeholder="搜索歌曲"></search-box>
       </div>
-      <div class="suggest-wrap" v-if="newInputWord">
+      <div class="suggest-wrap" v-show="newInputWord">
         <suggest :newInputWord="newInputWord"
                  @pushBlur="getBlur"
                  @chooseIt="saveHistory"
@@ -50,6 +56,7 @@
   import SongList from 'base/song-list/song-list'
   import Song from 'common/js/song'
   import HistoryList from 'base/history-list/history-list'
+  import TopTips from 'base/top-tips/top-tips'
 
   export default {
     mixins: [searchMixin],
@@ -87,13 +94,14 @@
       playSelectSong (song, index) {
         if (index > 0) {
           this.insertSong(new Song(song))
+          this.$refs.topTips.show()
         }
       },
       ...mapActions(['insertSong'])
 
     },
     components: {
-      SearchBox, Suggest, SwitchesTabs, Scroll, SongList, HistoryList
+      SearchBox, Suggest, SwitchesTabs, Scroll, SongList, HistoryList, TopTips
     }
   }
 </script>
@@ -110,6 +118,13 @@
     bottom 0
     background: $color-background
     padding 10px 20px
+    .top-tips{
+      height 54px
+      line-height 54px
+      .icon-ok{
+        color $color-theme
+      }
+    }
     .title-close {
       display: flex
       align-items center
