@@ -36,7 +36,7 @@
             <song-list :songs="playHistory" @selectEvent="playSelectSong"></song-list>
           </div>
         </scroll>
-        <scroll ref="historyListScroll" class="history-list-scroll" :data="searchHistory" v-if="currentIndex===1">
+        <scroll ref="historyListScroll" class="history-list-scroll" :data="searchHistory" v-if="currentIndex===1" :refreshDelay="refreshDelay">
           <div class="history-list-wrap">
             <history-list :searches="searchHistory" @chooseIt="deleteOne" @clickSavedWord="changeWord"></history-list>
           </div>

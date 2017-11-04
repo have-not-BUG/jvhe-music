@@ -11,7 +11,7 @@
     </div>
     <scroll class="hotkeys-history-scroll"
             :data="hotkeysAndsearchHistory"
-            v-show="!newInputWord" ref="hotkeysHistoryScroll">
+            v-show="!newInputWord" ref="hotkeysHistoryScroll" :refreshDelay="refreshDelay">
       <div class="hotkeys-history-wrap">
         <div class="search-hotkeys-wrap">
           <h1>热门搜索</h1>

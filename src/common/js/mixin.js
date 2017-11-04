@@ -63,7 +63,8 @@ export const playModeMixin = {
 export const searchMixin = {
   data () {
     return {
-      newInputWord: ''
+      newInputWord: '',
+      refreshDelay: 400
     }
   },
   methods: {

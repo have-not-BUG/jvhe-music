@@ -8,7 +8,7 @@
         </div>
         <i class="icon-clear" @click="clearAllSongs"></i>
       </div>
-      <scroll class="all-play-list" ref="allPlayList" :data="orderPlayList">
+      <scroll class="all-play-list" ref="allPlayList" :refreshDelay="refreshDelay" :data="orderPlayList">
         <transition-group tag="ul" name="list" ref="playListUl">
           <li :key="item.mid" class="play-list-li" ref="playListLi"
               v-for="(item,index) in orderPlayList"
@@ -26,7 +26,7 @@
       <div class="add-song-wrap">
         <p @click.stop="showAddSong">
           <span><i class="icon-add"></i></span>
-          增加歌曲到该列表中
+          添加歌曲到该列表中
         </p>
       </div>
       <div class="playlist-close-btn" @click="hide">
@@ -48,7 +48,8 @@
     mixins: [playModeMixin],
     data () {
       return {
-        isShow: false
+        isShow: false,
+        refreshDelay: 400
       }
     },
     computed: {
@@ -164,7 +165,7 @@
         max-height 240px
         overflow hidden
         .list-enter-active, .list-leave-active {
-          transition all 0.2s linear
+          transition all 0.2s
         }
         .list-enter, .list-leave-to {
           height 0
@@ -174,7 +175,7 @@
           justify-content space-between
           align-content center
           flex-wrap nowrap
-          margin 30px
+          padding 15px 30px
           .icon-song-name {
             no-wrap()
             text-align left
@@ -188,7 +189,6 @@
             }
           }
           .favorite-delete {
-
           }
         }
       }
