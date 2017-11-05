@@ -8,6 +8,7 @@ import SingerDetail from 'components/singer-detail/singer-detail'
 import NotFind from 'components/notfind/notfind'
 import RecommendList from 'components/recommend-list/recommend-list'
 import RankDetail from 'components/rank-detail/rank-detail'
+import userCenter from 'components/user-center/user-center'
 
 Vue.use(Router)
 
@@ -52,6 +53,10 @@ export default new Router({
         path: ':id',
         component: SingerDetail
       }]
+    },
+    {
+      path: '/user',
+      component: userCenter
     },
     {
       path: '*',
