@@ -6,7 +6,20 @@
         <switches :switches="switches" :currentIndex="currentIndex" @select="selectIndex"></switches>
       </div>
       <div class="random-play-all-wrap">
-        <div class="random-play-all-button"><i class="icon-play"></i> 随机播放全部</div>
+        <div class="random-play-all-button" @click="randomPlayLikeOrHistorySong"><i class="icon-play"></i> 随机播放全部</div>
+      </div>
+      <div class="like-play-history-wrap">
+        <scroll ref="likeListScroll" class="like-list-scroll" :data="likeList" v-if="currentIndex===0">
+          <div class="like-list-wrap">
+            <song-list :songs="likeList" @selectEvent="playSelectSong"></song-list>
+          </div>
+        </scroll>
+        <scroll ref="playHistoryListScroll" class="play-history-list-scroll" :data="playHistory" v-if="currentIndex===1"
+        >
+          <div class="play-history-wrap">
+            <song-list :songs="playHistory" @selectEvent="playSelectSong"></song-list>
+          </div>
+        </scroll>
       </div>
     </div>
   </transition>
@@ -14,6 +27,10 @@
 
 <script>
   import Switches from 'base/switches/switches'
+  import Scroll from 'base/scroll/scroll'
+  import SongList from 'base/song-list/song-list'
+  import { mapGetters, mapActions } from 'vuex'
+  import Song from 'common/js/song'
 
   export default {
     data () {
@@ -26,8 +43,11 @@
 
       }
     },
+    computed: {
+      ...mapGetters(['playHistory', 'likeList'])
+    },
     components: {
-      Switches
+      Switches, Scroll, SongList
     },
     methods: {
       selectIndex (index) {
@@ -35,7 +55,18 @@
       },
       goBack () {
         this.$router.back()
-      }
+      },
+      playSelectSong (song) {
+        this.insertSong(new Song(song))
+      },
+      randomPlayLikeOrHistorySong () {
+        let list = this.currentIndex === 0 ? this.likeList : this.playHistory
+        list = list.map((song) => {
+          return new Song(song)
+        })
+        this.randomPlay({list})
+      },
+      ...mapActions(['insertSong', 'randomPlay'])
     }
   }
 </script>
@@ -74,6 +105,18 @@
         border 1px solid $color-text-l
         border-radius 100px
         font-size $font-size-medium
+      }
+    }
+    .like-play-history-wrap {
+      .like-list-scroll, .play-history-list-scroll {
+        position fixed
+        top 122px
+        bottom 0
+        left 0
+        right 0
+        text-align left
+        overflow hidden
+
       }
     }
   }
