@@ -54,7 +54,7 @@
             <i class="icon-prev" @click="playPrevSong" :class="disableClass"></i>
             <i class="needsclick" :class="normalPlayStateClass" @click="changePlayState"></i>
             <i class="icon-next" @click="playNextSong" :class="disableClass"></i>
-            <i class="icon icon-not-favorite"></i>
+            <i :class="getFavoriteIcon(currentSong)" @click.stop="toggleFavoriteSong(currentSong)"></i>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@
       showCurrentPage () {
         return this.currentPage === 'cd' ? 'cd' : 'lyric'
       },
-      ...mapGetters(['playing', 'fullScreen', 'playList', 'currentSong', 'currentIndex', 'mode', 'orderPlayList'])
+      ...mapGetters(['playing', 'fullScreen', 'currentIndex'])
     },
     data () {
       return {
@@ -357,11 +357,8 @@
             }
           }
           this.$refs.playerMiddleRight.$el.style[transitionDuration] = '300ms'
-
         }
-
         this.touch.init = false
-
       },
       ...mapMutations({
         setFullScreen: 'SET_FULLSRCEEN',
@@ -643,6 +640,10 @@
           .icon-play, .icon-pause {
             font-size 40px
           }
+          .icon-favorite{
+            color $color-sub-theme
+          }
+
         }
 
       }

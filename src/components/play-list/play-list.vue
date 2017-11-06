@@ -17,7 +17,7 @@
               <p :class="{'play-current-song':item.mid===currentSong.mid}"> {{index + 1}}. {{item.name}}</p>
             </div>
             <div class="favorite-delete">
-              <i class="icon-not-favorite"></i>
+              <i :class="getFavoriteIcon(item)" @click.stop="toggleFavoriteSong(item)"></i>
               <i class="icon-delete" @click.stop="deleteOne(item)"></i>
             </div>
           </li>
@@ -55,8 +55,8 @@
     computed: {
       playModeText () {
         return this.mode === playMode.order ? '顺序播放' : this.mode === playMode.loop ? '单曲循环' : '随机播放'
-      },
-      ...mapGetters(['orderPlayList', 'currentSong', 'mode', 'playList'])
+      }
+//      ...mapGetters(['orderPlayList'])
     },
     components: {
       Scroll, AddSong
@@ -189,6 +189,9 @@
             }
           }
           .favorite-delete {
+            .icon-favorite{
+              color $color-sub-theme
+            }
           }
         }
       }

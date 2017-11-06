@@ -4,6 +4,8 @@ const SEARCH_HISTORY_KEY = '_search-history-key_'
 const MAX_SEARCH_HISTORY_LENGTH = 20
 const PLAY_HISTORY_KEY = '_play-history-key_'
 const MAX_PLAY_HISTORY_LENGTH = 120
+const LIKE_LIST_KEY = '_like-list-key_'
+const MAX_LIKE_LIST_LENGTH = 2000
 
 function insertArray (arr, val, compare, maxLen) {
   let index = arr.findIndex(compare)
@@ -58,4 +60,27 @@ export function saveHistoryPlay (song) {
 
 export function getPlayHistoryStorage () {
   return storage.get(PLAY_HISTORY_KEY, [])
+}
+
+export function saveLikeSong (song) {
+  let likeList = storage.get(LIKE_LIST_KEY, [])
+  insertArray(likeList, song, (item) => {
+    return song.id === item.id
+  }, MAX_LIKE_LIST_LENGTH)
+  storage.set(LIKE_LIST_KEY, likeList)
+  return likeList
+}
+
+export function deleteOneLikeSong (one) {
+  let likeList = storage.get(LIKE_LIST_KEY, [])
+  let deleteIndex = likeList.findIndex((item) => {
+    return item === one
+  })
+  likeList.splice(deleteIndex, 1)
+  storage.set(LIKE_LIST_KEY, likeList)
+  return likeList
+}
+
+export function getLikeSongList () {
+  return storage.get(LIKE_LIST_KEY, [])
 }
