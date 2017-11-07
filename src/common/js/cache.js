@@ -74,7 +74,7 @@ export function saveLikeSong (song) {
 export function deleteOneLikeSong (one) {
   let likeList = storage.get(LIKE_LIST_KEY, [])
   let deleteIndex = likeList.findIndex((item) => {
-    return item === one
+    return item.id === one.id
   })
   likeList.splice(deleteIndex, 1)
   storage.set(LIKE_LIST_KEY, likeList)

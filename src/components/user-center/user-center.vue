@@ -20,6 +20,9 @@
             <song-list :songs="playHistory" @selectEvent="playSelectSong"></song-list>
           </div>
         </scroll>
+        <div class="no-result-wrap">
+          <no-result :title="showNoResultTitle()" v-show="showNoResult"></no-result>
+        </div>
       </div>
     </div>
   </transition>
@@ -32,6 +35,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import Song from 'common/js/song'
   import { playListMixin } from 'common/js/mixin'
+  import NoResult from 'base/no-result/no-result'
 
   export default {
     mixins: [playListMixin],
@@ -49,7 +53,7 @@
       ...mapGetters(['playHistory', 'likeList'])
     },
     components: {
-      Switches, Scroll, SongList
+      Switches, Scroll, SongList, NoResult
     },
     methods: {
       handlePlayList (playList) {
@@ -74,11 +78,30 @@
         this.insertSong(new Song(song))
       },
       randomPlayLikeOrHistorySong () {
+        if (this.showNoResult()) {
+          return
+        }
         let list = this.currentIndex === 0 ? this.likeList : this.playHistory
         list = list.map((song) => {
           return new Song(song)
         })
         this.randomPlay({list})
+      },
+      showNoResult () {
+        if (this.currentIndex === 0 && !this.likeList.length) {
+          return true
+        }
+        if (this.currentIndex === 1 && !this.playHistory.length) {
+          return true
+        }
+      },
+      showNoResultTitle () {
+        if (this.currentIndex === 0 && !this.likeList.length) {
+          return '您暂未收藏音乐哦'
+        }
+        if (this.currentIndex === 1 && !this.playHistory.length) {
+          return '您暂未播放过歌曲哦'
+        }
       },
       ...mapActions(['insertSong', 'randomPlay'])
     }
@@ -131,6 +154,12 @@
         text-align left
         overflow hidden
 
+      }
+      .no-result-wrap {
+        position fixed
+        top 122px
+        left 50%
+        transform translate(-50%, 0)
       }
     }
   }

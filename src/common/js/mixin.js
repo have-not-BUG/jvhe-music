@@ -92,7 +92,10 @@ export const searchMixin = {
     },
     saveHistory () {
       this.saveSearchHistory(this.newInputWord)
-      this.$refs.topTips.show()
+      if (this.$refs.topTips) {
+        this.$refs.topTips.show()
+      }
+
     },
     deleteOne (item) {
       this.deleteOneSearchHistory(item)
