@@ -77,7 +77,7 @@
       </div>
     </transition>
     <audio :src="currentSong.url" ref="audio"
-           @canplay="changeCanplay" @error="playError"
+           @play="changeCanplay" @error="playError"
            @timeupdate="audioUpDateTime" @ended="audioEnded"></audio>
     <play-list ref="playList"></play-list>
   </div>
@@ -170,8 +170,8 @@
 
         if (this.playList.length === 1) {
           this.runLoopMode()
+          return
         } else {
-
           this.setCurrentIndex(this.currentIndex - 1)
           if (this.currentIndex === -1) {
             this.setCurrentIndex(this.playList.length - 1)
@@ -181,7 +181,6 @@
           }
         }
         this.canplay = false
-
       },
       playNextSong () {
         if (!this.canplay) {
@@ -189,6 +188,7 @@
         }
         if (this.playList.length === 1) {
           this.runLoopMode()
+          return
         } else {
           if (this.currentIndex === this.playList.length - 1) {
             this.setCurrentIndex(-1)
@@ -285,6 +285,9 @@
       },
       getQQLyric () {
         this.currentSong.getQQLyricInSongClass().then(res => {
+          if (this.currentSong.lyric !== res) {
+            return
+          }
           this.currentLyric = new QQLyric(res, this.lyricHandle)
           if (this.playing) {
             this.currentLyric.play()
@@ -379,7 +382,8 @@
         }
         this.$nextTick(() => {
           this.setPlaying(false)
-          setTimeout(() => {
+          clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
             if (this.currentLyric) {
               this.currentLyric.stop()
             }
@@ -640,7 +644,7 @@
           .icon-play, .icon-pause {
             font-size 40px
           }
-          .icon-favorite{
+          .icon-favorite {
             color $color-sub-theme
           }
 

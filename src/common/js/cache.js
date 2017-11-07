@@ -5,7 +5,7 @@ const MAX_SEARCH_HISTORY_LENGTH = 20
 const PLAY_HISTORY_KEY = '_play-history-key_'
 const MAX_PLAY_HISTORY_LENGTH = 120
 const LIKE_LIST_KEY = '_like-list-key_'
-const MAX_LIKE_LIST_LENGTH = 2000
+const MAX_LIKE_LIST_LENGTH = 20000000
 
 function insertArray (arr, val, compare, maxLen) {
   let index = arr.findIndex(compare)
