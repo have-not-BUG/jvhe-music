@@ -84,7 +84,7 @@ app.use('/api', apiRoutes)
 // 静态资源配置
 app.use(express.static('./dist'))
 // 端口配置
-var port = process.env.PORT || config.build.port
+var port = process.env.LEANCLOUD_APP_PORT || process.env.PORT || config.build.port
 
 module.exports = app.listen(port, function (err) {
   if (err) {
