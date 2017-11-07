@@ -1,7 +1,8 @@
 var express = require('express')
-var config = require('./config/index')
-
+var path = require('path')
+var serveStatic = require('serve-static')
 var axios = require('axios')
+
 var app = express()
 var apiRoutes = express.Router()
 apiRoutes.get('/getQQSliderDataProxy', function (req, res) {
@@ -80,17 +81,10 @@ apiRoutes.get('/getQQRecommendSongListDetailProxy', function (req, res) {
 //   })
 //
 // })
+
 app.use('/api', apiRoutes)
-// 静态资源配置
-app.use(express.static('./dist'))
-// 端口配置
-var port = process.env.PORT || config.build.port
+app.use(serveStatic(path.join(__dirname, 'dist')))
 
-module.exports = app.listen(port, function (err) {
-  if (err) {
-    console.log('自建node服务器出错了，错误原因是:', err)
-    return
-  }
-  console.log('自建node服务器正确启动了，监听端口为：' + port + '\n')
-})
-
+var port = process.env.PORT || 5000
+app.listen(port)
+console.log('server started ' + port)
