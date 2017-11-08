@@ -101,6 +101,21 @@ apiRoutes.get('/getQQRecommendSongListDetailProxy', function (req, res) {
 //   })
 //
 // })
+apiRoutes.get('/getWYHotSongListProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/top/playlist/highquality'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params:req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易精品歌单的代理出错!  ', err)
+  })
+
+})
+
 
 app.use('/api', apiRoutes)
 

@@ -5,8 +5,21 @@
         <i class="icon-back" @click="goBack"></i>
         <switches :switches="switches" :currentIndex="currentIndex" @select="selectIndex"></switches>
       </div>
-      <div class="random-play-all-wrap">
-        <div class="random-play-all-button" @click="randomPlayLikeOrHistorySong"><i class="icon-play"></i> 随机播放全部</div>
+      <div class="random-play-and-source-wrap">
+        <div class="random-play-all-button" @click="randomPlayLikeOrHistorySong" v-show="currentIndex!==2"><i
+          class="icon-play"></i> 随机播放全部
+        </div>
+        <div class="music-source" v-show="currentIndex===2">
+          <div class="qqmusic">
+            <label for="qqmusic">QQ</label>
+            <input type="radio" id="qqmusic" value="1" v-model="musicSource">
+          </div>
+          <div class="wymusic">
+            <label for="wymusic">网易云</label>
+            <input type="radio" id="wymusic" value="2" v-model="musicSource">
+          </div>
+          <h1>您选择的是{{musicSourceCover()}}</h1>
+        </div>
       </div>
       <div class="like-play-history-wrap">
         <scroll ref="likeListScroll" class="like-list-scroll" :data="likeList" v-if="currentIndex===0">
@@ -44,13 +57,14 @@
         currentIndex: 0,
         switches: [
           {name: '我喜欢的'},
-          {name: '最近听的'}
-        ]
-
+          {name: '最近听的'},
+          {name: '音乐平台'}
+        ],
+        musicSource: '1'
       }
     },
     computed: {
-      ...mapGetters(['playHistory', 'likeList'])
+      ...mapGetters(['playHistory', 'likeList', 'musicSourceData'])
     },
     components: {
       Switches, Scroll, SongList, NoResult
@@ -94,6 +108,9 @@
         if (this.currentIndex === 1 && !this.playHistory.length) {
           return true
         }
+        if (this.currentIndex === 2) {
+          return true
+        }
       },
       showNoResultTitle () {
         if (this.currentIndex === 0 && !this.likeList.length) {
@@ -103,7 +120,22 @@
           return '您暂未播放过歌曲哦'
         }
       },
-      ...mapActions(['insertSong', 'randomPlay'])
+      musicSourceCover () {
+        if (this.musicSource === '1') {
+          return 'QQ音乐'
+        }
+        if (this.musicSource === '2') {
+          return '网易云音乐'
+        }
+      },
+      ...mapActions(['insertSong', 'randomPlay', 'saveMusicSourceData'])
+    },
+    watch: {
+      musicSource (newValue) {
+        console.log(newValue)
+        this.musicSource = newValue
+        this.saveMusicSourceData(newValue)
+      }
     }
   }
 </script>
@@ -128,7 +160,7 @@
         color $color-theme
       }
     }
-    .random-play-all-wrap {
+    .random-play-and-source-wrap {
       position absolute
       left 50%
       top 72px
@@ -142,6 +174,15 @@
         border 1px solid $color-text-l
         border-radius 100px
         font-size $font-size-medium
+      }
+      .music-source {
+        div {
+          display inline
+        }
+        h1 {
+          margin 40px auto
+        }
+
       }
     }
     .like-play-history-wrap {

@@ -34,6 +34,15 @@ export function getQQHotSongList () {
   return jsonp(url, data, options)
 }
 
+export function getWYHotSongList () {
+  const url = '/api/getWYHotSongListProxy'
+  return axios.get(url).then((res) => {
+    return Promise.resolve(res.data)
+  }).catch(error => {
+    console.log('获取网易精品歌单数据出错', error)
+  })
+}
+
 export function getQQRecommendSongListDetail (disstid) {
   // 热门歌单详情
   // https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?g_tk=1733932805&uin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=h5&needNewCode=1&new_format=1&pic=500&disstid=2683023981&type=1&json=1&utf8=1&onlysong=0&nosign=1&_=1506989372829

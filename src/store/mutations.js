@@ -36,6 +36,9 @@ const mutations = {
   },
   [types.SET_LIKE_LIST] (state, likeList) {
     state.likeList = likeList
+  },
+  [types.SET_MUSIC_SOURCE_DATA] (state, musicSourceData) {
+    state.musicSourceData = musicSourceData
   }
 }
 export default mutations

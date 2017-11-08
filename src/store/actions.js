@@ -7,7 +7,8 @@ import {
   deleteOneHistorySearch,
   saveHistoryPlay,
   saveLikeSong,
-  deleteOneLikeSong
+  deleteOneLikeSong,
+  saveMusicSource
 } from 'common/js/cache'
 
 function findIndex (list, song) {
@@ -124,4 +125,8 @@ export const saveLikeSongOnLikeList = function ({commit}, song) {
 
 export const deleteOneLikeSongOnLikeList = function ({commit}, song) {
   commit(types.SET_LIKE_LIST, deleteOneLikeSong(song))
+}
+
+export const saveMusicSourceData = function ({commit}, val) {
+  commit(types.SET_MUSIC_SOURCE_DATA, saveMusicSource(val))
 }

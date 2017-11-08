@@ -2,7 +2,7 @@
   <div class="recommend" ref="recommend">
     <scroll ref="scroll"
             class="recommend-content"
-            :data="qqhotSongList">
+            :data="hotSongList">
       <div>
         <div class="slider-wrapper" v-if="recommends.length">
           <slider>
@@ -16,15 +16,21 @@
 
         <div class="recommend-list">
           <h1 class="recommend-list-title">热门歌单推荐</h1>
-          <ul>
-            <li v-for="item in qqhotSongList" @click="chooseItem(item)">
+          <ul v-if="musicSourceData==='1'">
+            <li v-for="item in hotSongList" @click="chooseItem(item)">
               <img v-lazy="item.imgurl" :alt="item.dissname">
               <p v-html="item.dissname"></p>
             </li>
           </ul>
+          <ul v-if="musicSourceData==='2'">
+            <li v-for="item in hotSongList" @click="chooseItem(item)">
+              <img v-lazy="item.coverImgUrl" :alt="item.name">
+              <p v-html="item.name"></p>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="loading-wrapper" v-if="(!recommends.length) || (!qqhotSongList.length)">
+      <div class="loading-wrapper" v-if="(!recommends.length) || (!hotSongList.length)">
         <loading></loading>
       </div>
     </scroll>
@@ -36,19 +42,23 @@
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import { getQQHotSongList ,getQQSliderData } from 'api/recommend'
-  import { ERROR_OK } from 'api/config'
+  import { getQQHotSongList, getQQSliderData, getWYHotSongList } from 'api/recommend'
+  import { ERROR_OK, WYNET_OK } from 'api/config'
   import { playListMixin } from 'common/js/mixin'
-  import { mapMutations } from 'vuex'
+  import { mapMutations, mapGetters } from 'vuex'
+
   export default {
     mixins: [playListMixin],
     name: 'recommend',
     data () {
       return {
         recommends: [],
-        qqhotSongList: []
+        hotSongList: []
 
       }
+    },
+    computed: {
+      ...mapGetters(['musicSourceData'])
     },
     components: {
       Slider,
@@ -56,15 +66,15 @@
       Loading
     },
     methods: {
-      chooseItem(item){
+      chooseItem (item) {
         this.$router.push({
           path: `/recommend/${item.dissid}`
         })
         this.setDisc(item)
 
       },
-      handlePlayList(playList){
-        const bottomValue = playList.length > 0 ? '60px' : ''
+      handlePlayList (playList) {
+        let bottomValue = playList.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottomValue
         this.$refs.scroll.refresh()
 
@@ -72,8 +82,8 @@
       showQQSliderData: function () {
         getQQSliderData().then(res => {
           if (res.code === ERROR_OK) {
-            this.recommends = res.data.slider;
-          }else {
+            this.recommends = res.data.slider
+          } else {
             console.log('getQQSliderData里的res.code 不为0')
           }
         }).catch(err => {
@@ -84,21 +94,32 @@
       _getQQHotSongList: function () {
         getQQHotSongList().then(res => {
           if (res.code === ERROR_OK) {
-            this.qqhotSongList = res.data.hotdiss.list
-          }else {
-           console.log('getQQHotSongList里的res.code 不为0')
+            this.hotSongList = res.data.hotdiss.list
+          } else {
+            console.log('getQQHotSongList里的res.code 不为0')
           }
         }).catch(err => {
           console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
-          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
-
+//          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+        })
+      },
+      _getWYHotSongList: function () {
+        getWYHotSongList().then(res => {
+          if (res.code === WYNET_OK) {
+            this.hotSongList = res.playlists
+          } else {
+            console.log('getWYHotSongList.code 不为200')
+          }
+        }).catch(err => {
+          console.log('获取网易热门歌单出错了，请刷新重试或者联系本人', err)
+//          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
         })
       },
       loadImg: function () {
         if (!this.loadedImg) {
-          this.loadedImg = true;
+          this.loadedImg = true
           setTimeout(() => {
-            this.$refs.scroll.refresh();
+            this.$refs.scroll.refresh()
           }, 20)
 
         }
@@ -109,8 +130,13 @@
 
     },
     created: function () {
-      this.showQQSliderData();
-      this._getQQHotSongList();
+      this.showQQSliderData()
+      if (this.musicSourceData === '1') {
+        this._getQQHotSongList()
+      }
+      if (this.musicSourceData === '2') {
+        this._getWYHotSongList()
+      }
     }
 
   }

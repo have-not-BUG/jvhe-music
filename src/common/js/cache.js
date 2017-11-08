@@ -6,6 +6,7 @@ const PLAY_HISTORY_KEY = '_play-history-key_'
 const MAX_PLAY_HISTORY_LENGTH = 120
 const LIKE_LIST_KEY = '_like-list-key_'
 const MAX_LIKE_LIST_LENGTH = 20000000
+const SET_MUSIC_SOURCE_KEY = '_music-source-key_'
 
 function insertArray (arr, val, compare, maxLen) {
   let index = arr.findIndex(compare)
@@ -83,4 +84,13 @@ export function deleteOneLikeSong (one) {
 
 export function getLikeSongList () {
   return storage.get(LIKE_LIST_KEY, [])
+}
+
+export function saveMusicSource (val) {
+  storage.set(SET_MUSIC_SOURCE_KEY, val)
+  return storage.get(SET_MUSIC_SOURCE_KEY, '')
+}
+
+export function getMusicSource () {
+  return storage.get(SET_MUSIC_SOURCE_KEY, '')
 }

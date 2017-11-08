@@ -13,3 +13,4 @@ export const rankList = state => state.rankList
 export const searchHistory = state => state.searchHistory
 export const playHistory = state => state.playHistory
 export const likeList = state => state.likeList
+export const musicSourceData = state => state.musicSourceData

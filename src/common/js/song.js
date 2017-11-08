@@ -1,5 +1,5 @@
-import { getQQLyric } from 'api/lyric'
-import { ERROR_OK } from 'api/config'
+import { getQQLyric, getWYLyric } from 'api/lyric'
+import { ERROR_OK, WYNET_OK } from 'api/config'
 import { Base64 } from 'js-base64'
 
 export default class Song {
@@ -34,6 +34,38 @@ export default class Song {
   }
 }
 
+// music.163.com/api/song/detail/?id={音乐ID}&ids=%5B{音乐ID}%5D&csrf_token= 官方接口
+//  http://wangyimusic.leanapp.cn/song/detail?ids={音乐ID} 破解接口
+export class SongWY {
+  constructor ({id, singer, name, album, duration, image, url}) {
+    this.id = id
+    this.singer = singer
+    this.name = name
+    this.album = album
+    this.duration = duration
+    this.image = image
+    this.url = url
+  }
+
+  getWYLyricInSongClass () {
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+        getWYLyric(this.id).then((res) => {
+          if (res.code === WYNET_OK) {
+            this.lyric = res.lrc.lyric
+            resolve(this.lyric)
+          } else {
+            reject('get wangyi music lyric error')
+          }
+        })
+      }
+    )
+
+  }
+}
+
 export function createSong (musicData) {
 
   return new Song({
@@ -45,6 +77,20 @@ export function createSong (musicData) {
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
     url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
+
+  })
+
+}
+
+export function createSongWY (musicData) {
+  return new SongWY({
+    id: musicData.id,
+    singer: musicData.artists.name,
+    name: musicData.name,
+    album: musicData.album.name,
+    duration: musicData.duration,
+    image: musicData.picUrl,
+    url: `http://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`
 
   })
 

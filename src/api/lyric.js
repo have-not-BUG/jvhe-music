@@ -22,3 +22,12 @@ export function getQQLyric (mid) {
     console.log(err)
   })
 }
+
+export function getWYLyric (id) {
+  const url = `http://wangyimusic.leanapp.cn/lyric?id=${id}`
+  return axios.get(url).then((res) => {
+    return Promise.resolve(res.data)
+  }).catch((err) => {
+    console.log(err)
+  })
+}

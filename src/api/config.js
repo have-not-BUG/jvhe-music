@@ -15,3 +15,4 @@ export const options = {
   param: 'jsonpCallback'
 }
 export const ERROR_OK = 0
+export const WYNET_OK = 200
