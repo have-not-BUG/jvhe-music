@@ -22,6 +22,7 @@ export function getQQSliderData () {
     console.log('获取QQ轮播图数据出错', error)
   })
 }
+
 export function getQQHotSongList () {
   // 热门歌单完整地址
   // https://c.y.qq.com/v8/fcg-bin/fcg_first_yqq.fcg?g_tk=1620604199&inCharset=utf8&outCharset=GB2312&notice=0&format=jsonp&platform=yqq&hostUin=0&needNewCode=0&rnd=59241861503262381&tpl=v12&page=other&jsonpCallback=__jp1
@@ -66,6 +67,23 @@ export function getQQRecommendSongListDetail (disstid) {
     pic: 500,
     _: Date.now()
   })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+export function getWYRecommendSongListDetail (disstid) {
+  // 热门歌单详情
+  // http://wangyimusic.leanapp.cn/playlist/detail?id=311692545
+  const url = '/api/getWYRecommendSongListDetailProxy'
+  const data = {
+    id: disstid
+  }
+
   return axios.get(url, {
     params: data
   }).then((res) => {

@@ -89,7 +89,7 @@
   import progressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
   //  import { shuffle } from 'common/js/util'
-  import QQLyric from 'lyric-parser'
+  import lyricParser from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import { prefixStlye } from 'common/js/dom'
   import PlayList from 'components/play-list/play-list'
@@ -283,12 +283,20 @@
           this.playNextSong()
         }
       },
+      getLyric () {
+        if (this.currentSong.mid) {
+          this.getQQLyric()
+        }
+        if (!this.currentSong.mid) {
+          this.getWYLyric()
+        }
+      },
       getQQLyric () {
         this.currentSong.getQQLyricInSongClass().then(res => {
           if (this.currentSong.lyric !== res) {
             return
           }
-          this.currentLyric = new QQLyric(res, this.lyricHandle)
+          this.currentLyric = new lyricParser(res, this.lyricHandle)
           if (this.playing) {
             this.currentLyric.play()
           }
@@ -298,6 +306,23 @@
           this.currentLyricLineNum = 0
 
           console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
+        })
+      },
+      getWYLyric () {
+        this.currentSong.getWYLyricInSongClass().then(res => {
+          if (this.currentSong.lyric !== res) {
+            return
+          }
+          this.currentLyric = new lyricParser(res, this.lyricHandle)
+          if (this.playing) {
+            this.currentLyric.play()
+          }
+        }).catch((err) => {
+          this.currentLyric = null
+          this.playingLyric = ''
+          this.currentLyricLineNum = 0
+
+          console.log('获取网易音乐歌词出错了getWYLyricInSongClass', err)
         })
       },
       lyricHandle ({lineNum, txt}) {
@@ -383,15 +408,18 @@
         this.$nextTick(() => {
           this.setPlaying(false)
           clearTimeout(this.timer)
+          if (this.currentLyric) {
+            this.currentLyric.stop()
+            this.currentTime = 0
+            this.playingLyric = ''
+            this.currentLyricLineNum = 0
+          }
           this.timer = setTimeout(() => {
-            if (this.currentLyric) {
-              this.currentLyric.stop()
-            }
             this.$refs.audio.play()
             this.setPlaying(true)
             this.$refs.cdWrap.style.transform = `rotate(0deg)`
             this.$refs.miniCdWrap.style.transform = `rotate(0deg)`
-            this.getQQLyric()
+            this.getLyric()
           }, 500)
         })
       },

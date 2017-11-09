@@ -1,13 +1,13 @@
 <template>
   <div class="song-list-wrapper">
     <ul class="song-ul">
-      <li v-for="(song , index) in songs" @click="chooseItem(song ,index)">
+      <li :key="song.id" v-for="(song , index) in songs" @click="chooseItem(song ,index)">
         <div class="rank-icon-text" v-show="rank">
           <span :class="showRankIcon(index)"></span>
           <span class="rank-text" v-if="!showRankIcon(index)">{{showRankText(index)}}</span>
         </div>
         <div class="song-name-detail">
-          <h2 class="song-name"> <span v-show="!rank"> {{index+1}}. </span> {{song.name}}</h2>
+          <h2 class="song-name"><span v-show="!rank"> {{index + 1}}. </span> {{song.name}}</h2>
           <p class="song-detail">{{songDetail(song)}} </p>
         </div>
       </li>
@@ -17,7 +17,7 @@
 
 <script>
   export default {
-    data(){
+    data () {
       return {}
     },
     props: {
@@ -31,20 +31,20 @@
       }
     },
     methods: {
-      songDetail(song) {
+      songDetail (song) {
 //        return song.singer + '·' + song.album
         return `${song.singer}·${song.album}`
       },
-      chooseItem(item, index) {
+      chooseItem (item, index) {
         this.$emit('selectEvent', item, index)
       },
-      showRankIcon(index){
+      showRankIcon (index) {
         if (index < 3) {
           return `rank-icon icon${index}`
         }
         else return ''
       },
-      showRankText(index){
+      showRankText (index) {
         if (index > 2) {
           return index + 1
         }

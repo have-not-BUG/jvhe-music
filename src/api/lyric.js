@@ -24,8 +24,13 @@ export function getQQLyric (mid) {
 }
 
 export function getWYLyric (id) {
-  const url = `http://wangyimusic.leanapp.cn/lyric?id=${id}`
-  return axios.get(url).then((res) => {
+  const url = '/api/getWYLyricProxy'
+  const paramsvalue = {
+    id: id
+  }
+  return axios.get(url, {
+    params: paramsvalue
+  }).then((res) => {
     return Promise.resolve(res.data)
   }).catch((err) => {
     console.log(err)

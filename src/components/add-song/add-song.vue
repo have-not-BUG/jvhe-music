@@ -36,7 +36,8 @@
             <song-list :songs="playHistory" @selectEvent="playSelectSong"></song-list>
           </div>
         </scroll>
-        <scroll ref="historyListScroll" class="history-list-scroll" :data="searchHistory" v-if="currentIndex===1" :refreshDelay="refreshDelay">
+        <scroll ref="historyListScroll" class="history-list-scroll" :data="searchHistory" v-if="currentIndex===1"
+                :refreshDelay="refreshDelay">
           <div class="history-list-wrap">
             <history-list :searches="searchHistory" @chooseIt="deleteOne" @clickSavedWord="changeWord"></history-list>
           </div>
@@ -54,7 +55,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import Scroll from 'base/scroll/scroll'
   import SongList from 'base/song-list/song-list'
-  import Song from 'common/js/song'
+  import { Song } from 'common/js/song'
   import HistoryList from 'base/history-list/history-list'
   import TopTips from 'base/top-tips/top-tips'
 
@@ -118,10 +119,10 @@
     bottom 0
     background: $color-background
     padding 10px 20px
-    .top-tips{
+    .top-tips {
       height 54px
       line-height 54px
-      .icon-ok{
+      .icon-ok {
         color $color-theme
       }
     }

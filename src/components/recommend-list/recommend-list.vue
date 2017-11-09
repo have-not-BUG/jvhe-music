@@ -9,35 +9,51 @@
 <script>
   import musicList from 'components/music-list/music-list'
   import { mapGetters } from 'vuex'
-  import { getQQRecommendSongListDetail } from 'api/recommend'
-  import { ERROR_OK }  from 'api/config'
-  import { createSong }  from 'common/js/song'
+  import { getQQRecommendSongListDetail, getWYRecommendSongListDetail } from 'api/recommend'
+  import { ERROR_OK, WYNET_OK } from 'api/config'
+  import { createSong ,createSongWY } from 'common/js/song'
 
   export default {
-    data() {
+    data () {
       return {
         songs: []
       }
     },
     computed: {
-      title(){
-        return this.disc.dissname
+      title () {
+        if (this.musicSourceData === '1') {
+          return this.disc.dissname
+        }
+        if (this.musicSourceData === '2') {
+          return this.disc.name
+        }
+
       },
-      bgImage(){
-        return this.disc.imgurl
+      bgImage () {
+        if (this.musicSourceData === '1') {
+          return this.disc.imgurl
+        }
+        if (this.musicSourceData === '2') {
+          return this.disc.coverImgUrl
+        }
       },
 
-      ...mapGetters(['disc'])
+      ...mapGetters(['disc', 'musicSourceData'])
 
     },
     components: {
       musicList
     },
-    created(){
-      this._getQQRecommendSongListDetail()
+    created () {
+      if (this.musicSourceData === '1') {
+        this._getQQRecommendSongListDetail()
+      }
+      if (this.musicSourceData === '2') {
+        this._getWYRecommendSongListDetail()
+      }
     },
     methods: {
-      _getQQRecommendSongListDetail(){
+      _getQQRecommendSongListDetail () {
         if (!this.disc.dissid) {
           this.$router.push('/recommend')
           return
@@ -53,7 +69,22 @@
           console.log('获取热门歌单详情数据失败:getQQRecommendSongListDetail', err)
         })
       },
-      optimizeQQHotSongList(list){
+      _getWYRecommendSongListDetail () {
+        if (!this.disc.id) {
+          this.$router.push('/recommend')
+          return
+        }
+        getWYRecommendSongListDetail(this.disc.id).then(res => {
+          if (WYNET_OK === res.code) {
+            this.songs = this.optimizeWYHotSongList(res.playlist.tracks)
+          } else {
+            console.log('获取网易精品歌单详情数据失败：res.code不为200')
+          }
+        }).catch(err => {
+          console.log('获取网易精品歌单详情数据失败:getWYRecommendSongListDetail', err)
+        })
+      },
+      optimizeQQHotSongList (list) {
         let ret = []
         list.forEach((item) => {
           if (item.mid) {
@@ -62,8 +93,17 @@
         })
         return ret
       },
-      convertSongData(originData){
-        let convertedData = {};
+      optimizeWYHotSongList (list) {
+        let ret = []
+        list.forEach((item) => {
+          if (item.id) {
+            ret.push(createSongWY(item))
+          }
+        })
+        return ret
+      },
+      convertSongData (originData) {
+        let convertedData = {}
         convertedData.songid = originData.id
         convertedData.songmid = originData.mid
         convertedData.singer = originData.singer

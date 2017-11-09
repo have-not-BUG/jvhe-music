@@ -67,10 +67,18 @@
     },
     methods: {
       chooseItem (item) {
-        this.$router.push({
-          path: `/recommend/${item.dissid}`
-        })
-        this.setDisc(item)
+        if (this.musicSourceData === '1') {
+          this.$router.push({
+            path: `/recommend/${item.dissid}`
+          })
+          this.setDisc(item)
+        }
+        if (this.musicSourceData === '2') {
+          this.$router.push({
+            path: `/recommend/${item.id}`
+          })
+          this.setDisc(item)
+        }
 
       },
       handlePlayList (playList) {

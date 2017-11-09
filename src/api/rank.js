@@ -1,5 +1,6 @@
 import jsonp from 'common/js/jsonp'
 import { commonParams, options } from './config'
+import axios from 'axios'
 
 export function getQQAllRankData () {
   // 获取QQ各个排行榜
@@ -35,4 +36,21 @@ export function getQQRankListDetail (id) {
     _: Date.now()
   })
   return jsonp(url, data, options)
+}
+
+export function getWYRankListDetail (id) {
+  // 热门歌单详情
+  // http://wangyimusic.leanapp.cn/playlist/detail?id=311692545
+  const url = '/api/getWYRankListDetailProxy'
+  const data = {
+    idx: id
+  }
+
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  }).catch(err => {
+    console.log(err)
+  })
 }

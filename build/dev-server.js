@@ -32,7 +32,7 @@ apiRoutes.get('/getQQSliderDataProxy', function (req, res) {
     headers: {
       referer: 'https://m.y.qq.com/'
     },
-    params:req.query
+    params: req.query
   }).then((response => { res.json(response.data) })).catch(err => {
 
     console.log(' 自建获取QQ音乐推荐歌单轮播图的代理出错!  ', err)
@@ -108,15 +108,71 @@ apiRoutes.get('/getWYHotSongListProxy', function (req, res) {
     headers: {
       referer: 'http://wangyimusic.leanapp.cn'
     },
-    params:req.query
+    params: req.query
   }).then((response => { res.json(response.data) })).catch(err => {
 
     console.log(' 自建获取网易精品歌单的代理出错!  ', err)
   })
 
 })
+apiRoutes.get('/getWYRecommendSongListDetailProxy', function (req, res) {
+  const url = 'http://wangyimusic.leanapp.cn/playlist/detail'
+  axios.get(url, {
+    headers: {
+      referer: ''
+    },
+    params: req.query
+  }).then((response) => {
+    // res.json(response.data)
+    res.json(response.data)
 
+  }).catch(err => {
 
+    console.log(' 自建获取网易精品歌单详情的代理出错!  ', err)
+  })
+
+})
+apiRoutes.get('/getWYLyricProxy', function (req, res) {
+  // http://music.163.com/api/song/lyric?os=pc&id=516657051&lv=-1&kv=-1&tv=-1 官方歌词接口
+  var url = 'http://wangyimusic.leanapp.cn/lyric'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response) => {
+    var data = response.data
+    if (typeof data === 'string') {
+      var reg = /^\w+\(({[^()]+})\)$/
+
+      var jsondata = data.match(reg)
+      if (jsondata) {
+        data = JSON.parse(jsondata[1])
+      }
+    }
+    res.json(data)
+  }).catch(err => {
+
+    console.log(' 自建获取网易音乐歌词的代理出错!  ', err)
+  })
+
+})
+apiRoutes.get('/getWYRankListDetailProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/top/list'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response) => {
+    res.json(response.data)
+  }).catch(err => {
+    console.log(' 自建获取网易音乐排行榜详情的代理出错!  ', err)
+  })
+
+})
 app.use('/api', apiRoutes)
 
 var compiler = webpack(webpackConfig)

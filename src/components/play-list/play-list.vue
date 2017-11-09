@@ -10,7 +10,7 @@
       </div>
       <scroll class="all-play-list" ref="allPlayList" :refreshDelay="refreshDelay" :data="orderPlayList">
         <transition-group tag="ul" name="list" ref="playListUl">
-          <li :key="item.mid" class="play-list-li" ref="playListLi"
+          <li :key="item.id" class="play-list-li" ref="playListLi"
               v-for="(item,index) in orderPlayList"
               @click="selectItem(item,index)">
             <div class="icon-song-name">

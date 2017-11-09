@@ -6,12 +6,13 @@
 </template>
 
 <script>
-  import { getQQSingerList }  from  'api/singer'
+  import { getQQSingerList } from 'api/singer'
   import { ERROR_OK } from 'api/config'
   import Singer from 'common/js/singer'
   import Listview from 'base/listview/listview'
   import { playListMixin } from 'common/js/mixin'
   import { mapMutations } from 'vuex'
+
   const SINGER_TYPE = '热门'
   const HOT_SINGER_LENGTH = 10
 
@@ -24,13 +25,13 @@
       }
     },
     methods: {
-      handlePlayList(playList) {
+      handlePlayList (playList) {
         const bottomValue = playList.length > 0 ? '60px' : ''
         this.$refs.singer.style.bottom = bottomValue
         this.$refs.singerListView.refresh()
 
       },
-      chooseSinger(singer){
+      chooseSinger (singer) {
         this.$router.push({
           path: `/singer/${singer.mid}`
         })
@@ -38,7 +39,7 @@
 
       },
 
-      _getQQSingerList() {
+      _getQQSingerList () {
         getQQSingerList().then(res => {
           if (res.code === ERROR_OK) {
             this.optimizedSingerList = this.optimizeQQSingerList(res.data.list)
@@ -47,13 +48,14 @@
           alert('获取QQ歌手数据出错了,请刷新重试或者联系本人', err)
         })
       },
-      optimizeQQSingerList(list){
+      optimizeQQSingerList (list) {
+        console.log('list.length', list.length)
         let singersData = {
           hot: {
             title: SINGER_TYPE,
             items: []
           }
-        };
+        }
         list.forEach((item, index) => {
           if (index < HOT_SINGER_LENGTH) {
             singersData.hot.items.push(
@@ -66,7 +68,7 @@
 
           }
 
-          let initials = item.Findex;
+          let initials = item.Findex
           if (!singersData[initials]) {
             singersData[initials] = {
               title: initials,
@@ -85,9 +87,9 @@
         })
 
         let hotSingerData = [],
-          initialsSingerData = [];
+          initialsSingerData = []
         for (let key in singersData) {
-          let val = singersData[key];
+          let val = singersData[key]
 
           if (val.title === SINGER_TYPE) {
             hotSingerData.push(val)

@@ -19,6 +19,7 @@
             <input type="radio" id="wymusic" value="2" v-model="musicSource">
           </div>
           <h1>您选择的是{{musicSourceCover()}}</h1>
+          <h2 v-show="showReload"><span class="count-num">{{countNum}}</span> 秒后将刷新页面</h2>
         </div>
       </div>
       <div class="like-play-history-wrap">
@@ -46,7 +47,7 @@
   import Scroll from 'base/scroll/scroll'
   import SongList from 'base/song-list/song-list'
   import { mapGetters, mapActions } from 'vuex'
-  import Song from 'common/js/song'
+  import { Song } from 'common/js/song'
   import { playListMixin } from 'common/js/mixin'
   import NoResult from 'base/no-result/no-result'
 
@@ -54,13 +55,15 @@
     mixins: [playListMixin],
     data () {
       return {
-        currentIndex: 0,
+        currentIndex: 2,
         switches: [
           {name: '我喜欢的'},
           {name: '最近听的'},
           {name: '音乐平台'}
         ],
-        musicSource: '1'
+        musicSource: '',
+        countNum: 2,
+        showReload: false
       }
     },
     computed: {
@@ -131,11 +134,25 @@
       ...mapActions(['insertSong', 'randomPlay', 'saveMusicSourceData'])
     },
     watch: {
-      musicSource (newValue) {
+      musicSource (newValue, oldValue) {
+        if (!oldValue) {
+          return
+        }
         console.log(newValue)
-        this.musicSource = newValue
+//        this.musicSource = newValue
         this.saveMusicSourceData(newValue)
+        this.showReload = true
+        setTimeout(() => {
+          location.reload()
+        }, 2000)
+
+        setInterval(() => {
+          this.countNum--
+        }, 1000)
       }
+    },
+    created () {
+      this.musicSource = this.musicSourceData
     }
   }
 </script>
@@ -178,9 +195,17 @@
       .music-source {
         div {
           display inline
+          color $color-text
         }
         h1 {
-          margin 40px auto
+          margin 20px auto
+
+        }
+        h2 {
+          color $color-text
+          .count-num {
+            color $color-theme
+          }
         }
 
       }

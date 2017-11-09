@@ -92,5 +92,5 @@ export function saveMusicSource (val) {
 }
 
 export function getMusicSource () {
-  return storage.get(SET_MUSIC_SOURCE_KEY, '')
+  return storage.get(SET_MUSIC_SOURCE_KEY, '1')
 }
