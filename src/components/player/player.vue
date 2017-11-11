@@ -302,7 +302,7 @@
           }
         }).catch((err) => {
           this.currentLyric = null
-          this.playingLyric = ''
+          this.playingLyric = '无歌词或者获取QQ音乐歌词出错了'
           this.currentLyricLineNum = 0
 
           console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
@@ -319,7 +319,7 @@
           }
         }).catch((err) => {
           this.currentLyric = null
-          this.playingLyric = ''
+          this.playingLyric = '无歌词或者获取网易音乐歌词出错了'
           this.currentLyricLineNum = 0
 
           console.log('获取网易音乐歌词出错了getWYLyricInSongClass', err)

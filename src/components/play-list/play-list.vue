@@ -14,7 +14,7 @@
               v-for="(item,index) in orderPlayList"
               @click="selectItem(item,index)">
             <div class="icon-song-name">
-              <p :class="{'play-current-song':item.mid===currentSong.mid}"> {{index + 1}}. {{item.name}}</p>
+              <p :class="{'play-current-song':item.id===currentSong.id}"> {{index + 1}}. {{item.name}}</p>
             </div>
             <div class="favorite-delete">
               <i :class="getFavoriteIcon(item)" @click.stop="toggleFavoriteSong(item)"></i>
@@ -75,7 +75,7 @@
       selectItem (item, index) {
         if (this.mode === playMode.random) {
           index = this.playList.findIndex((song) => {
-            return item.mid === song.mid
+            return item.id === song.id
           })
         }
         this.setCurrentIndex(index)
@@ -83,7 +83,7 @@
       },
       scrollToCurrentSong (current) {
         let index = this.orderPlayList.findIndex((song) => {
-          return song.mid === current.mid
+          return song.id === current.id
         })
         this.$refs.allPlayList.scrollToElement(this.$refs.playListUl.$el.children[index], 300)
       },
@@ -114,7 +114,7 @@
     },
     watch: {
       currentSong (newSong, oldSong) {
-        if (!this.isShow || newSong.mid === oldSong.mid) {
+        if (!this.isShow || newSong.id === oldSong.id) {
           return
         } else {
           this.scrollToCurrentSong(newSong)

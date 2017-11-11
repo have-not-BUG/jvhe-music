@@ -49,7 +49,6 @@
         })
       },
       optimizeQQSingerList (list) {
-        console.log('list.length', list.length)
         let singersData = {
           hot: {
             title: SINGER_TYPE,
