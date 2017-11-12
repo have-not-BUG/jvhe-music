@@ -137,10 +137,10 @@
         })
       },
       chooseRank (item) {
+        this.setRankList(item)
         this.$router.push({
           path: `/rank/${item.id}`
         })
-        this.setRankList(item)
       },
       ...mapMutations({
         setRankList: 'SET_RANKLIST'

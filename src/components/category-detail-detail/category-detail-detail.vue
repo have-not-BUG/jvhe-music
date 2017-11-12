@@ -11,7 +11,7 @@
   import { mapGetters } from 'vuex'
   import { getQQRecommendSongListDetail, getWYRecommendSongListDetail } from 'api/recommend'
   import { ERROR_OK, WYNET_OK } from 'api/config'
-  import { createSong, createSongWY } from 'common/js/song'
+  import { createSong ,createSongWY } from 'common/js/song'
 
   export default {
     data () {
@@ -59,7 +59,6 @@
           return
         }
         getQQRecommendSongListDetail(this.disc.dissid).then(res => {
-          console.log('this.disc.dissid this.disc.dissid', this.disc.dissid)
           if (ERROR_OK === res.code) {
             this.songs = this.optimizeQQHotSongList(res.cdlist[0].songlist)
             console.log(res.cdlist[0])

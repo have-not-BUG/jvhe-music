@@ -43,14 +43,15 @@
 <script>
   import Scroll from 'base/scroll/scroll'
   import { getOrSetAttributeData } from 'common/js/dom'
-  import Loading from  'base/loading/loading'
-  let initialsNavigationSize = 16;
+  import Loading from 'base/loading/loading'
+
+  let initialsNavigationSize = 16
   export default {
-    created(){
-      this.touch = {};
-      this.classifiedHeight = [];
-      this.listenScroll = true;
-      this.probeType = 3;
+    created () {
+      this.touch = {}
+      this.classifiedHeight = []
+      this.listenScroll = true
+      this.probeType = 3
 
     },
     props: {
@@ -59,7 +60,7 @@
         default: []
       }
     },
-    data(){
+    data () {
       return {
         scrollY: -1,
         currentIndex: 0
@@ -70,86 +71,86 @@
       Loading
     },
     computed: {
-      singerInitials(){
+      singerInitials () {
         return this.data.map((includeClassifiedData) => {
           return includeClassifiedData.title.substr(0, 1)
         })
       },
-      classifiedFixedTitle(){
+      classifiedFixedTitle () {
         return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
 
       }
 
     },
     methods: {
-      refresh(){
+      refresh () {
         this.$refs.listview.refresh()
       },
-      toInitialsSingers(e){
+      toInitialsSingers (e) {
         let startnum = getOrSetAttributeData(e.target, 'index'),
-          starttouch = e.touches[0];
-        this.touch.pageY1 = starttouch.pageY;
-        this.touch.startindex = parseInt(startnum);
-        this._scrollTo(startnum);
+          starttouch = e.touches[0]
+        this.touch.pageY1 = starttouch.pageY
+        this.touch.startindex = parseInt(startnum)
+        this._scrollTo(startnum)
 
       },
-      moveToInitialsSingers(e){
-        let endtouch = e.touches[0];
+      moveToInitialsSingers (e) {
+        let endtouch = e.touches[0]
         this.touch.pageY2 = endtouch.pageY
-        let movednum = parseInt((this.touch.pageY2 - this.touch.pageY1) / initialsNavigationSize | 0);
-        let movetonum = this.touch.startindex + movednum;
-        this._scrollTo(movetonum);
+        let movednum = parseInt((this.touch.pageY2 - this.touch.pageY1) / initialsNavigationSize | 0)
+        let movetonum = this.touch.startindex + movednum
+        this._scrollTo(movetonum)
       },
-      _scrollTo(index){
+      _scrollTo (index) {
         let num = parseInt(index)
 
         if (num === 0 || num < 0) {
-          this.scrollY = 0;
-          num = 0;
+          this.scrollY = 0
+          num = 0
 
         } else if (num > this.classifiedHeight.length - 1) {
-          num = this.classifiedHeight.length - 1;
-          this.scrollY = -(this.classifiedHeight[num - 1]);
+          num = this.classifiedHeight.length - 1
+          this.scrollY = -(this.classifiedHeight[num - 1])
         }
         else {
-          this.scrollY = -(this.classifiedHeight[num - 1]);
+          this.scrollY = -(this.classifiedHeight[num - 1])
         }
 
-        this.$refs.listview.scrollToElement(this.$refs.includeClassified[num], 0);
+        this.$refs.listview.scrollToElement(this.$refs.includeClassified[num], 0)
 
       },
-      _computHeight(){
+      _computHeight () {
         let includeClassified = this.$refs.includeClassified,
-          height = 0;
+          height = 0
         for (let i = 0; i < includeClassified.length; i++) {
           height += includeClassified[i].clientHeight
-          this.classifiedHeight.push(height);
+          this.classifiedHeight.push(height)
         }
       },
-      scroll(pos){
+      scroll (pos) {
         this.scrollY = pos.y
 
       },
-      chooseItem(item){
+      chooseItem (item) {
         this.$emit('choose', item)
       }
 
     },
     watch: {
-      data(){
+      data () {
         setTimeout(() => {
           this._computHeight()
         }, 20)
       },
-      scrollY(newY){
-        let classifiedHeight = this.classifiedHeight;
+      scrollY (newY) {
+        let classifiedHeight = this.classifiedHeight
         if (newY > 0 || newY === 0 || -newY < classifiedHeight[0]) {
           this.currentIndex = 0
           return
         }
         for (let i = 0; i < classifiedHeight.length - 1; i++) {
           let height1 = classifiedHeight[i],
-            height2 = classifiedHeight[i + 1];
+            height2 = classifiedHeight[i + 1]
           if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i + 1
             return

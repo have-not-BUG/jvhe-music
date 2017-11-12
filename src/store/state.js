@@ -14,7 +14,8 @@ const state = {
   searchHistory: getSearchHistoryStorage(),
   playHistory: getPlayHistoryStorage(),
   likeList: getLikeSongList(),
-  musicSourceData: getMusicSource()
+  musicSourceData: getMusicSource(),
+  category: {}
 }
 export default state
 

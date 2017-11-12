@@ -42,18 +42,28 @@ const RecommendList = (resolve) => {
     resolve(module)
   })
 }
+const Rank = (resolve) => {
+  import('components/rank/rank').then((module) => {
+    resolve(module)
+  })
+}
 const RankDetail = (resolve) => {
   import('components/rank-detail/rank-detail').then((module) => {
     resolve(module)
   })
 }
-const userCenter = (resolve) => {
-  import('components/user-center/user-center').then((module) => {
+const Category = (resolve) => {
+  import('components/category/category').then((module) => {
     resolve(module)
   })
 }
-const Rank = (resolve) => {
-  import('components/rank/rank').then((module) => {
+const CategoryDetail = (resolve) => {
+  import('components/category-detail/category-detail').then((module) => {
+    resolve(module)
+  })
+}
+const userCenter = (resolve) => {
+  import('components/user-center/user-center').then((module) => {
     resolve(module)
   })
 }
@@ -70,6 +80,18 @@ export default new Router({
       children: [{
         path: ':id',
         component: RankDetail
+      }]
+    },
+    {
+      path: '/category',
+      component: Category,
+      children: [{
+        path: ':id',
+        component: CategoryDetail,
+        children: [{
+          path: ':id',
+          component: RecommendList
+        }]
       }]
     },
     {

@@ -173,6 +173,31 @@ apiRoutes.get('/getWYRankListDetailProxy', function (req, res) {
   })
 
 })
+apiRoutes.get('/getQQDissByTagProxy', function (req, res) {
+  var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/portal/playlist.html'
+    },
+    params: req.query
+  }).then((response => {
+    var data = response.data
+    if (typeof data === 'string') {
+      var reg = /^\w+\(({[^()]+})\)$/
+
+      var jsondata = data.match(reg)
+      if (jsondata) {
+        data = JSON.parse(jsondata[1])
+      }
+    }
+    res.json(data)
+  })).catch(err => {
+
+    console.log(' 自建获取QQ音乐分类标签歌单的代理出错!  ', err)
+  })
+
+})
 app.use('/api', apiRoutes)
 
 var compiler = webpack(webpackConfig)

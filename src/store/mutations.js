@@ -39,6 +39,9 @@ const mutations = {
   },
   [types.SET_MUSIC_SOURCE_DATA] (state, musicSourceData) {
     state.musicSourceData = musicSourceData
+  },
+  [types.SET_CATEGRORY] (state, category) {
+    state.category = category
   }
 }
 export default mutations
