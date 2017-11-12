@@ -21,19 +21,19 @@
     },
     computed: {
       title () {
-        if (this.musicSourceData === '1') {
+        if (this.disc && this.disc.dissname) {
           return this.disc.dissname
         }
-        if (this.musicSourceData === '2') {
+        if (this.disc && this.disc.name) {
           return this.disc.name
         }
 
       },
       bgImage () {
-        if (this.musicSourceData === '1') {
+        if (this.disc && this.disc.imgurl) {
           return this.disc.imgurl
         }
-        if (this.musicSourceData === '2') {
+        if (this.disc && this.disc.coverImgUrl) {
           return this.disc.coverImgUrl
         }
       },
@@ -45,10 +45,10 @@
       musicList
     },
     created () {
-      if (this.musicSourceData === '1') {
+      if (this.disc && this.disc.imgurl) {
         this._getQQRecommendSongListDetail()
       }
-      if (this.musicSourceData === '2') {
+      if (this.disc && this.disc.coverImgUrl) {
         this._getWYRecommendSongListDetail()
       }
     },

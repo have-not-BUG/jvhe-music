@@ -1,14 +1,23 @@
 <template>
   <div class="header">
-    <h1>巨盒音乐<router-link to="/user" tag="i" class="icon-mine"></router-link></h1>
+    <h1>巨盒音乐 <span>当前:{{showMusicSource}}</span>
+      <router-link to="/user" tag="i" class="icon-mine"></router-link>
+    </h1>
   </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
-    name: 'header',
     data () {
       return {}
+    },
+    computed: {
+      showMusicSource () {
+        return this.musicSourceData === '1' ? 'QQ' : this.musicSourceData === '2' ? '网易云' : '未知'
+      },
+      ...mapGetters(['musicSourceData'])
     }
   }
 </script>
@@ -25,6 +34,11 @@
     font-size $font-size-large
     h1 {
       position relative
+      color $color-theme
+      span{
+        font-size $font-size-small-s
+        color $color-text-l
+      }
       i {
         position absolute
         top 0
