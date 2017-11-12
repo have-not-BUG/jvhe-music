@@ -70,14 +70,14 @@
         getQQSearchAll(this.newInputWord, this.showSinger, perPageNum, this.pageNum).then(res => {
           if (res.code === ERROR_OK) {
             this.songOrSingerArry = this.concatSongAndSingerData(res.data)
-            console.log('res.data', res.data)
-            console.log('this.songOrSingerArry', this.songOrSingerArry)
             this.checkMore(res.data)
           } else {
-            console.log('res.code不为0')
+            console.log('res.code不为0,getQQSearchAll')
+            alert('获取搜索数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取QQ歌手及歌曲检索数据出错了', err)
+          alert('获取QQ歌手及歌曲检索数据出错了，请刷新重试或联系本人')
         })
       },
       concatSongAndSingerData (data) {
@@ -162,8 +162,6 @@
         getQQSearchAll(this.newInputWord, true, perPageNum, this.pageNum).then(res => {
           if (res.code === ERROR_OK) {
             this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(res.data.song.list))
-            console.log('res.data', res.data)
-            console.log('this.songOrSingerArry', this.songOrSingerArry)
             this.checkMore(res.data)
           } else {
             console.log('res.code不为0')

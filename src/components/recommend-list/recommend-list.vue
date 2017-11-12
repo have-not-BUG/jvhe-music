@@ -59,15 +59,16 @@
           return
         }
         getQQRecommendSongListDetail(this.disc.dissid).then(res => {
-          console.log('this.disc.dissid this.disc.dissid', this.disc.dissid)
           if (ERROR_OK === res.code) {
             this.songs = this.optimizeQQHotSongList(res.cdlist[0].songlist)
             console.log(res.cdlist[0])
           } else {
             console.log('获取热门歌单详情数据失败：res.code不为0')
+            alert('获取热门歌单详情数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取热门歌单详情数据失败:getQQRecommendSongListDetail', err)
+          alert('获取热门歌单详情数据失败，请刷新重试或联系本人')
         })
       },
       _getWYRecommendSongListDetail () {
@@ -79,10 +80,12 @@
           if (WYNET_OK === res.code) {
             this.songs = this.optimizeWYHotSongList(res.playlist.tracks)
           } else {
-            console.log('获取网易精品歌单详情数据失败：res.code不为200')
+            console.log('获取网易精品歌单详情数据异常：res.code不为200')
+            alert('获取网易精品歌单详情数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取网易精品歌单详情数据失败:getWYRecommendSongListDetail', err)
+          alert('获取网易精品歌单详情数据失败，请刷新重试或联系本人', err)
         })
       },
       optimizeQQHotSongList (list) {

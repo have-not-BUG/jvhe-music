@@ -138,8 +138,6 @@
         if (!oldValue) {
           return
         }
-        console.log(newValue)
-//        this.musicSource = newValue
         this.saveMusicSourceData(newValue)
         this.showReload = true
         setTimeout(() => {

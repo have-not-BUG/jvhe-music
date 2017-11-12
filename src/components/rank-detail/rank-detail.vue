@@ -59,9 +59,11 @@
             this.rankTitleAndPic.pic = this.songs[0].image
           } else {
             console.log('获取QQ排行榜详情数据失败：res.code不为0')
+            alert('获取QQ排行榜详情数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取QQ排行榜详情数据出错了', err)
+          alert('获取QQ排行榜详情数据出错了，请刷新重试或联系本人')
         })
       },
       _getWYRankListDetail () {
@@ -76,10 +78,12 @@
             this.rankTitleAndPic.pic = res.result.coverImgUrl
 
           } else {
-            console.log('获取网易排行榜详情数据失败：res.code不为200')
+            console.log('获取网易排行榜详情数据异常：res.code不为200')
+            alert('获取网易排行榜详情数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取网易排行榜详情数据出错了', err)
+          alert('获取网易排行榜详情数据出错了，请刷新重试或联系本人')
         })
       },
       optimizeQQRankListSongs (list) {

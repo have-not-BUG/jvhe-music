@@ -49,17 +49,15 @@
       },
       _getQQCategory () {
         getQQCategory().then(res => {
-          console.log(res.data)
           this.category = res.data.categories.splice(1)
-          console.log(this.category)
         }).catch(err => {
           console.log('获取QQ音乐大分类数据出错', err)
+          alert('获取音乐分类数据出错，请刷新重试或联系本人')
         })
       },
       sendCategory (id, name) {
         let categoryInfo = {categoryId: id, categoryName: name}
         this.setCategory(categoryInfo)
-        console.log('sendCategory', id, name)
         this.$router.push({
           path: `/category/${id}`
         })

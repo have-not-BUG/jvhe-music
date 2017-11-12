@@ -43,6 +43,9 @@
         getQQSingerList().then(res => {
           if (res.code === ERROR_OK) {
             this.optimizedSingerList = this.optimizeQQSingerList(res.data.list)
+          } else {
+            console.log('res.code不为0，getQQSingerList出错')
+            alert('获取QQ歌手数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           alert('获取QQ歌手数据出错了,请刷新重试或者联系本人', err)

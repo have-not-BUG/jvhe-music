@@ -8,7 +8,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { getQQSingerDetail }  from  'api/singer'
+  import { getQQSingerDetail } from 'api/singer'
   import { ERROR_OK } from 'api/config'
 
   import { createSong } from 'common/js/song'
@@ -17,50 +17,50 @@
 
   export default {
     name: 'singer-detail',
-    data() {
+    data () {
       return {
         songs: []
       }
     },
     computed: {
-      title(){
+      title () {
         return this.singer.name
 
       },
-      bgImage(){
+      bgImage () {
         return this.singer.avatar
 
       },
 
       ...mapGetters(['singer'])
     },
-    created(){
+    created () {
       this._getQQSingerDetail()
 
     },
     methods: {
-      _getQQSingerDetail(){
+      _getQQSingerDetail () {
         if (!this.singer.mid) {
           this.$router.push('/singer')
           return
         }
         getQQSingerDetail(this.singer.mid).then(res => {
           if (res.code === ERROR_OK) {
-            this.songs = this.optimizeQQSongs(res.data.list);
-            console.log(res.data.list)
+            this.songs = this.optimizeQQSongs(res.data.list)
           } else {
             console.log('获取QQ歌手详情数据失败：res.code不为0')
+            alert('获取QQ歌手详情数据失败，请刷新重试或联系本人')
           }
 
         }).catch(err => {
-          console.log('获取歌手详情数据出错了', err);
+          console.log('获取歌手详情数据出错了', err)
           alert('获取歌手详情数据出错了，请刷新重试', err)
         })
       },
-      optimizeQQSongs(list){
-        let optimized_data = [];
+      optimizeQQSongs (list) {
+        let optimized_data = []
         list.forEach((item) => {
-          let {musicData} = item;
+          let {musicData} = item
           if (musicData.songid && musicData.albummid) {
             optimized_data.push(createSong(musicData))
           }

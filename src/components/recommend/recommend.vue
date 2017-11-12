@@ -105,10 +105,11 @@
             this.hotSongList = res.data.hotdiss.list
           } else {
             console.log('getQQHotSongList里的res.code 不为0')
+            alert('获取QQ热门歌单数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
-//          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
         })
       },
       _getWYHotSongList: function () {
@@ -117,10 +118,11 @@
             this.hotSongList = res.playlists
           } else {
             console.log('getWYHotSongList.code 不为200')
+            alert('获取网易热门歌单数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取网易热门歌单出错了，请刷新重试或者联系本人', err)
-//          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+          alert('获取网易热门歌单出错了，请刷新重试或者联系本人', err)
         })
       },
       loadImg: function () {

@@ -53,14 +53,10 @@
       Loading
     },
     methods: {
-//      scroll (pos) {
-//        this.scrollY = pos.y
-//      },
       goBack () {
         this.$router.back()
       },
       chooseItem (item) {
-        console.log('item', item)
         this.setDisc(item)
         this.$router.push({
           path: `/category/${this.category.categoryId}/${item.dissid}`
@@ -78,15 +74,15 @@
           return
         }
         getQQDissByTag(this.category.categoryId).then(res => {
-          console.log('res300',res)
           if (res.code === ERROR_OK) {
             this.hotSongList = res.data.list
           } else {
             console.log('getQQDissByTag里的res.code 不为0')
+            alert('获取分类数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取QQ音乐标签歌单详情出错了，请刷新重试或者联系本人', err)
-//          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+          alert('获取QQ音乐标签歌单详情出错了，请刷新重试或者联系本人', err)
         })
       },
       ...mapMutations({
@@ -97,12 +93,6 @@
     created: function () {
       this._getQQDissByTag()
     }
-//    ,watch: {
-//      scrollY (newscrollY) {
-//        console.log('newscrollY', newscrollY)
-//      }
-//    }
-
   }
 </script>
 
