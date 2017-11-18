@@ -15,7 +15,7 @@ apiRoutes.get('/getQQSliderDataProxy', function (req, res) {
   }).then((response => { res.json(response.data) })).catch(err => {
 
     console.log(' 自建获取QQ音乐推荐歌单轮播图的代理出错!  ', err)
-  })
+})
 
 })
 apiRoutes.get('/getQQLyricProxy', function (req, res) {
@@ -30,18 +30,18 @@ apiRoutes.get('/getQQLyricProxy', function (req, res) {
   }).then((response) => {
     var data = response.data
     if (typeof data === 'string') {
-      var reg = /^\w+\(({[^()]+})\)$/
+    var reg = /^\w+\(({[^()]+})\)$/
 
-      var jsondata = data.match(reg)
-      if (jsondata) {
-        data = JSON.parse(jsondata[1])
-      }
+    var jsondata = data.match(reg)
+    if (jsondata) {
+      data = JSON.parse(jsondata[1])
     }
-    res.json(data)
-  }).catch(err => {
+  }
+  res.json(data)
+}).catch(err => {
 
     console.log(' 自建获取QQ音乐歌词的代理出错!  ', err)
-  })
+})
 
 })
 apiRoutes.get('/getQQRecommendSongListDetailProxy', function (req, res) {
@@ -56,10 +56,10 @@ apiRoutes.get('/getQQRecommendSongListDetailProxy', function (req, res) {
     // res.json(response.data)
     res.json(response.data)
 
-  }).catch(err => {
+}).catch(err => {
 
     console.log(' 自建获取QQ音乐热歌榜详情的代理出错!  ', err)
-  })
+})
 
 })
 // apiRoutes.get('/getQQSearch', function (req, res) {
@@ -91,7 +91,7 @@ apiRoutes.get('/getWYHotSongListProxy', function (req, res) {
   }).then((response => { res.json(response.data) })).catch(err => {
 
     console.log(' 自建获取网易精品歌单的代理出错!  ', err)
-  })
+})
 
 })
 apiRoutes.get('/getWYRecommendSongListDetailProxy', function (req, res) {
@@ -105,10 +105,10 @@ apiRoutes.get('/getWYRecommendSongListDetailProxy', function (req, res) {
     // res.json(response.data)
     res.json(response.data)
 
-  }).catch(err => {
+}).catch(err => {
 
     console.log(' 自建获取网易精品歌单详情的代理出错!  ', err)
-  })
+})
 
 })
 apiRoutes.get('/getWYLyricProxy', function (req, res) {
@@ -123,18 +123,18 @@ apiRoutes.get('/getWYLyricProxy', function (req, res) {
   }).then((response) => {
     var data = response.data
     if (typeof data === 'string') {
-      var reg = /^\w+\(({[^()]+})\)$/
+    var reg = /^\w+\(({[^()]+})\)$/
 
-      var jsondata = data.match(reg)
-      if (jsondata) {
-        data = JSON.parse(jsondata[1])
-      }
+    var jsondata = data.match(reg)
+    if (jsondata) {
+      data = JSON.parse(jsondata[1])
     }
-    res.json(data)
-  }).catch(err => {
+  }
+  res.json(data)
+}).catch(err => {
 
     console.log(' 自建获取网易音乐歌词的代理出错!  ', err)
-  })
+})
 
 })
 apiRoutes.get('/getWYRankListDetailProxy', function (req, res) {
@@ -147,9 +147,9 @@ apiRoutes.get('/getWYRankListDetailProxy', function (req, res) {
     params: req.query
   }).then((response) => {
     res.json(response.data)
-  }).catch(err => {
+}).catch(err => {
     console.log(' 自建获取网易音乐排行榜详情的代理出错!  ', err)
-  })
+})
 
 })
 apiRoutes.get('/getQQDissByTagProxy', function (req, res) {
@@ -163,18 +163,100 @@ apiRoutes.get('/getQQDissByTagProxy', function (req, res) {
   }).then((response => {
     var data = response.data
     if (typeof data === 'string') {
-      var reg = /^\w+\(({[^()]+})\)$/
+    var reg = /^\w+\(({[^()]+})\)$/
 
-      var jsondata = data.match(reg)
-      if (jsondata) {
-        data = JSON.parse(jsondata[1])
-      }
+    var jsondata = data.match(reg)
+    if (jsondata) {
+      data = JSON.parse(jsondata[1])
     }
-    res.json(data)
-  })).catch(err => {
+  }
+  res.json(data)
+})).catch(err => {
 
     console.log(' 自建获取QQ音乐分类标签歌单的代理出错!  ', err)
-  })
+})
+
+})
+apiRoutes.get('/getWYDissByTagProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/top/playlist'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => {
+    var data = response.data
+    if (typeof data === 'string') {
+    console.log('请求的数据是字符串 jsonp==>json')
+    var reg = /^\w+\(({[^()]+})\)$/
+
+    var jsondata = data.match(reg)
+    if (jsondata) {
+      data = JSON.parse(jsondata[1])
+    }
+  }
+  res.json(data)
+})).catch(err => {
+
+    console.log(' 自建获取网易音乐分类标签歌单的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSingerListProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/top/artists?limit=100'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易热门歌手的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSingerDetailProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/artists'
+
+  axios.get(url, {
+    headers: {
+      referer: 'wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易云音乐歌手详情的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSearchAllProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/search/suggest'
+
+  axios.get(url, {
+    headers: {
+      referer: 'wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易云音乐搜索全部类型的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSearchOnlySongProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/search'
+
+  axios.get(url, {
+    headers: {
+      referer: 'wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易云音乐只搜索歌曲的代理出错!  ', err)
+})
 
 })
 app.use('/api', apiRoutes)

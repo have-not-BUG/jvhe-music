@@ -275,8 +275,9 @@
         }
       },
       checkMoreWY(data) {
-        const song = data.songs
-        if (!song || this.offset >= song.songCount) {
+        console.log('checkMoreWYData', data)
+//        const song = data.songs
+        if (!data.songCount || this.offset >= data.songCount || data.songCount <= perPageNum) {
           this.hasMore = false
         }
       },
