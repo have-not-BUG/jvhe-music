@@ -198,6 +198,88 @@ apiRoutes.get('/getQQDissByTagProxy', function (req, res) {
   })
 
 })
+apiRoutes.get('/getWYDissByTagProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/top/playlist'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => {
+    var data = response.data
+    if (typeof data === 'string') {
+      console.log('请求的数据是字符串 jsonp==>json')
+      var reg = /^\w+\(({[^()]+})\)$/
+
+      var jsondata = data.match(reg)
+      if (jsondata) {
+        data = JSON.parse(jsondata[1])
+      }
+    }
+    res.json(data)
+  })).catch(err => {
+
+    console.log(' 自建获取网易音乐分类标签歌单的代理出错!  ', err)
+  })
+
+})
+apiRoutes.get('/getWYSingerListProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/top/artists?limit=100'
+
+  axios.get(url, {
+    headers: {
+      referer: 'http://wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易热门歌手的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSingerDetailProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/artists'
+
+  axios.get(url, {
+    headers: {
+      referer: 'wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易云音乐歌手详情的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSearchAllProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/search/suggest'
+
+  axios.get(url, {
+    headers: {
+      referer: 'wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易云音乐搜索全部类型的代理出错!  ', err)
+})
+
+})
+apiRoutes.get('/getWYSearchOnlySongProxy', function (req, res) {
+  var url = 'http://wangyimusic.leanapp.cn/search'
+
+  axios.get(url, {
+    headers: {
+      referer: 'wangyimusic.leanapp.cn'
+    },
+    params: req.query
+  }).then((response => { res.json(response.data) })).catch(err => {
+
+    console.log(' 自建获取网易云音乐只搜索歌曲的代理出错!  ', err)
+})
+
+})
 app.use('/api', apiRoutes)
 
 var compiler = webpack(webpackConfig)

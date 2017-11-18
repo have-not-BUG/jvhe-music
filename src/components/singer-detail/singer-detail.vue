@@ -7,39 +7,44 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import { getQQSingerDetail } from 'api/singer'
-  import { ERROR_OK } from 'api/config'
+  import {mapGetters} from 'vuex'
+  import {getQQSingerDetail, getWYSingerDetail} from 'api/singer'
+  import {ERROR_OK, WYNET_OK} from 'api/config'
 
-  import { createSong } from 'common/js/song'
+  import {createSong, createSongWY} from 'common/js/song'
 
   import musicList from 'components/music-list/music-list'
 
   export default {
     name: 'singer-detail',
-    data () {
+    data() {
       return {
         songs: []
       }
     },
     computed: {
-      title () {
+      title() {
         return this.singer.name
 
       },
-      bgImage () {
+      bgImage() {
         return this.singer.avatar
 
       },
 
-      ...mapGetters(['singer'])
+      ...mapGetters(['singer', 'musicSourceData'])
     },
-    created () {
-      this._getQQSingerDetail()
+    created() {
+      if (this.musicSourceData === '1') {
+        this._getQQSingerDetail()
+      }
+      if (this.musicSourceData === '2') {
+        this._getWYSingerDetail()
+      }
 
     },
     methods: {
-      _getQQSingerDetail () {
+      _getQQSingerDetail() {
         if (!this.singer.mid) {
           this.$router.push('/singer')
           return
@@ -57,12 +62,41 @@
           alert('获取歌手详情数据出错了，请刷新重试', err)
         })
       },
-      optimizeQQSongs (list) {
+      _getWYSingerDetail() {
+        if (!this.singer.mid) {
+          this.$router.push('/singer')
+          return
+        }
+        getWYSingerDetail(this.singer.mid).then(res => {
+          if (res.code === WYNET_OK) {
+            this.songs = this.optimizeWYSongs(res.hotSongs)
+          } else {
+            console.log('获取网易云音乐歌手详情数据失败：res.code不为0')
+            alert('获取网易云音乐歌手详情数据失败，请刷新重试或联系本人')
+          }
+
+        }).catch(err => {
+          console.log('获取网易云音乐歌手详情数据出错了', err)
+          alert('获取网易云音乐歌手详情数据出错了，请刷新重试', err)
+        })
+      },
+      optimizeQQSongs(list) {
         let optimized_data = []
         list.forEach((item) => {
           let {musicData} = item
           if (musicData.songid && musicData.albummid) {
             optimized_data.push(createSong(musicData))
+          }
+
+        })
+        return optimized_data
+      },
+      optimizeWYSongs(list) {
+        let optimized_data = []
+        list.forEach((item) => {
+          let musicData = item
+          if (musicData.id && musicData.al.id) {
+            optimized_data.push(createSongWY(musicData))
           }
 
         })

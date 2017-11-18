@@ -181,7 +181,7 @@
       overflow hidden
       .classified-title {
         color $color-text-l
-        background-color #333
+        background-color $color-highlight-background
         padding-left 20px
         line-height 30px
         height 30px
@@ -231,7 +231,7 @@
       left 0
       width 100%
       padding-left 20px
-      background-color #333
+      background-color $color-highlight-background
       color: $color-theme
       line-height 30px
       height 30px

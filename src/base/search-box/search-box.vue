@@ -71,7 +71,7 @@
     }
     .icon-dismiss {
       font-size $font-size-medium-x
-      color $color-background
+      color $color-text-l
     }
   }
 

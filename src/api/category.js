@@ -38,6 +38,20 @@ export function getQQDissByTag (categoryId) {
   })
 }
 
+export function getWYDissByTag (categoryName) {
+  const url = '/api/getWYDissByTagProxy'
+  const data = {
+    cat: categoryName
+  }
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  }).catch(error => {
+    console.log('获取网易音乐分类标签歌单详情数据出错getWYDissByTagProxy', error)
+  })
+}
+
 export function getQQHotSongList () {
   // 热门歌单完整地址
   // https://c.y.qq.com/v8/fcg-bin/fcg_first_yqq.fcg?g_tk=1620604199&inCharset=utf8&outCharset=GB2312&notice=0&format=jsonp&platform=yqq&hostUin=0&needNewCode=0&rnd=59241861503262381&tpl=v12&page=other&jsonpCallback=__jp1

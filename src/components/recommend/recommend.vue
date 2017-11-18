@@ -15,7 +15,7 @@
         </div>
 
         <div class="recommend-list">
-          <h1 class="recommend-list-title">热门歌单推荐</h1>
+          <h1 class="recommend-list-title">精品歌单推荐</h1>
           <ul v-if="musicSourceData==='1'">
             <li v-for="item in hotSongList" @click="chooseItem(item)">
               <img v-lazy="item.imgurl" :alt="item.dissname">
@@ -42,15 +42,15 @@
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import { getQQHotSongList, getQQSliderData, getWYHotSongList } from 'api/recommend'
-  import { ERROR_OK, WYNET_OK } from 'api/config'
-  import { playListMixin } from 'common/js/mixin'
-  import { mapMutations, mapGetters } from 'vuex'
+  import {getQQHotSongList, getQQSliderData, getWYHotSongList} from 'api/recommend'
+  import {ERROR_OK, WYNET_OK} from 'api/config'
+  import {playListMixin} from 'common/js/mixin'
+  import {mapMutations, mapGetters} from 'vuex'
 
   export default {
     mixins: [playListMixin],
     name: 'recommend',
-    data () {
+    data() {
       return {
         recommends: [],
         hotSongList: []
@@ -66,22 +66,22 @@
       Loading
     },
     methods: {
-      chooseItem (item) {
+      chooseItem(item) {
         if (this.musicSourceData === '1') {
+          this.setDisc(item)
           this.$router.push({
             path: `/recommend/${item.dissid}`
           })
-          this.setDisc(item)
         }
         if (this.musicSourceData === '2') {
+          this.setDisc(item)
           this.$router.push({
             path: `/recommend/${item.id}`
           })
-          this.setDisc(item)
         }
 
       },
-      handlePlayList (playList) {
+      handlePlayList(playList) {
         let bottomValue = playList.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottomValue
         this.$refs.scroll.refresh()
@@ -159,13 +159,16 @@
 
   .recommend {
     position: fixed
-    width: 100%
+    width 100%
     top: 88px
     bottom: 0
+    right 10px
+    left auto
     /*border 1px solid #fff*/
     box-sizing border-box
     .recommend-content {
       height 100%
+      width 100%
       overflow: hidden
       /*border 1px solid red*/
       div {
@@ -174,10 +177,18 @@
           width: 100%
           overflow: hidden
           /*border 1px solid green*/
+          .slider {
+            width: 100%
+            .slider-group {
+              .slider-item {
+              }
+            }
+          }
         }
         .recommend-list {
           margin 15px
           position relative
+          width 100%
           /*border 1px solid blue*/
           .recommend-list-title {
             text-align center

@@ -22,18 +22,20 @@
 </template>
 
 <script>
-  import { ERROR_OK } from 'api/config'
-  import { getQQSearchAll } from 'api/search'
-  import { createSong } from 'common/js/song'
+  import {ERROR_OK, WYNET_OK} from 'api/config'
+  import {getQQSearchAll, getWYSearchAll} from 'api/search'
+  import {createSong, createSongWY} from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
   import noResult from 'base/no-result/no-result'
-  import Singer from 'common/js/singer'
-  import { mapMutations, mapActions } from 'vuex'
+  import {Singer, SingerWY} from 'common/js/singer'
+  import {mapGetters, mapMutations, mapActions} from 'vuex'
 
   const perPageNum = 20
   export default {
-    computed: {},
+    computed: {
+      ...mapGetters(['musicSourceData'])
+    },
     props: {
       newInputWord: {
         type: String,
@@ -44,26 +46,36 @@
         default: true
       }
     },
-    data () {
+    data() {
       return {
         pageNum: 1,
         songOrSingerArry: [],
         pullup: true,
         hasMore: true,
         title: '',
-        beforeScroll: true
+        beforeScroll: true,
+        offset: 0
       }
     },
     components: {
       Scroll, Loading, noResult
     },
     watch: {
-      newInputWord () {
-        this._getQQSearchAll()
+      newInputWord(newWord) {
+        if (!newWord || newWord === ' ') {
+          return
+        }
+        if (this.musicSourceData === '1') {
+          this._getQQSearchAll()
+        }
+        if (this.musicSourceData === '2') {
+          this._getWYSearchAll()
+        }
+
       }
     },
     methods: {
-      _getQQSearchAll () {
+      _getQQSearchAll() {
         this.pageNum = 1
         this.hasMore = true
         this.$refs.scroll.scrollTo(0, 0)
@@ -73,14 +85,35 @@
             this.checkMore(res.data)
           } else {
             console.log('res.code不为0,getQQSearchAll')
-            alert('获取搜索数据异常，请刷新重试或联系本人')
+            alert('获取QQ搜索数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取QQ歌手及歌曲检索数据出错了', err)
           alert('获取QQ歌手及歌曲检索数据出错了，请刷新重试或联系本人')
         })
       },
-      concatSongAndSingerData (data) {
+      _getWYSearchAll() {
+        this.offset = 0
+        this.hasMore = true
+        this.$refs.scroll.scrollTo(0, 0)
+        getWYSearchAll(this.newInputWord, this.showSinger, perPageNum, this.offset).then(res => {
+          if (this.showSinger) {
+            this.hasMore = false
+          }
+          if (res.code === WYNET_OK) {
+            this.songOrSingerArry = this.concatSongAndSingerDataWY(res.result)
+            console.log('res.result', res.result)
+            this.checkMoreWY(res.result)
+          } else {
+            console.log('res.code不为200,getWYSearchAll')
+            alert('获取网易搜索数据异常，请刷新重试或联系本人')
+          }
+        }).catch(err => {
+          console.log('获取网易歌手及歌曲检索数据出错了', err)
+          alert('获取网易歌手及歌曲检索数据出错了，请刷新重试或联系本人')
+        })
+      },
+      concatSongAndSingerData(data) {
         let ret = []
         if (data.zhida.zhida_singer && data.zhida.zhida_singer.singerMID) {
           ret.push({...data.zhida.zhida_singer, ...{type: 'singer'}})
@@ -91,7 +124,18 @@
         }
         return ret
       },
-      optimizeSongData (songData) {
+      concatSongAndSingerDataWY(data) {
+        let ret = []
+        if (data.artists && data.artists.length > 0) {
+          ret.push({...data.artists[0], ...{type: 'singer'}})
+        }
+        if (data.songs && data.songs.length > 0) {
+          this.optimizeSongDataWY(data.songs)
+          ret = ret.concat(this.optimizeSongDataWY(data.songs))
+        }
+        return ret
+      },
+      optimizeSongData(songData) {
 
         let ret = []
         songData.forEach(item => {
@@ -123,67 +167,126 @@
         })
         return ret
       },
-      getIcon (item) {
+      optimizeSongDataWY(songData) {
+//        console.log('songData无album.picUrl数据 因此无专辑图片只显示alt',songData)
+        let ret = []
+        songData.forEach(item => {
+          let songInfo = {};
+          songInfo.id = item.id
+          songInfo.ar = item.artists
+          songInfo.name = item.name
+          songInfo.al = item.album
+          songInfo.dt = item.duration
+//          songInfo.singer = item.fsinger
+//          songInfo.songname = songInfo.songDetail[1]
+          createSongWY(songInfo)
+          ret.push(createSongWY(songInfo))
+        })
+        return ret
+      },
+      getIcon(item) {
         if (item.type && item.type === 'singer') {
           return 'icon-mine'
         } else {
           return 'icon-music'
         }
       },
-      selectItem (item) {
+      selectItem(item) {
         if (item.type && item.type === 'singer') {
-
-          const singer = new Singer({
-            mid: item.singerMID,
-            name: item.singerName
-          })
+          let singer;
+          if (this.musicSourceData === '1') {
+            singer = new Singer({
+              mid: item.singerMID,
+              name: item.singerName
+            })
+          }
+          if (this.musicSourceData === '2') {
+            singer = new SingerWY({
+              id: item.id,
+              name: item.name,
+              picUrl: item.picUrl
+            })
+          }
           this.$router.push({
             path: `/search/${singer.mid}`
           })
           this.setSinger(singer)
         } else {
+
           this.insertSong(item)
         }
         this.$emit('chooseIt')
       },
-      getSingerOrSong (item) {
+      getSingerOrSong(item) {
         if (item.type && item.type === 'singer') {
-          return item.singerName
+          if (this.musicSourceData === '1') {
+            return item.singerName
+          }
+          if (this.musicSourceData === '2') {
+            return item.name
+          }
         } else {
           return `${item.name}--${item.singer}`
         }
       },
-      MoreSearch () {
+      MoreSearch() {
         if (!this.hasMore) {
           return
         }
         this.hasMore = true
-        this.pageNum++
-        getQQSearchAll(this.newInputWord, true, perPageNum, this.pageNum).then(res => {
-          if (res.code === ERROR_OK) {
-            this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(res.data.song.list))
-            this.checkMore(res.data)
-          } else {
-            console.log('res.code不为0')
-          }
-        }).catch(err => {
-          console.log('获取QQ歌手及歌曲检索数据出错了', err)
-        })
-        console.log('要加载更多')
+        if (this.musicSourceData === '1') {
+          this.pageNum++
+          getQQSearchAll(this.newInputWord, this.showSinger, perPageNum, this.pageNum).then(res => {
+            if (res.code === ERROR_OK) {
+              this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(res.data.song.list))
+              this.checkMore(res.data)
+            } else {
+              console.log('res.code不为0')
+            }
+          }).catch(err => {
+            console.log('获取QQ歌手及歌曲检索数据出错了', err)
+          })
+          console.log('要加载更多')
+        }
+        if (this.musicSourceData === '2') {
+          this.offset += perPageNum
+          getWYSearchAll(this.newInputWord, this.showSinger, perPageNum, this.offset).then(res => {
+            if (this.showSinger) {
+              this.hasMore = false
+            }
+            if (res.code === WYNET_OK) {
+              this.songOrSingerArry = this.songOrSingerArry.concat(this.concatSongAndSingerDataWY(res.result))
+              this.checkMoreWY(res.result)
+            } else {
+              console.log('res.code不为200,getWYSearchAll')
+              alert('获取网易搜索数据异常，请刷新重试或联系本人')
+            }
+          }).catch(err => {
+            console.log('获取网易歌手及歌曲检索数据出错了', err)
+          })
+          console.log('要加载更多')
+        }
+
       },
-      checkMore (data) {
+      checkMore(data) {
         const song = data.song
         if (!song.list.length || song.curnum + song.curpage * perPageNum >= song.totalnum) {
           this.hasMore = false
         }
       },
-      pushBlur () {
+      checkMoreWY(data) {
+        const song = data.songs
+        if (!song || this.offset >= song.songCount) {
+          this.hasMore = false
+        }
+      },
+      pushBlur() {
         this.$emit('pushBlur')
       },
-      refresh () {
+      refresh() {
         this.$refs.scroll.refresh()
       },
-      changeBottom (val) {
+      changeBottom(val) {
         this.$refs.scroll.$el.style.bottom = val
       },
       ...mapMutations({

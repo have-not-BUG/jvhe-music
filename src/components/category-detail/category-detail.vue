@@ -8,10 +8,16 @@
           <div class="recommend-list-title">
             <h1></h1>
           </div>
-          <ul class="song-list-ul">
+          <ul class="song-list-ul" v-if="musicSourceData==='1'">
             <li v-for="item in hotSongList" @click="chooseItem(item)">
               <img v-lazy="item.imgurl" :alt="item.dissname">
               <p v-html="item.dissname"></p>
+            </li>
+          </ul>
+          <ul class="song-list-ul" v-if="musicSourceData==='2'">
+            <li v-for="item in hotSongList" @click="chooseItem(item)">
+              <img v-lazy="item.coverImgUrl" :alt="item.name">
+              <p v-html="item.name"></p>
             </li>
           </ul>
         </div>
@@ -31,21 +37,21 @@
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
-  import { getQQDissByTag } from 'api/category'
-  import { ERROR_OK } from 'api/config'
-  import { playListMixin } from 'common/js/mixin'
-  import { mapMutations, mapGetters } from 'vuex'
+  import {getQQDissByTag, getWYDissByTag} from 'api/category'
+  import {ERROR_OK, WYNET_OK} from 'api/config'
+  import {playListMixin} from 'common/js/mixin'
+  import {mapMutations, mapGetters} from 'vuex'
 
   export default {
     mixins: [playListMixin],
-    data () {
+    data() {
       return {
         recommends: [],
         hotSongList: []
       }
     },
     computed: {
-      ...mapGetters(['category'])
+      ...mapGetters(['category', 'musicSourceData'])
     },
     components: {
       Slider,
@@ -53,23 +59,31 @@
       Loading
     },
     methods: {
-      goBack () {
+      goBack() {
         this.$router.back()
       },
-      chooseItem (item) {
-        this.setDisc(item)
-        this.$router.push({
-          path: `/category/${this.category.categoryId}/${item.dissid}`
-        })
+      chooseItem(item) {
+        if (this.musicSourceData === '1') {
+          this.setDisc(item)
+          this.$router.push({
+            path: `/category/${this.category.categoryId}/${item.dissid}`
+          })
+        }
+        if (this.musicSourceData === '2') {
+          this.setDisc(item)
+          this.$router.push({
+            path: `/category/${this.category.categoryName}/${item.id}`
+          })
+        }
       },
-      handlePlayList (playList) {
+      handlePlayList(playList) {
         let bottomValue = playList.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottomValue
         this.$refs.scroll.refresh()
 
       },
       _getQQDissByTag: function () {
-        if (!this.category.categoryName) {
+        if (!this.category.categoryId) {
           this.$router.push('/category')
           return
         }
@@ -78,11 +92,28 @@
             this.hotSongList = res.data.list
           } else {
             console.log('getQQDissByTag里的res.code 不为0')
-            alert('获取分类数据异常，请刷新重试或联系本人')
+            alert('获取QQ分类数据异常，请刷新重试或联系本人')
           }
         }).catch(err => {
           console.log('获取QQ音乐标签歌单详情出错了，请刷新重试或者联系本人', err)
           alert('获取QQ音乐标签歌单详情出错了，请刷新重试或者联系本人', err)
+        })
+      },
+      _getWYDissByTag: function () {
+        if (!this.category.categoryName) {
+          this.$router.push('/category')
+          return
+        }
+        getWYDissByTag(this.category.categoryName).then(res => {
+          if (res.code === WYNET_OK) {
+            this.hotSongList = res.playlists
+          } else {
+            console.log('getWYDissByTag里的res.code 不为0')
+            alert('获取网易分类数据异常，请刷新重试或联系本人')
+          }
+        }).catch(err => {
+          console.log('获取网易音乐标签歌单详情出错了，请刷新重试或者联系本人', err)
+          alert('获取网易音乐标签歌单详情出错了，请刷新重试或者联系本人', err)
         })
       },
       ...mapMutations({
@@ -91,7 +122,13 @@
 
     },
     created: function () {
-      this._getQQDissByTag()
+      if (this.musicSourceData === '1') {
+        this._getQQDissByTag()
+      }
+      if (this.musicSourceData === '2') {
+        this._getWYDissByTag()
+      }
+
     }
   }
 </script>
