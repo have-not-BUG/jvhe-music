@@ -5,7 +5,10 @@
         <div class="player-bg"><img :src="currentSong.image" :alt="currentSong.name"></div>
         <div class="player-top">
           <i class="icon-back" @click="showMiniPlayer"></i>
-          <h1 class="song-name" v-html="currentSong.name"></h1>
+          <h1 class="song-name" v-html="currentSong.name"
+              @touchstart.prevent="startCanDownload"
+              @touchend.prevent="endCanDownload"
+          ></h1>
           <h1 class="singer" v-html="currentSong.singer"></h1>
         </div>
         <div class="player-middle"
@@ -143,10 +146,31 @@
         currentLyric: null,
         currentLyricLineNum: 0,
         currentPage: 'cd',
-        playingLyric: ''
+        playingLyric: '',
+        canDownload: 0
       }
     },
     methods: {
+      startCanDownload() {
+        this.canDownload = setTimeout(() => {
+          this.canDownload = 0
+        }, 2000)
+      },
+      endCanDownload() {
+        if (this.canDownload !== 0) {
+          clearTimeout(this.canDownload)
+          return
+        } else {
+          this.downloadMusic()
+        }
+      },
+      downloadMusic() {
+        if (this.currentSong.url) {
+          setTimeout(() => {
+            window.open(this.currentSong.url, '_blank')
+          }, 300)
+        }
+      },
       showPlayList() {
         this.$refs.playList.show()
       },
@@ -528,7 +552,7 @@
           height 40px
           position relative
           no-wrap()
-          padding 0 50px
+          margin 0 50px
         }
         .singer {
           font-size $font-size-medium-size-large

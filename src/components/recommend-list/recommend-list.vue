@@ -8,19 +8,19 @@
 
 <script>
   import musicList from 'components/music-list/music-list'
-  import { mapGetters } from 'vuex'
-  import { getQQRecommendSongListDetail, getWYRecommendSongListDetail } from 'api/recommend'
-  import { ERROR_OK, WYNET_OK } from 'api/config'
-  import { createSong, createSongWY } from 'common/js/song'
+  import {mapGetters} from 'vuex'
+  import {getQQRecommendSongListDetail, getWYRecommendSongListDetail} from 'api/recommend'
+  import {ERROR_OK, WYNET_OK} from 'api/config'
+  import {createSong, createSongWY} from 'common/js/song'
 
   export default {
-    data () {
+    data() {
       return {
         songs: []
       }
     },
     computed: {
-      title () {
+      title() {
         if (this.disc && this.disc.dissname) {
           return this.disc.dissname
         }
@@ -29,7 +29,7 @@
         }
 
       },
-      bgImage () {
+      bgImage() {
         if (this.disc && this.disc.imgurl) {
           return this.disc.imgurl
         }
@@ -44,16 +44,23 @@
     components: {
       musicList
     },
-    created () {
-      if (this.disc && this.disc.imgurl) {
+    created() {
+//      if (this.disc && this.disc.imgurl) {
+//        this._getQQRecommendSongListDetail()
+//      }
+//      if (this.disc && this.disc.coverImgUrl) {
+//        this._getWYRecommendSongListDetail()
+//      }
+      if (this.musicSourceData === '1') {
         this._getQQRecommendSongListDetail()
       }
-      if (this.disc && this.disc.coverImgUrl) {
+      if (this.musicSourceData === '2') {
         this._getWYRecommendSongListDetail()
       }
     },
     methods: {
-      _getQQRecommendSongListDetail () {
+      _getQQRecommendSongListDetail() {
+        console.log(this.disc, 'this.disc')
         if (!this.disc.dissid) {
           this.$router.push('/recommend')
           return
@@ -71,7 +78,7 @@
           alert('获取热门歌单详情数据失败，请刷新重试或联系本人')
         })
       },
-      _getWYRecommendSongListDetail () {
+      _getWYRecommendSongListDetail() {
         if (!this.disc.id) {
           this.$router.push('/recommend')
           return
@@ -88,7 +95,7 @@
           alert('获取网易精品歌单详情数据失败，请刷新重试或联系本人', err)
         })
       },
-      optimizeQQHotSongList (list) {
+      optimizeQQHotSongList(list) {
         let ret = []
         list.forEach((item) => {
           if (item.mid) {
@@ -97,7 +104,7 @@
         })
         return ret
       },
-      optimizeWYHotSongList (list) {
+      optimizeWYHotSongList(list) {
         let ret = []
         list.forEach((item) => {
           if (item.id) {
@@ -106,7 +113,7 @@
         })
         return ret
       },
-      convertSongData (originData) {
+      convertSongData(originData) {
         let convertedData = {}
         convertedData.songid = originData.id
         convertedData.songmid = originData.mid
