@@ -7,14 +7,14 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import { ERROR_OK, WYNET_OK } from 'api/config'
-  import { createSong, createSongWY } from 'common/js/song'
+  import {mapGetters} from 'vuex'
+  import {ERROR_OK, WYNET_OK} from 'api/config'
+  import {createSong, createSongWY} from 'common/js/song'
   import musicList from 'components/music-list/music-list'
-  import { getQQRankListDetail, getWYRankListDetail } from 'api/rank'
+  import {getQQRankListDetail, getWYRankListDetail} from 'api/rank'
 
   export default {
-    data () {
+    data() {
       return {
         songs: [],
         rankTitleAndPic: {
@@ -30,15 +30,15 @@
       }
     },
     computed: {
-      title () {
+      title() {
         return this.rankTitleAndPic.title
       },
-      bgImage () {
+      bgImage() {
         return this.rankTitleAndPic.pic
       },
       ...mapGetters(['rankList', 'musicSourceData'])
     },
-    created () {
+    created() {
       if (this.musicSourceData === '1') {
         this._getQQRankListDetail()
       }
@@ -47,7 +47,7 @@
       }
     },
     methods: {
-      _getQQRankListDetail () {
+      _getQQRankListDetail() {
         if (this.rankList.id !== 0 && !this.rankList.id) {
           this.$router.push('/rank')
           return
@@ -66,16 +66,16 @@
           alert('获取QQ排行榜详情数据出错了，请刷新重试或联系本人')
         })
       },
-      _getWYRankListDetail () {
+      _getWYRankListDetail() {
         if (this.rankList.id !== 0 && !this.rankList.id) {
           this.$router.push('/rank')
           return
         }
         getWYRankListDetail(this.rankList.id).then(res => {
           if (res.code === WYNET_OK) {
-            this.rankTitleAndPic.title = res.result.name
-            this.songs = this.optimizeWYRankListSongs(res.result.tracks)
-            this.rankTitleAndPic.pic = res.result.coverImgUrl
+            this.rankTitleAndPic.title = res.playlist.name
+            this.songs = this.optimizeWYRankListSongs(res.playlist.tracks)
+            this.rankTitleAndPic.pic = res.playlist.coverImgUrl
 
           } else {
             console.log('获取网易排行榜详情数据异常：res.code不为200')
@@ -86,7 +86,7 @@
           alert('获取网易排行榜详情数据出错了，请刷新重试或联系本人')
         })
       },
-      optimizeQQRankListSongs (list) {
+      optimizeQQRankListSongs(list) {
         let ret = []
         list.forEach((item) => {
           let musicData = item.data
@@ -97,7 +97,7 @@
         })
         return ret
       },
-      optimizeWYRankListSongs (list) {
+      optimizeWYRankListSongs(list) {
         let ret = []
         list.forEach((item) => {
           let musicData = this.covertMusicDataWY(item)
@@ -108,7 +108,11 @@
         })
         return ret
       },
-      covertMusicDataWY (data) {
+      covertMusicDataWY(data) {
+        data.mid = '';
+        return data
+      },
+      covertMusicDataWYOld(data) {
         let ret = {}
         ret.id = data.id
         ret.mid = ''
