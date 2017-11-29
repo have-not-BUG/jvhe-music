@@ -8,6 +8,7 @@
           <h1 class="song-name" v-html="currentSong.name"
               @touchstart.prevent="startCanDownload"
               @touchend.prevent="endCanDownload"
+              :data-clipboard-text="currentSong.name"
           ></h1>
           <h1 class="singer" v-html="currentSong.singer"></h1>
         </div>
@@ -97,6 +98,7 @@
   import {prefixStlye} from 'common/js/dom'
   import PlayList from 'components/play-list/play-list'
   import {playModeMixin} from 'common/js/mixin'
+  import Clipboard from 'clipboard'
 
   let transform = prefixStlye('transform')
   let transitionDuration = prefixStlye('transitionDuration')
@@ -154,7 +156,7 @@
       startCanDownload() {
         this.canDownload = setTimeout(() => {
           this.canDownload = 0
-        }, 2000)
+        }, 1000)
       },
       endCanDownload() {
         if (this.canDownload !== 0) {
@@ -475,7 +477,12 @@
       }
     },
     created() {
-      this.touch = {}
+      this.touch = {};
+      var clipboard = new Clipboard('.song-name');
+      clipboard.on('error', function (e) {
+        alert('复制歌曲名失败，请更换浏览器尝试')
+        console.log('复制歌曲名失败，请更换浏览器尝试', e)
+      });
     },
     components: {
       progressBar, progressCircle, Scroll, PlayList

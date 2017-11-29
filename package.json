@@ -14,6 +14,8 @@
     "axios": "^0.16.2",
     "babel-runtime": "^6.26.0",
     "better-scroll": "^1.2.3",
+    "clipboard": "^1.7.1",
+    "express": "^4.14.1",
     "fastclick": "^1.0.6",
     "good-storage": "^1.0.1",
     "js-base64": "^2.3.2",
@@ -22,7 +24,6 @@
     "vue": "^2.3.3",
     "vue-router": "^2.6.0",
     "vuex": "^2.4.0",
-    "express": "^4.14.1",
     "webpack-merge": "^4.1.1"
   },
   "devDependencies": {
@@ -80,7 +81,7 @@
   },
   "engines": {
     "node": ">= 4.0.0",
-    "npm": "> 5.5.1"
+    "npm": "< 5.4.0"
   },
   "browserslist": [
     "> 1%",
