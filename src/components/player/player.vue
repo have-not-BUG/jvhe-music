@@ -425,6 +425,7 @@
     },
     watch: {
       currentSong(newSong, oldSong) {
+        console.log('newSongnewSongnewSongnewSong',newSong)
         if (!newSong.id) {
           return
         }

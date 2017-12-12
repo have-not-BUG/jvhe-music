@@ -87,6 +87,10 @@ export class Song {
 //
 //   }
 // }
+// https://y.qq.com/n/yqq/song/000ljlsv1PdzCn.html
+//http://ws.stream.qqmusic.qq.com/C100000ljlsv1PdzCn.m4a?fromtag=38
+// https://y.qq.com/n/yqq/song/0027zPYs3A9fyb.html
+// http://ws.stream.qqmusic.qq.com/C1000027zPYs3A9fyb.m4a?fromtag=38
 
 export function createSong (musicData) {
   return new Song({
@@ -97,7 +101,7 @@ export function createSong (musicData) {
     album: musicData.albumname,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
+    url: `http://ws.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=38`
 
   })
 
