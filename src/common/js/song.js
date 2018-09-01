@@ -92,18 +92,49 @@ export class Song {
 // https://y.qq.com/n/yqq/song/0027zPYs3A9fyb.html
 // http://ws.stream.qqmusic.qq.com/C1000027zPYs3A9fyb.m4a?fromtag=38
 
-export function createSong (musicData) {
-  return new Song({
-    id: musicData.songid,
-    mid: musicData.songmid,
-    singer: filterSinger(musicData.singer),
-    name: musicData.songname,
-    album: musicData.albumname,
-    duration: musicData.interval,
-    image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://ws.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=38`
-
+function getQQSongVkey (musicData) {
+  const url = 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg'
+  const data = Object.assign({}, commonParams, {
+    g_tk: 843663407,
+    jsonpCallback: 'MusicJsonCallback6926652845824679',
+    loginUin: 0,
+    hostUin: 0,
+    format: 'json',
+    inCharset: 'utf8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'yqq',
+    needNewCode: 0,
+    cid: 205361747,
+    callback: 'MusicJsonCallback6926652845824679',
+    uin: 0,
+    songmid: musicData.songmid,
+    filename: `C400${musicData.songmid}.m4a`,
+   guid: 8741373900,
   })
+  return jsonp(url, data, options)
+
+}
+
+export function createSong (musicData) {
+  getQQSongVkey(musicData).then((res)=>{
+    let vkey=res.data.data.items[0].vkey;
+    return new Song({
+      id: musicData.songid,
+      mid: musicData.songmid,
+      singer: filterSinger(musicData.singer),
+      name: musicData.songname,
+      album: musicData.albumname,
+      duration: musicData.interval,
+      image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
+      // url: `http://ws.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=38`
+      url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=8741373900&vkey=${vkey}&uin=0&fromtag=66`
+
+    })
+  }).catch((err)=>{
+    alert('createSong函数里的getQQSongVkey promise出错了')
+  })
+
 
 }
 
