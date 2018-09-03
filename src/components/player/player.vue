@@ -156,7 +156,7 @@
       startCanDownload() {
         this.canDownload = setTimeout(() => {
           this.canDownload = 0
-        }, 1000)
+        }, 2000)
       },
       endCanDownload() {
         if (this.canDownload !== 0) {

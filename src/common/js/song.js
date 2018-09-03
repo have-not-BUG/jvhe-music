@@ -1,6 +1,7 @@
 import { getQQLyric, getWYLyric } from 'api/lyric'
-import { ERROR_OK, WYNET_OK } from 'api/config'
+import { ERROR_OK, WYNET_OK,options,commonParams } from 'api/config'
 import { Base64 } from 'js-base64'
+import jsonp from 'common/js/jsonp'
 
 export class Song {
   constructor ({id, mid, singer, name, album, duration, image, url}) {
@@ -94,7 +95,7 @@ export class Song {
 
 function getQQSongVkey (musicData) {
   const url = 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg'
-  const data = Object.assign({}, commonParams, {
+  const data = Object.assign({},{
     g_tk: 843663407,
     jsonpCallback: 'MusicJsonCallback6926652845824679',
     loginUin: 0,
@@ -109,33 +110,35 @@ function getQQSongVkey (musicData) {
     callback: 'MusicJsonCallback6926652845824679',
     uin: 0,
     songmid: musicData.songmid,
-    filename: `C400${musicData.songmid}.m4a`,
+    filename: `C100${musicData.songmid}.m4a`,
    guid: 8741373900,
   })
-  return jsonp(url, data, options)
+  return jsonp(url, data)
 
 }
 
 export function createSong (musicData) {
-  getQQSongVkey(musicData).then((res)=>{
-    let vkey=res.data.data.items[0].vkey;
-    return new Song({
-      id: musicData.songid,
-      mid: musicData.songmid,
-      singer: filterSinger(musicData.singer),
-      name: musicData.songname,
-      album: musicData.albumname,
-      duration: musicData.interval,
-      image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-      // url: `http://ws.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=38`
-      url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=8741373900&vkey=${vkey}&uin=0&fromtag=66`
-
+  return new Promise((resolve,reject)=>{
+    getQQSongVkey(musicData).then((res)=>{
+      let vkey,newSong;
+      vkey=res.data.items[0].vkey;
+      newSong= new Song({
+        id: musicData.songid,
+        mid: musicData.songmid,
+        singer: filterSinger(musicData.singer),
+        name: musicData.songname,
+        album: musicData.albumname,
+        duration: musicData.interval,
+        image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
+        // url: `http://ws.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=38`
+        url: `http://dl.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?guid=8741373900&vkey=${vkey}&uin=0&fromtag=66`
+      })
+      resolve(newSong)
+    }).catch((err)=>{
+      console.log('createSong函数里的getQQSongVkey promise出错了'+err)
+      reject('createSong函数里的getQQSongVkey promise出错了'+err)
     })
-  }).catch((err)=>{
-    alert('createSong函数里的getQQSongVkey promise出错了')
   })
-
-
 }
 
 export function createSongWY (musicData) {

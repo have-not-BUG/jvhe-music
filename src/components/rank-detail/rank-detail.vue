@@ -7,20 +7,22 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  import {ERROR_OK, WYNET_OK} from 'api/config'
-  import {createSong, createSongWY} from 'common/js/song'
+  import { mapGetters } from 'vuex'
+  import { ERROR_OK, WYNET_OK } from 'api/config'
+  import { createSong, createSongWY } from 'common/js/song'
   import musicList from 'components/music-list/music-list'
-  import {getQQRankListDetail, getWYRankListDetail} from 'api/rank'
+  import { getQQRankListDetail, getWYRankListDetail } from 'api/rank'
 
   export default {
-    data() {
+    data () {
       return {
         songs: [],
         rankTitleAndPic: {
           title: '',
           pic: ''
-        }
+        },
+        retArry:[],
+
       }
     },
     props: {
@@ -30,33 +32,57 @@
       }
     },
     computed: {
-      title() {
+      title () {
         return this.rankTitleAndPic.title
       },
-      bgImage() {
+      bgImage () {
         return this.rankTitleAndPic.pic
       },
       ...mapGetters(['rankList', 'musicSourceData'])
     },
-    created() {
+    created () {
       if (this.musicSourceData === '1') {
         this._getQQRankListDetail()
       }
       if (this.musicSourceData === '2') {
         this._getWYRankListDetail()
       }
+//      let aa;
+//      function hee() {
+//       return setTimeout(()=>{
+//         aa='ijioj'
+//        },1000)
+//      }
+//      hee();
+//       console.error(aa)
+
+//      let a=[1,2,3,4,5,6,7,8,9];
+//      a.forEach((item)=>{
+//        setTimeout(()=>{
+//          console.log(item)
+//        },5000)
+//
+//      })
     },
     methods: {
-      _getQQRankListDetail() {
+      _getQQRankListDetail () {
         if (this.rankList.id !== 0 && !this.rankList.id) {
           this.$router.push('/rank')
           return
         }
         getQQRankListDetail(this.rankList.id).then(res => {
           if (res.code === ERROR_OK) {
-            this.rankTitleAndPic.title = res.topinfo.ListName
-            this.songs = this.optimizeQQRankListSongs(res.songlist)
-            this.rankTitleAndPic.pic = this.songs[0].image
+            this.rankTitleAndPic.title = res.topinfo.ListName;
+            (this.optimizeQQRankListSongs(res.songlist)).then((optimizeQQRankListSongsRes) => {
+              setTimeout(()=>{
+                this.songs = this.retArry
+//              console.log('resres this.songs ' + optimizeQQRankListSongsRes+'resresresresres')
+                this.rankTitleAndPic.pic = this.songs[0].image
+              },500)
+
+            })
+
+
           } else {
             console.log('获取QQ排行榜详情数据失败：res.code不为0')
             alert('获取QQ排行榜详情数据异常，请刷新重试或联系本人')
@@ -66,7 +92,7 @@
           alert('获取QQ排行榜详情数据出错了，请刷新重试或联系本人')
         })
       },
-      _getWYRankListDetail() {
+      _getWYRankListDetail () {
         if (this.rankList.id !== 0 && !this.rankList.id) {
           this.$router.push('/rank')
           return
@@ -86,18 +112,29 @@
           alert('获取网易排行榜详情数据出错了，请刷新重试或联系本人')
         })
       },
-      optimizeQQRankListSongs(list) {
-        let ret = []
-        list.forEach((item) => {
-          let musicData = item.data
-          if (musicData.songid && musicData.albummid) {
-            ret.push(createSong(musicData))
-          }
+      optimizeQQRankListSongs (list) {
+        return new Promise((resolve, reject) => {
+          this.retArry = []
+          list.forEach((item) => {
+            let musicData = item.data
+            if (musicData.songid && musicData.albummid) {
+//            console.warn(createSong(musicData))
+              createSong(musicData).then((res) => {
+                this.retArry.push(res)
+              }).catch((err) => {
+                console.log('optimizeQQRankListSongs' + err)
+                reject('optimizeQQRankListSongs出错了' + err)
+              })
 
+            }
+
+          })
+          console.warn(this.retArry+'retttttttt')
+          resolve(this.retArry)
         })
-        return ret
+
       },
-      optimizeWYRankListSongs(list) {
+      optimizeWYRankListSongs (list) {
         let ret = []
         list.forEach((item) => {
           let musicData = this.covertMusicDataWY(item)
@@ -108,11 +145,11 @@
         })
         return ret
       },
-      covertMusicDataWY(data) {
-        data.mid = '';
+      covertMusicDataWY (data) {
+        data.mid = ''
         return data
       },
-      covertMusicDataWYOld(data) {
+      covertMusicDataWYOld (data) {
         let ret = {}
         ret.id = data.id
         ret.mid = ''
