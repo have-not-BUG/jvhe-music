@@ -117,6 +117,12 @@ function getQQSongVkey (musicData) {
 
 }
 
+//$typecode	$filetype	码率	fromtag
+//C100	.m4a		66  可播放的全  不算清晰
+//C400	.m4a		66  不全  清晰
+//M500	.mp3	128kbps	30  清晰
+//M800	.mp3	320kbps	30  不算清晰
+
 export function createSong (musicData) {
   return new Promise((resolve,reject)=>{
     getQQSongVkey(musicData).then((res)=>{
