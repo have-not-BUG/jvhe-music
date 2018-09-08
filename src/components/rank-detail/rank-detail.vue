@@ -21,7 +21,7 @@
           title: '',
           pic: ''
         },
-        retArry:[],
+        retArry: [],
 
       }
     },
@@ -72,16 +72,19 @@
         }
         getQQRankListDetail(this.rankList.id).then(res => {
           if (res.code === ERROR_OK) {
-            this.rankTitleAndPic.title = res.topinfo.ListName;
-            (this.optimizeQQRankListSongs(res.songlist)).then((optimizeQQRankListSongsRes) => {
-              setTimeout(()=>{
-                this.songs = this.retArry
-//              console.log('resres this.songs ' + optimizeQQRankListSongsRes+'resresresresres')
-                this.rankTitleAndPic.pic = this.songs[0].image
-              },500)
-
-            })
-
+            this.rankTitleAndPic.title = res.topinfo.ListName
+            this.songs = this.optimizeQQRankListSongs(res.songlist)
+//            setTimeout(()=>{
+//              this.rankTitleAndPic.pic = this.songs[0].image
+//            },500)
+//            (this.optimizeQQRankListSongs(res.songlist)).then((optimizeQQRankListSongsRes) => {
+//              setTimeout(()=>{
+//                this.songs = this.retArry
+////              console.log('resres this.songs ' + optimizeQQRankListSongsRes+'resresresresres')
+//                this.rankTitleAndPic.pic = this.songs[0].image
+//              },500)
+//
+//            })
 
           } else {
             console.log('获取QQ排行榜详情数据失败：res.code不为0')
@@ -113,25 +116,26 @@
         })
       },
       optimizeQQRankListSongs (list) {
-        return new Promise((resolve, reject) => {
-          this.retArry = []
-          list.forEach((item) => {
-            let musicData = item.data
-            if (musicData.songid && musicData.albummid) {
+//        return new Promise((resolve, reject) => {
+        this.retArry = []
+        list.forEach((item) => {
+          let musicData = item.data
+          if (musicData.songid && musicData.albummid) {
 //            console.warn(createSong(musicData))
-              createSong(musicData).then((res) => {
-                this.retArry.push(res)
-              }).catch((err) => {
-                console.log('optimizeQQRankListSongs' + err)
-                reject('optimizeQQRankListSongs出错了' + err)
-              })
+            createSong(musicData).then((res) => {
+              this.retArry.push(res)
+            }).catch((err) => {
+              console.log('optimizeQQRankListSongs' + err)
+//                reject('optimizeQQRankListSongs出错了' + err)
+            })
 
-            }
+          }
 
-          })
-          console.warn(this.retArry+'retttttttt')
-          resolve(this.retArry)
         })
+        return this.retArry
+//          console.warn(this.retArry+'retttttttt')
+//          resolve(this.retArry)
+//        })
 
       },
       optimizeWYRankListSongs (list) {
@@ -162,6 +166,13 @@
     },
     components: {
       musicList
+    },
+    watch: {
+      songs (newSong) {
+        if (newSong.length > 0) {
+          this.rankTitleAndPic.pic = newSong[0].image
+        }
+      }
     }
   }
 </script>

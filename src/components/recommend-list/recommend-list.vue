@@ -99,7 +99,12 @@
         let ret = []
         list.forEach((item) => {
           if (item.mid) {
-            ret.push(createSong(this.convertSongData(item)))
+            createSong(this.convertSongData(item)).then((res)=>{
+              ret.push(res)
+            }).catch((err)=>{
+              console.log('optimizeQQHotSongList里的createSong出错了'+err)
+            })
+
           }
         })
         return ret

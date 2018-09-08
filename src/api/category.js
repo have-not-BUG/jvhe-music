@@ -9,7 +9,19 @@ export function getQQCategory () {
   const data = Object.assign({}, commonParams, {
     platform: 'yqq',
     needNewCode: 0,
-    outCharset: 'utf-8'
+    outCharset: 'utf-8',
+
+    //  0908 查看官网的请求参数
+    // g_tk: 843663407,
+    // loginUin: 0,
+    // hostUin: 0,
+    // format: 'jsonp',
+    // inCharset: 'utf8',
+    // outCharset: 'utf-8',
+    // notice: 0,
+    // platform: 'yqq',
+    // needNewCode: 0,
+
   })
 
   return jsonp(url, data, options)

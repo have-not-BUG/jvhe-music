@@ -51,7 +51,7 @@
         }
         getQQSingerDetail(this.singer.mid).then(res => {
           if (res.code === ERROR_OK) {
-            this.songs = this.optimizeQQSongs(res.data.list)
+            this.songs=this.optimizeQQSongs(res.data.list)
           } else {
             console.log('获取QQ歌手详情数据失败：res.code不为0')
             alert('获取QQ歌手详情数据失败，请刷新重试或联系本人')
@@ -81,15 +81,26 @@
         })
       },
       optimizeQQSongs(list) {
-        let optimized_data = []
-        list.forEach((item) => {
-          let {musicData} = item
-          if (musicData.songid && musicData.albummid) {
-            optimized_data.push(createSong(musicData))
-          }
+//        return new Promise((resolve,reject)=>{
+          let optimized_data = []
+          list.forEach((item,index) => {
+            let {musicData} = item
+            if (musicData.songid && musicData.albummid) {
+//              optimized_data.push(createSong(musicData))
+              createSong(musicData).then((res)=>{
+                optimized_data.push(res)
+              }).catch((err)=>{
+                console.log('optimizeQQSongs里的createSong出错'+err)
+              })
+            }
 
-        })
-        return optimized_data
+          })
+//          resolve(optimized_data)
+        console.log('optimized_data'+optimized_data)
+
+          return optimized_data
+//        })
+
       },
       optimizeWYSongs(list) {
         let optimized_data = []

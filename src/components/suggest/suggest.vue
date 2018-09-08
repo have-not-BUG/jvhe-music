@@ -14,7 +14,7 @@
       </li>
       <loading :title="title" class="loading-wrap" v-show="hasMore && newInputWord"></loading>
     </ul>
-    <div class="no-result-wrap" v-show="newInputWord &&!songOrSingerArry.length && !hasMore">
+    <div class="no-result-wrap" v-if="newInputWord &&!songOrSingerArry.length && !hasMore">
       <no-result title="抱歉！暂无搜索结果，您可更换搜索词重试。"></no-result>
     </div>
 
@@ -54,7 +54,8 @@
         hasMore: true,
         title: '',
         beforeScroll: true,
-        offset: 0
+        offset: 0,
+        qqOptimizeSongData:[],
       }
     },
     components: {
@@ -81,7 +82,7 @@
         this.$refs.scroll.scrollTo(0, 0)
         getQQSearchAll(this.newInputWord, this.showSinger, perPageNum, this.pageNum).then(res => {
           if (res.code === ERROR_OK) {
-            this.songOrSingerArry = this.concatSongAndSingerData(res.data)
+            this.concatSongAndSingerData(res.data)
             this.checkMore(res.data)
           } else {
             console.log('res.code不为0,getQQSearchAll')
@@ -114,15 +115,18 @@
         })
       },
       concatSongAndSingerData(data) {
-        let ret = []
-        if (data.zhida.zhida_singer && data.zhida.zhida_singer.singerMID) {
-          ret.push({...data.zhida.zhida_singer, ...{type: 'singer'}})
-        }
+       this.songOrSingerArry = []
+        // 搜索歌曲
         if (data.song && data.song.list.length > 0) {
-          this.optimizeSongData(data.song.list)
-          ret = ret.concat(this.optimizeSongData(data.song.list))
+//          this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(data.song.list))
+          this.songOrSingerArry=this.optimizeSongData(data.song.list);
+//          this.songOrSingerArry =this.qqOptimizeSongData;
         }
-        return ret
+        // 搜索歌手
+        if (data.zhida.zhida_singer && data.zhida.zhida_singer.singerMID) {
+          this.songOrSingerArry.push({...data.zhida.zhida_singer, ...{type: 'singer'}})
+        }
+//        return this.songOrSingerArry
       },
       concatSongAndSingerDataWY(data) {
         let ret = []
@@ -136,36 +140,47 @@
         return ret
       },
       optimizeSongData(songData) {
+//          this.qqOptimizeSongData = [];
+          let ret = [];
+          songData.forEach((item,index) => {
+            let songInfo = {}
+            if (item.f.match(/@@/g)) {
+              songInfo.songDetail = item.f.split('@@')
+              songInfo.songid = songInfo.songDetail[8].match(/\w+/g)[6]
+              songInfo.songmid = songInfo.songDetail[0]
+              songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
+              songInfo.albumname = songInfo.songDetail[2]
+              songInfo.albummid = songInfo.songDetail[6]
+              songInfo.interval = songInfo.songDetail[7]
 
-        let ret = []
-        songData.forEach(item => {
-          let songInfo = {}
-          if (item.f.match(/@@/g)) {
-            songInfo.songDetail = item.f.split('@@')
-            songInfo.songid = songInfo.songDetail[8].match(/\w+/g)[6]
-            songInfo.songmid = songInfo.songDetail[0]
-            songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
-            songInfo.albumname = songInfo.songDetail[2]
-            songInfo.albummid = songInfo.songDetail[6]
-            songInfo.interval = songInfo.songDetail[7]
-
-          } else {
-            songInfo.songDetail = item.f.split('|')
-            songInfo.songid = songInfo.songDetail[0]
-            songInfo.songmid = songInfo.songDetail[20]
-            songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
-            songInfo.albumname = songInfo.songDetail[5]
-            songInfo.albummid = songInfo.songDetail[22]
-            songInfo.interval = songInfo.songDetail[7]
-          }
+            } else {
+              songInfo.songDetail = item.f.split('|')
+              songInfo.songid = songInfo.songDetail[0]
+              songInfo.songmid = songInfo.songDetail[20]
+              songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
+              songInfo.albumname = songInfo.songDetail[5]
+              songInfo.albummid = songInfo.songDetail[22]
+              songInfo.interval = songInfo.songDetail[7]
+            }
 
 //          songInfo.singer = item.fsinger
 //          songInfo.songname = songInfo.songDetail[1]
-          songInfo.songname = item.fsong
-          createSong(songInfo)
-          ret.push(createSong(songInfo))
+            songInfo.songname = item.fsong
+            createSong(songInfo).then((res)=>{
+//              this.qqOptimizeSongData.push(res)
+              ret.push(res)
+            }).catch((err)=>{
+              console.log('optimizeSongData里的createSong出错了'+err)
+            })
         })
+
+        // 异步 此时返回的是空 todo
+
+//        console.table(this.qqOptimizeSongData)
+//        return this.qqOptimizeSongData
+
         return ret
+
       },
       optimizeSongDataWY(songData) {
 //        console.log('songData无album.picUrl数据 因此无专辑图片只显示alt',songData)
