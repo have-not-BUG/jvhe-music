@@ -2,29 +2,56 @@ import jsonp from 'common/js/jsonp'
 import { commonParams, options } from './config'
 import axios from 'axios'
 
+
+// 使用jsonp 无效请求 应该加 相应的请求头！！
+export function getQQCategory0 () {
+  // 热门歌单完整地址
+  // https://c.y.qq.com/v8/fcg-bin/fcg_first_yqq.fcg?g_tk=1620604199&inCharset=utf8&outCharset=GB2312&notice=0&format=jsonp&platform=yqq&hostUin=0&needNewCode=0&rnd=59241861503262381&tpl=v12&page=other&jsonpCallback=__jp1
+  const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg'
+  const data = Object.assign({}, commonParams, {
+    // platform: 'yqq',
+    // needNewCode: 0,
+    // outCharset: 'utf-8',
+     // 0908 查看官网的请求参数
+    g_tk: 843663407,
+    loginUin: 0,
+    hostUin: 0,
+    format: 'jsonp',
+    inCharset: 'utf8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'yqq',
+    needNewCode: 0,
+    jsonpCallback:"getPlaylistTags",
+
+  })
+
+  return jsonp(url, data)
+}
+
 export function getQQCategory () {
   // 热门歌单完整地址
   // https://c.y.qq.com/v8/fcg-bin/fcg_first_yqq.fcg?g_tk=1620604199&inCharset=utf8&outCharset=GB2312&notice=0&format=jsonp&platform=yqq&hostUin=0&needNewCode=0&rnd=59241861503262381&tpl=v12&page=other&jsonpCallback=__jp1
   const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg'
   const data = Object.assign({}, commonParams, {
-    platform: 'yqq',
-    needNewCode: 0,
-    outCharset: 'utf-8',
-
-    //  0908 查看官网的请求参数
-    // g_tk: 843663407,
-    // loginUin: 0,
-    // hostUin: 0,
-    // format: 'jsonp',
-    // inCharset: 'utf8',
-    // outCharset: 'utf-8',
-    // notice: 0,
     // platform: 'yqq',
     // needNewCode: 0,
+    // outCharset: 'utf-8',
+    // 0908 查看官网的请求参数
+    g_tk: 843663407,
+    loginUin: 0,
+    hostUin: 0,
+    format: 'jsonp',
+    inCharset: 'utf8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'yqq',
+    needNewCode: 0,
+    jsonpCallback:"getPlaylistTags",
 
   })
 
-  return jsonp(url, data, options)
+  return jsonp(url, data)
 }
 
 export function getQQDissByTag (categoryId) {
