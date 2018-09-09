@@ -22,14 +22,14 @@
 </template>
 
 <script>
-  import {ERROR_OK, WYNET_OK} from 'api/config'
-  import {getQQSearchAll, getWYSearchAll} from 'api/search'
-  import {createSong, createSongWY} from 'common/js/song'
+  import { ERROR_OK, WYNET_OK } from 'api/config'
+  import { getQQSearchAll, getWYSearchAll } from 'api/search'
+  import { createSong, createSongWY } from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
   import noResult from 'base/no-result/no-result'
-  import {Singer, SingerWY} from 'common/js/singer'
-  import {mapGetters, mapMutations, mapActions} from 'vuex'
+  import { Singer, SingerWY } from 'common/js/singer'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
 
   const perPageNum = 20
   export default {
@@ -46,7 +46,7 @@
         default: true
       }
     },
-    data() {
+    data () {
       return {
         pageNum: 1,
         songOrSingerArry: [],
@@ -55,14 +55,14 @@
         title: '',
         beforeScroll: true,
         offset: 0,
-        qqOptimizeSongData:[],
+        qqOptimizeSongData: [],
       }
     },
     components: {
       Scroll, Loading, noResult
     },
     watch: {
-      newInputWord(newWord) {
+      newInputWord (newWord) {
         if (!newWord || newWord === ' ') {
           return
         }
@@ -76,7 +76,7 @@
       }
     },
     methods: {
-      _getQQSearchAll() {
+      _getQQSearchAll () {
         this.pageNum = 1
         this.hasMore = true
         this.$refs.scroll.scrollTo(0, 0)
@@ -93,7 +93,7 @@
           alert('获取QQ歌手及歌曲检索数据出错了，请刷新重试或联系本人')
         })
       },
-      _getWYSearchAll() {
+      _getWYSearchAll () {
         this.offset = 0
         this.hasMore = true
         this.$refs.scroll.scrollTo(0, 0)
@@ -114,12 +114,12 @@
           alert('获取网易歌手及歌曲检索数据出错了，请刷新重试或联系本人')
         })
       },
-      concatSongAndSingerData(data) {
-       this.songOrSingerArry = []
+      concatSongAndSingerData (data) {
+        this.songOrSingerArry = []
         // 搜索歌曲
         if (data.song && data.song.list.length > 0) {
 //          this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(data.song.list))
-          this.songOrSingerArry=this.optimizeSongData(data.song.list);
+          this.songOrSingerArry = this.optimizeSongData(data.song.list)
 //          this.songOrSingerArry =this.qqOptimizeSongData;
         }
         // 搜索歌手
@@ -128,7 +128,7 @@
         }
 //        return this.songOrSingerArry
       },
-      concatSongAndSingerDataWY(data) {
+      concatSongAndSingerDataWY (data) {
         let ret = []
         if (data.artists && data.artists.length > 0) {
           ret.push({...data.artists[0], ...{type: 'singer'}})
@@ -139,39 +139,39 @@
         }
         return ret
       },
-      optimizeSongData(songData) {
+      optimizeSongData (songData) {
 //          this.qqOptimizeSongData = [];
-          let ret = [];
-          songData.forEach((item,index) => {
-            let songInfo = {}
-            if (item.f.match(/@@/g)) {
-              songInfo.songDetail = item.f.split('@@')
-              songInfo.songid = songInfo.songDetail[8].match(/\w+/g)[6]
-              songInfo.songmid = songInfo.songDetail[0]
-              songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
-              songInfo.albumname = songInfo.songDetail[2]
-              songInfo.albummid = songInfo.songDetail[6]
-              songInfo.interval = songInfo.songDetail[7]
+        let ret = []
+        songData.forEach((item, index) => {
+          let songInfo = {}
+          if (item.f.match(/@@/g)) {
+            songInfo.songDetail = item.f.split('@@')
+            songInfo.songid = songInfo.songDetail[8].match(/\w+/g)[6]
+            songInfo.songmid = songInfo.songDetail[0]
+            songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
+            songInfo.albumname = songInfo.songDetail[2]
+            songInfo.albummid = songInfo.songDetail[6]
+            songInfo.interval = songInfo.songDetail[7]
 
-            } else {
-              songInfo.songDetail = item.f.split('|')
-              songInfo.songid = songInfo.songDetail[0]
-              songInfo.songmid = songInfo.songDetail[20]
-              songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
-              songInfo.albumname = songInfo.songDetail[5]
-              songInfo.albummid = songInfo.songDetail[22]
-              songInfo.interval = songInfo.songDetail[7]
-            }
+          } else {
+            songInfo.songDetail = item.f.split('|')
+            songInfo.songid = songInfo.songDetail[0]
+            songInfo.songmid = songInfo.songDetail[20]
+            songInfo.singer = songInfo.songDetail[3].replace(/&amp;/g, '&')
+            songInfo.albumname = songInfo.songDetail[5]
+            songInfo.albummid = songInfo.songDetail[22]
+            songInfo.interval = songInfo.songDetail[7]
+          }
 
 //          songInfo.singer = item.fsinger
 //          songInfo.songname = songInfo.songDetail[1]
-            songInfo.songname = item.fsong
-            createSong(songInfo).then((res)=>{
+          songInfo.songname = item.fsong
+          createSong(songInfo).then((res) => {
 //              this.qqOptimizeSongData.push(res)
-              ret.push(res)
-            }).catch((err)=>{
-              console.log('optimizeSongData里的createSong出错了'+err)
-            })
+            ret.push(res)
+          }).catch((err) => {
+            console.log('optimizeSongData里的createSong出错了' + err)
+          })
         })
 
         // 异步 此时返回的是空 todo
@@ -182,11 +182,11 @@
         return ret
 
       },
-      optimizeSongDataWY(songData) {
+      optimizeSongDataWY (songData) {
 //        console.log('songData无album.picUrl数据 因此无专辑图片只显示alt',songData)
         let ret = []
         songData.forEach(item => {
-          let songInfo = {};
+          let songInfo = {}
           songInfo.id = item.id
           songInfo.ar = item.artists
           songInfo.name = item.name
@@ -199,16 +199,16 @@
         })
         return ret
       },
-      getIcon(item) {
+      getIcon (item) {
         if (item.type && item.type === 'singer') {
           return 'icon-mine'
         } else {
           return 'icon-music'
         }
       },
-      selectItem(item) {
+      selectItem (item) {
         if (item.type && item.type === 'singer') {
-          let singer;
+          let singer
           if (this.musicSourceData === '1') {
             singer = new Singer({
               mid: item.singerMID,
@@ -232,7 +232,7 @@
         }
         this.$emit('chooseIt')
       },
-      getSingerOrSong(item) {
+      getSingerOrSong (item) {
         if (item.type && item.type === 'singer') {
           if (this.musicSourceData === '1') {
             return item.singerName
@@ -244,7 +244,7 @@
           return `${item.name}--${item.singer}`
         }
       },
-      MoreSearch() {
+      MoreSearch () {
         if (!this.hasMore) {
           return
         }
@@ -253,7 +253,17 @@
           this.pageNum++
           getQQSearchAll(this.newInputWord, this.showSinger, perPageNum, this.pageNum).then(res => {
             if (res.code === ERROR_OK) {
-              this.songOrSingerArry = this.songOrSingerArry.concat(this.optimizeSongData(res.data.song.list))
+              let optimizeSongDataRet = this.optimizeSongData(res.data.song.list)
+//              console.log('optimizeSongDataRet', optimizeSongDataRet)
+              setTimeout(()=>{
+                optimizeSongDataRet.forEach((item) => {
+                  this.songOrSingerArry.push(item);
+                });
+                console.log('延迟')
+              },2500);
+              console.log('checkMore')
+//              let concatArry=this.songOrSingerArry.concat(this.optimizeSongData(res.data.song.list));
+//              this.songOrSingerArry = concatArry;
               this.checkMore(res.data)
             } else {
               console.log('res.code不为0')
@@ -283,26 +293,26 @@
         }
 
       },
-      checkMore(data) {
+      checkMore (data) {
         const song = data.song
         if (!song.list.length || song.curnum + song.curpage * perPageNum >= song.totalnum) {
           this.hasMore = false
         }
       },
-      checkMoreWY(data) {
+      checkMoreWY (data) {
         console.log('checkMoreWYData', data)
 //        const song = data.songs
         if (!data.songCount || this.offset >= data.songCount || data.songCount <= perPageNum) {
           this.hasMore = false
         }
       },
-      pushBlur() {
+      pushBlur () {
         this.$emit('pushBlur')
       },
-      refresh() {
+      refresh () {
         this.$refs.scroll.refresh()
       },
-      changeBottom(val) {
+      changeBottom (val) {
         this.$refs.scroll.$el.style.bottom = val
       },
       ...mapMutations({

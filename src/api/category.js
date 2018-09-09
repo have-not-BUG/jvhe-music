@@ -3,7 +3,7 @@ import { commonParams, options } from './config'
 import axios from 'axios'
 
 
-// 使用jsonp 无效请求 应该加 相应的请求头！！
+//  该方法弃用了。。。 使用jsonp 无效请求 应该加 相应的请求头！！
 export function getQQCategory0 () {
   // 热门歌单完整地址
   // https://c.y.qq.com/v8/fcg-bin/fcg_first_yqq.fcg?g_tk=1620604199&inCharset=utf8&outCharset=GB2312&notice=0&format=jsonp&platform=yqq&hostUin=0&needNewCode=0&rnd=59241861503262381&tpl=v12&page=other&jsonpCallback=__jp1
@@ -29,10 +29,11 @@ export function getQQCategory0 () {
   return jsonp(url, data)
 }
 
+// 采用自建代理的方式
 export function getQQCategory () {
   // 热门歌单完整地址
   // https://c.y.qq.com/v8/fcg-bin/fcg_first_yqq.fcg?g_tk=1620604199&inCharset=utf8&outCharset=GB2312&notice=0&format=jsonp&platform=yqq&hostUin=0&needNewCode=0&rnd=59241861503262381&tpl=v12&page=other&jsonpCallback=__jp1
-  const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg'
+  const url = '/api/getQQCategory'
   const data = Object.assign({}, commonParams, {
     // platform: 'yqq',
     // needNewCode: 0,
@@ -47,11 +48,14 @@ export function getQQCategory () {
     notice: 0,
     platform: 'yqq',
     needNewCode: 0,
-    jsonpCallback:"getPlaylistTags",
-
   })
-
-  return jsonp(url, data)
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  }).catch((err) => {
+    console.log(err)
+  })
 }
 
 export function getQQDissByTag (categoryId) {

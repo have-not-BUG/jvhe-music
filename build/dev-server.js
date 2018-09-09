@@ -65,6 +65,37 @@ apiRoutes.get('/getQQLyricProxy', function (req, res) {
   })
 
 })
+apiRoutes.get('/getQQCategory', function (req, res) {
+  var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/portal/playlist.html',
+      host: 'c.y.qq.com',
+      'authority': 'c.y.qq.com',
+      'method': 'GET',
+      'scheme': 'https'
+    },
+    params: req.query
+  }).then((response) => {
+    var data = response.data
+    if (typeof data === 'string') {
+      // 将jsonp改为json
+      var reg = /^\w+\(({[^()]+})\)$/
+
+      var jsondata = data.match(reg)
+      if (jsondata) {
+        data = JSON.parse(jsondata[1])
+      }
+    }
+    res.json(data)
+  }).catch(err => {
+
+    console.log(' 自建获取QQ音乐分类的代理出错!  ', err)
+  })
+
+})
+
 apiRoutes.get('/getQQRecommendSongListDetailProxy', function (req, res) {
   const url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
   axios.get(url, {
