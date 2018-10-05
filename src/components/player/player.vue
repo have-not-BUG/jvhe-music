@@ -88,16 +88,16 @@
 </template>
 
 <script>
-  import {mapGetters, mapMutations, mapActions} from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
   import progressBar from 'base/progress-bar/progress-bar'
   import progressCircle from 'base/progress-circle/progress-circle'
-  import {playMode} from 'common/js/config'
+  import { playMode } from 'common/js/config'
   //  import { shuffle } from 'common/js/util'
   import lyricParser from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
-  import {prefixStlye} from 'common/js/dom'
+  import { prefixStlye } from 'common/js/dom'
   import PlayList from 'components/play-list/play-list'
-  import {playModeMixin} from 'common/js/mixin'
+  import { playModeMixin } from 'common/js/mixin'
   import Clipboard from 'clipboard'
 
   let transform = prefixStlye('transform')
@@ -105,39 +105,39 @@
   export default {
     mixins: [playModeMixin],
     computed: {
-      normalPlayStateClass() {
+      normalPlayStateClass () {
         return this.playing ? 'icon-pause' : 'icon-play'
       },
-      miniPlayStateClass() {
+      miniPlayStateClass () {
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
-      normalCdStateClass() {
+      normalCdStateClass () {
         return this.playing ? 'play' : ''
       },
-      miniCdStateClass() {
+      miniCdStateClass () {
         return this.playing ? 'play' : ''
       },
-      disableClass() {
+      disableClass () {
         return this.canplay ? '' : 'disable'
       },
-      runningTime() {
+      runningTime () {
         return this.changingAudioProgress ? this.showMinuteAndSecond(this.changeAudioProgressTime) : this.showMinuteAndSecond(this.currentTime)
       },
-      totalTime() {
+      totalTime () {
         return this.showMinuteAndSecond(this.currentSong.duration)
       },
-      percent() {
+      percent () {
         return this.currentTime / this.currentSong.duration
       },
 //      playModeIco () {
 //        return this.mode === playMode.order ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
 //      },
-      showCurrentPage() {
+      showCurrentPage () {
         return this.currentPage === 'cd' ? 'cd' : 'lyric'
       },
       ...mapGetters(['playing', 'fullScreen', 'currentIndex'])
     },
-    data() {
+    data () {
       return {
         canplay: false,
         currentTime: 0,
@@ -153,12 +153,12 @@
       }
     },
     methods: {
-      startCanDownload() {
+      startCanDownload () {
         this.canDownload = setTimeout(() => {
           this.canDownload = 0
         }, 2000)
       },
-      endCanDownload() {
+      endCanDownload () {
         if (this.canDownload !== 0) {
           clearTimeout(this.canDownload)
           return
@@ -166,30 +166,30 @@
           this.downloadMusic()
         }
       },
-      downloadMusic() {
+      downloadMusic () {
         if (this.currentSong.url) {
           setTimeout(() => {
             window.open(this.currentSong.url, '_blank')
           }, 300)
         }
       },
-      showPlayList() {
+      showPlayList () {
         this.$refs.playList.show()
       },
-      showMiniPlayer() {
+      showMiniPlayer () {
         this.setFullScreen(false)
       },
-      showFullScreen() {
+      showFullScreen () {
         this.setFullScreen(true)
       },
-      changePlayState() {
+      changePlayState () {
         this.setPlaying(!this.playing)
         if (this.currentLyric) {
           this.currentLyric.togglePlay()
         }
 
       },
-      playPrevSong() {
+      playPrevSong () {
         if (!this.canplay) {
           return
         }
@@ -208,7 +208,7 @@
         }
         this.canplay = false
       },
-      playNextSong() {
+      playNextSong () {
         if (!this.canplay) {
           return
         }
@@ -226,22 +226,22 @@
         }
         this.canplay = false
       },
-      changeCanplay() {
+      changeCanplay () {
         this.canplay = true
         this.savePlayHistory(this.currentSong)
       },
-      playError() {
+      playError () {
         this.canplay = true
       },
-      audioUpDateTime(e) {
+      audioUpDateTime (e) {
         this.currentTime = e.target.currentTime
       },
-      showMinuteAndSecond(time) {
+      showMinuteAndSecond (time) {
         const minute = time / 60 | 0
         const second = this.addDigits(time % 60 | 0)
         return `${minute}:${second}`
       },
-      addDigits(num, n = 2) {
+      addDigits (num, n = 2) {
         let numLength = num.toString().length
         while (numLength < n) {
           num = '0' + num
@@ -249,7 +249,7 @@
         }
         return num
       },
-      getCurrentDeg(runningtime, animationLength) {
+      getCurrentDeg (runningtime, animationLength) {
 //        let currentDeg = ((360 / animationLength) * runningtime) % 360
 //        let cosVal = Math.cos(currentDeg * Math.PI / 180)
 //        let sinVal = Math.sin(currentDeg * Math.PI / 180)
@@ -257,7 +257,7 @@
 //
         return ((360 / animationLength) * runningtime) % 360
       },
-      ontouchMoveTo(touchPercent) {
+      ontouchMoveTo (touchPercent) {
         let currentTimeByPercent = this.currentSong.duration * touchPercent
         this.changingAudioProgress = false
         this.$refs.audio.currentTime = currentTimeByPercent
@@ -268,7 +268,7 @@
           this.changePlayState()
         }
       },
-      ontouchMoving(touchPercent) {
+      ontouchMoving (touchPercent) {
         this.changingAudioProgress = true
         this.changeAudioProgressTime = this.currentSong.duration * touchPercent
         if (this.currentLyric) {
@@ -294,7 +294,7 @@
 //        })
 //        this.setCurrentIndex(index)
 //      },
-      runLoopMode() {
+      runLoopMode () {
         this.$refs.audio.currentTime = 0
         if (this.currentLyric) {
           this.currentLyric.seek(0)
@@ -302,14 +302,14 @@
         this.$refs.audio.play()
 
       },
-      audioEnded() {
+      audioEnded () {
         if (this.mode === playMode.loop) {
           this.runLoopMode()
         } else {
           this.playNextSong()
         }
       },
-      getLyric() {
+      getLyric () {
         if (this.currentSong.mid) {
           this.getQQLyric()
         }
@@ -317,7 +317,7 @@
           this.getWYLyric()
         }
       },
-      getQQLyric() {
+      getQQLyric () {
         this.currentSong.getQQLyricInSongClass().then(res => {
           if (this.currentSong.lyric !== res) {
             return
@@ -334,7 +334,7 @@
           console.log('获取QQ音乐歌词出错了getQQLyricInSongClass', err)
         })
       },
-      getWYLyric() {
+      getWYLyric () {
         this.currentSong.getWYLyricInSongClass().then(res => {
           if (this.currentSong.lyric !== res) {
             return
@@ -351,7 +351,7 @@
           console.log('获取网易音乐歌词出错了getWYLyricInSongClass', err)
         })
       },
-      lyricHandle({lineNum, txt}) {
+      lyricHandle ({lineNum, txt}) {
         this.currentLyricLineNum = lineNum
         let showCurrentEle = this.$refs.lyricLine[lineNum - 5]
         if (lineNum > 5) {
@@ -361,14 +361,14 @@
         }
         this.playingLyric = txt
       },
-      middleTouchStart(e) {
+      middleTouchStart (e) {
         this.touch.init = true
         this.touch.startPageX = e.touches[0].pageX
         this.touch.startPageY = e.touches[0].pageY
         this.touch.moved = false
 
       },
-      middleTouchMove(e) {
+      middleTouchMove (e) {
         if (!this.touch.init) {
           return
         }
@@ -386,7 +386,7 @@
           this.$refs.playerMiddleLeft.style.opacity = 1 - this.touch.percent
         }
       },
-      middleTouchEnd() {
+      middleTouchEnd () {
         if (!this.touch.moved) {
           return
         }
@@ -424,8 +424,12 @@
       ...mapActions(['savePlayHistory'])
     },
     watch: {
-      currentSong(newSong, oldSong) {
-        console.log('newSongnewSongnewSongnewSong',newSong)
+      currentSong (newSong, oldSong) {
+        console.log('newSongnewSongnewSongnewSong', newSong)
+        let webTitle = document.getElementsByTagName('title')[0];
+        webTitle.innerText = newSong.name + '-' + newSong.singer;
+//        history.pushState(null, songNameAndSinger, '?wd=' + songNameAndSinger)
+        console.log(webTitle, 'webTitle')
         if (!newSong.id) {
           return
         }
@@ -453,7 +457,7 @@
           }, 500)
         })
       },
-      playing(newPlaying) {
+      playing (newPlaying) {
         let audio = this.$refs.audio
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
@@ -465,7 +469,7 @@
           }
         })
       },
-      fullScreen(newfullScreen) {
+      fullScreen (newfullScreen) {
         let pausedTime = this.currentTime
         this.bigCdMiniPausedDeg = this.getCurrentDeg(pausedTime, 20)
         let smallCdShowDeg = this.getCurrentDeg(pausedTime, 10)
@@ -477,13 +481,13 @@
         }
       }
     },
-    created() {
-      this.touch = {};
-      var clipboard = new Clipboard('.song-name');
+    created () {
+      this.touch = {}
+      var clipboard = new Clipboard('.song-name')
       clipboard.on('error', function (e) {
         alert('复制歌曲名失败，请更换浏览器尝试')
         console.log('复制歌曲名失败，请更换浏览器尝试', e)
-      });
+      })
     },
     components: {
       progressBar, progressCircle, Scroll, PlayList
