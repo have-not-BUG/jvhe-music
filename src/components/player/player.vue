@@ -10,7 +10,7 @@
               @touchend.prevent="endCanDownload"
               :data-clipboard-text="currentSong.name"
           ></h1>
-          <h1 class="singer" v-html="currentSong.singer"></h1>
+          <h1 class="singer" v-html="currentSongSinger"></h1>
         </div>
         <div class="player-middle"
              @touchstart="middleTouchStart"
@@ -56,7 +56,7 @@
           <div class="control-part">
             <i :class="playModeIco" @click="changePlayMode"></i>
             <i class="icon-prev" @click="playPrevSong" :class="disableClass"></i>
-            <i class="needsclick" :class="normalPlayStateClass" @click="changePlayState"></i>
+            <i class="needsclick" :class="normalPlayStateClass(disableClass)" @click="changePlayState"></i>
             <i class="icon-next" @click="playNextSong" :class="disableClass"></i>
             <i :class="getFavoriteIcon(currentSong)" @click.stop="toggleFavoriteSong(currentSong)"></i>
           </div>
@@ -81,7 +81,7 @@
       </div>
     </transition>
     <audio :src="currentSong.url" ref="audio"
-           @play="changeCanplay" @error="playError"
+           @canplay="changeCanplay" @error="playError"
            @timeupdate="audioUpDateTime" @ended="audioEnded"></audio>
     <play-list ref="playList"></play-list>
   </div>
@@ -105,9 +105,6 @@
   export default {
     mixins: [playModeMixin],
     computed: {
-      normalPlayStateClass () {
-        return this.playing ? 'icon-pause' : 'icon-play'
-      },
       miniPlayStateClass () {
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
@@ -119,6 +116,9 @@
       },
       disableClass () {
         return this.canplay ? '' : 'disable'
+      },
+      currentSongSinger () {
+        return this.canplay ? this.currentSong.singer : '加载歌曲中.....'
       },
       runningTime () {
         return this.changingAudioProgress ? this.showMinuteAndSecond(this.changeAudioProgressTime) : this.showMinuteAndSecond(this.currentTime)
@@ -148,11 +148,20 @@
         currentLyric: null,
         currentLyricLineNum: 0,
         currentPage: 'cd',
-        playingLyric: '',
+        playingLyric: '歌曲、歌词或图片加载中...',
         canDownload: 0
       }
     },
     methods: {
+      normalPlayStateClass (disableClass) {
+        if (disableClass){
+          return this.playing ? 'icon-pause disable' : 'icon-play disable'
+        } else{
+          return this.playing ? 'icon-pause' : 'icon-play'
+
+        }
+
+      },
       startCanDownload () {
         this.canDownload = setTimeout(() => {
           this.canDownload = 0
@@ -183,6 +192,9 @@
         this.setFullScreen(true)
       },
       changePlayState () {
+        if (!this.canplay){
+          return
+        }
         this.setPlaying(!this.playing)
         if (this.currentLyric) {
           this.currentLyric.togglePlay()
@@ -436,16 +448,16 @@
         if (newSong.id === oldSong.id) {
           return
         }
-        if (this.playingLyric) {
-          this.playingLyric = ''
-        }
+//        if (this.playingLyric) {
+//          this.playingLyric = ''
+//        }
         this.$nextTick(() => {
           this.setPlaying(false)
           clearTimeout(this.timer)
           if (this.currentLyric) {
             this.currentLyric.stop()
             this.currentTime = 0
-            this.playingLyric = ''
+            this.playingLyric = '歌曲、歌词或图片加载中...'
             this.currentLyricLineNum = 0
           }
           this.timer = setTimeout(() => {
