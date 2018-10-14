@@ -1,1 +1,45 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><meta name=robots content=noindex,nofollow><link rel="shortcut icon" href=./static/favicon.ico type=image/x-icon><link rel=icon type=image/x-icon href=./static/favicon.ico><link rel=apple-touch-icon href=./static/114.png><title>巨盒音乐-聚合QQ、网易云及虾米音乐资源|巨盒意指‘聚合’(谐音)各音乐资源的巨大的音乐盒</title><link href=./static/css/app.19e418126f4ca7ac501af463e42c40cc.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.70bceb2d0dc1a634ad5b.js></script><script type=text/javascript src=./static/js/vendor.c51995fed9ae5f35bca7.js></script><script type=text/javascript src=./static/js/app.eb6ffb857da770c0ee85.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><meta name=robots content=noindex,nofollow><script>function getSrcOrHref(msg) {
+      if (msg.target){
+        var res=msg.target.src ||  msg.target.href || msg.srcElement.href || msg.srcElement.src;
+        if (res){
+          return  res
+        }else {
+          return '未知地址'
+        }
+
+      }else {
+        return '无法找到目标'
+      }
+    }
+
+
+    function getHost(url) {
+      var getHostReg=/[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
+      return  getHostReg.exec(url)[0];
+
+    }
+
+    window.addEventListener('error', (msg, url, row, col, error) => {
+      // alert('监测到错误'+msg)
+      var targetSrc = getSrcOrHref(msg);
+      // var targetSrc = msg.target ? (msg.target.src || msg.srcElement.src) : '无法找到目标地址';
+      // var notListenUrlHashLastStr='downloadmenu';
+      // var notListenUrlHashLastStrLength=notListenUrlHashLastStr.length;
+      // var urlHashLastStr = window.location.hash.slice(-notListenUrlHashLastStrLength) ? window.location.hash.slice(-notListenUrlHashLastStrLength) : '匹配url hash出错';
+      // console.log(urlHashLastStr,'urlHashLastStr',targetSrc,'targetSrc')
+      if (msg.target && !msg.message) {
+        if (confirm('找不到'+targetSrc+'，是否需要帮您自动刷新浏览器重试？')) {
+          window.location.reload()
+        }
+      }
+
+      console.warn(msg.target ? (msg.target.outerHTML || msg.srcElement.outerHTML):'无法找到目标地址');
+      console.warn(
+        msg, url, row, col, error
+      );
+      return true;
+    }, true);
+    // 必须捕获阶段执行
+    // window.onerror=function (msg, url, row, col, error) {
+    //   alert('在冒泡阶段监测到错误'+msg)
+    // }</script><link rel="shortcut icon" href=./static/favicon.ico type=image/x-icon><link rel=icon type=image/x-icon href=./static/favicon.ico><link rel=apple-touch-icon href=./static/114.png><title>巨盒音乐-聚合QQ、网易云及虾米音乐资源|巨盒意指‘聚合’(谐音)各音乐资源的巨大的音乐盒</title><link href=./static/css/app.1137c4de332d6e001c3d1235f74a71ca.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.1db8708327379d5fd04c.js></script><script type=text/javascript src=./static/js/vendor.de9123e5088034c1dc8e.js></script><script type=text/javascript src=./static/js/app.9b50747222eeaa163077.js></script></body></html>
