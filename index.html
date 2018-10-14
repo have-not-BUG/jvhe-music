@@ -6,6 +6,54 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 
   <meta name="robots" content="noindex,nofollow">
+  <script>
+    function getSrcOrHref(msg) {
+      if (msg.target){
+        var res=msg.target.src ||  msg.target.href || msg.srcElement.href || msg.srcElement.src;
+        if (res){
+          return  res
+        }else {
+          return '未知地址'
+        }
+
+      }else {
+        return '无法找到目标'
+      }
+    }
+
+
+    function getHost(url) {
+      var getHostReg=/[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
+      return  getHostReg.exec(url)[0];
+
+    }
+
+    window.addEventListener('error', (msg, url, row, col, error) => {
+      // alert('监测到错误'+msg)
+      var targetSrc = getSrcOrHref(msg);
+      // var targetSrc = msg.target ? (msg.target.src || msg.srcElement.src) : '无法找到目标地址';
+      // var notListenUrlHashLastStr='downloadmenu';
+      // var notListenUrlHashLastStrLength=notListenUrlHashLastStr.length;
+      // var urlHashLastStr = window.location.hash.slice(-notListenUrlHashLastStrLength) ? window.location.hash.slice(-notListenUrlHashLastStrLength) : '匹配url hash出错';
+      // console.log(urlHashLastStr,'urlHashLastStr',targetSrc,'targetSrc')
+      if (msg.target && !msg.message) {
+        if (confirm('找不到'+targetSrc+'，是否需要帮您自动刷新浏览器重试？')) {
+          window.location.reload()
+        }
+      }
+
+      console.warn(msg.target ? (msg.target.outerHTML || msg.srcElement.outerHTML):'无法找到目标地址');
+      console.warn(
+        msg, url, row, col, error
+      );
+      return true;
+    }, true);
+    // 必须捕获阶段执行
+    // window.onerror=function (msg, url, row, col, error) {
+    //   alert('在冒泡阶段监测到错误'+msg)
+    // }
+
+  </script>
   <link rel="shortcut icon" href="./static/favicon.ico" type="image/x-icon"/>
   <link rel="icon" type="image/x-icon" href="./static/favicon.ico">
   <link rel="apple-touch-icon" href="./static/114.png">
