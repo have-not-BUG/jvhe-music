@@ -28,7 +28,7 @@
       // var urlHashLastStr = window.location.hash.slice(-notListenUrlHashLastStrLength) ? window.location.hash.slice(-notListenUrlHashLastStrLength) : '匹配url hash出错';
       // console.log(urlHashLastStr,'urlHashLastStr',targetSrc,'targetSrc')
       if (msg.target && !msg.message) {
-        if (confirm('找不到'+targetSrc+'，是否需要帮您自动刷新浏览器重试？')) {
+        if (confirm('找不到'+targetSrc+'，是否需要帮您自动刷新浏览器重试？'+error)) {
           window.location.reload()
         }
       }
