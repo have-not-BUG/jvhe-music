@@ -1,4 +1,34 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><meta name=robots content=noindex,nofollow><script>function getSrcOrHref(msg) {
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><meta name=robots content=noindex,nofollow><style>#warn-tip{
+      position: fixed;
+      top:50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      background-color: rgba(0,0,0,0.8);
+      border-radius: 4px;
+      padding:  8px 18px;
+      color: #ffffff;
+      font-weight: bolder;
+      display: none;
+      z-index: 9999999;
+    }</style><script>// 定义提示框方法
+
+    function warningTip(message, time, isShow) {
+      var warningTipElement = document.getElementById('warn-tip');
+      if (isShow) {
+        warningTipElement.innerText = message;
+        warningTipElement.style.display = 'block';
+      } else {
+        warningTipElement.style.display = 'none';
+      }
+      if (time) {
+        setTimeout(function () {
+          warningTipElement.style.display = 'none'
+        }, time)
+      }
+
+    }
+
+    function getSrcOrHref(msg) {
       if (msg.target){
         var res=msg.target.src ||  msg.target.href || msg.srcElement.href || msg.srcElement.src;
         if (res){
@@ -16,7 +46,6 @@
     function getHost(url) {
       var getHostReg=/[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
       return  getHostReg.exec(url)[0];
-
     }
 
     window.addEventListener('error', (msg, url, row, col, error) => {
@@ -28,9 +57,11 @@
       // var urlHashLastStr = window.location.hash.slice(-notListenUrlHashLastStrLength) ? window.location.hash.slice(-notListenUrlHashLastStrLength) : '匹配url hash出错';
       // console.log(urlHashLastStr,'urlHashLastStr',targetSrc,'targetSrc')
       if (msg.target && !msg.message) {
-        if (confirm('找不到'+targetSrc+'，是否需要帮您自动刷新浏览器重试？'+error)) {
-          window.location.reload()
-        }
+//        if (confirm('找不到'+targetSrc+'，是否需要帮您自动刷新浏览器重试？'+error)) {
+//          window.location.reload()
+//        }
+        warningTip('捕获到异常,具体原因为:'+error,3000,true)
+
       }
 
       console.warn(msg.target ? (msg.target.outerHTML || msg.srcElement.outerHTML):'无法找到目标地址');
@@ -42,4 +73,12 @@
     // 必须捕获阶段执行
     // window.onerror=function (msg, url, row, col, error) {
     //   alert('在冒泡阶段监测到错误'+msg)
-    // }</script><link rel="shortcut icon" href=./static/favicon.ico type=image/x-icon><link rel=icon type=image/x-icon href=./static/favicon.ico><link rel=apple-touch-icon href=./static/114.png><title>巨盒音乐-聚合QQ、网易云及虾米音乐资源|巨盒意指‘聚合’(谐音)各音乐资源的巨大的音乐盒</title><link href=./static/css/app.1137c4de332d6e001c3d1235f74a71ca.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.84494b2ff0173db3f063.js></script><script type=text/javascript src=./static/js/vendor.de9123e5088034c1dc8e.js></script><script type=text/javascript src=./static/js/app.944501d52af7a77e75ca.js></script></body></html>
+    // }
+
+    function createTipInDom () {
+     var tip=document.createElement('p')
+      tip.setAttribute('id','warn-tip');
+     document.body.appendChild(tip)
+    }</script><link rel="shortcut icon" href=./static/favicon.ico type=image/x-icon><link rel=icon type=image/x-icon href=./static/favicon.ico><link rel=apple-touch-icon href=./static/114.png><title>巨盒音乐-聚合QQ、网易云及虾米音乐资源|巨盒意指‘聚合’(谐音)各音乐资源的巨大的音乐盒</title><link href=./static/css/app.1137c4de332d6e001c3d1235f74a71ca.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.1f4011b411863d22f38a.js></script><script type=text/javascript src=./static/js/vendor.de9123e5088034c1dc8e.js></script><script type=text/javascript src=./static/js/app.38cef0ba1618bda1afa8.js></script></body><script>window.onload=function () {
+    createTipInDom()
+  }</script></html>

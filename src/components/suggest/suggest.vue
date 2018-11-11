@@ -86,11 +86,21 @@
             this.checkMore(res.data)
           } else {
             console.log('res.code不为0,getQQSearchAll')
-            alert('获取QQ搜索数据异常，请刷新重试或联系本人')
+//            alert('获取QQ搜索数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取QQ搜索数据异常，请刷新重试或联系本人, ${err}`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('获取QQ歌手及歌曲检索数据出错了', err)
-          alert('获取QQ歌手及歌曲检索数据出错了，请刷新重试或联系本人')
+//          alert('获取QQ歌手及歌曲检索数据出错了，请刷新重试或联系本人')
+          this.$message({
+            type: 'error',
+            message: `获取QQ歌手及歌曲检索数据出错了，请刷新重试或联系本人, ${err}`,
+            duration: 4500,
+          });
         })
       },
       _getWYSearchAll () {
@@ -107,11 +117,21 @@
             this.checkMoreWY(res.result)
           } else {
             console.log('res.code不为200,getWYSearchAll')
-            alert('获取网易搜索数据异常，请刷新重试或联系本人')
+//            alert('获取网易搜索数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取网易搜索数据异常，请刷新重试或联系本人`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('获取网易歌手及歌曲检索数据出错了', err)
-          alert('获取网易歌手及歌曲检索数据出错了，请刷新重试或联系本人')
+//          alert('获取网易歌手及歌曲检索数据出错了，请刷新重试或联系本人')
+          this.$message({
+            type: 'error',
+            message: `获取网易歌手及歌曲检索数据出错了，请刷新重试或联系本人, ${err}`,
+            duration: 4500,
+          });
         })
       },
       concatSongAndSingerData (data) {
@@ -284,7 +304,12 @@
               this.checkMoreWY(res.result)
             } else {
               console.log('res.code不为200,getWYSearchAll')
-              alert('获取网易搜索数据异常，请刷新重试或联系本人')
+//              alert('获取网易搜索数据异常，请刷新重试或联系本人')
+              this.$message({
+                type: 'error',
+                message: `获取网易搜索数据异常，请刷新重试或联系本人`,
+                duration: 4500,
+              });
             }
           }).catch(err => {
             console.log('获取网易歌手及歌曲检索数据出错了', err)

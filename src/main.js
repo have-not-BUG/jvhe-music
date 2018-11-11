@@ -21,10 +21,12 @@ Vue.config.productionTip = false
 
 // 请求拦截器
 axios.interceptors.request.use((request) => {
-  console.warn('成功的请求拦截器==',request.url)
+  // console.warn('成功的请求拦截器==',request.url)
   return request
 }, (error) => {
   alert(`${error.config.url}请求败，请检查参数是否正确。原因${error}`)
+
+
   // Notification.error({
   //   title: '错误',
   //   message: `${error.config.url}请求败，请检查参数是否正确。原因${error}`,
@@ -41,7 +43,7 @@ axios
   .response
   .use((response) => {
   // alert('响应拦截器==chenggong'+response);
-  console.warn('成功的响应拦截器1==',response.request.responseURL)
+  // console.warn('成功的响应拦截器1==',response.request.responseURL)
     // `${daZhuanpanApi}/v1/award/export`
     // 如果不是大转盘的领取详情导出或七牛上传图片的接口
     // if (response.config.url !== `${daZhuanpanApi}/v1/award/export` && response.config.url !== `${daZhuanpanApi}/v1/matchaward/export` && response.config.url !== 'http://up.qiniu.com') {

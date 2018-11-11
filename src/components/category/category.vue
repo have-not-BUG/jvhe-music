@@ -59,7 +59,12 @@
           console.log('this.category', this.category)
         }).catch(err => {
           console.log('获取QQ音乐大分类数据出错', err)
-          alert('获取音乐分类数据出错，请刷新重试或联系本人')
+//          alert('获取音乐分类数据出错，请刷新重试或联系本人')
+          this.$message({
+            type: 'error',
+            message: `获取音乐分类数据出错，请刷新重试或联系本人`,
+            duration: 4500,
+          });
         })
       },
       _getWYCategory () {

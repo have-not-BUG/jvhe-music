@@ -70,11 +70,21 @@
             this.hotkeys = res.data.hotkey.slice(0, 10)
           } else {
             console.log('getQQSearchHotKey 里的res.code 不为0')
-            alert('获取热门关键词数据异常，请刷新重试或联系本人')
+//            alert('获取热门关键词数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取热门关键词数据异常，请刷新重试或联系本人`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('QQ热门搜索关键词数据获取失败', err)
-          alert('QQ热门搜索关键词数据获取失败，请刷新重试或联系本人')
+//          alert('QQ热门搜索关键词数据获取失败，请刷新重试或联系本人')
+          this.$message({
+            type: 'error',
+            message: `'QQ热门搜索关键词数据获取失败', ${err}`,
+            duration: 4500,
+          });
         })
       },
 

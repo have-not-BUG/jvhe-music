@@ -88,11 +88,21 @@
 
           } else {
             console.log('获取QQ排行榜详情数据失败：res.code不为0')
-            alert('获取QQ排行榜详情数据异常，请刷新重试或联系本人')
+//            alert('获取QQ排行榜详情数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取QQ排行榜详情数据失败`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('获取QQ排行榜详情数据出错了', err)
-          alert('获取QQ排行榜详情数据出错了，请刷新重试或联系本人')
+//          alert('获取QQ排行榜详情数据出错了，请刷新重试或联系本人')
+          this.$message({
+            type: 'error',
+            message: `获取QQ排行榜详情数据出错了, ${err}`,
+            duration: 4500,
+          });
         })
       },
       _getWYRankListDetail () {
@@ -108,11 +118,21 @@
 
           } else {
             console.log('获取网易排行榜详情数据异常：res.code不为200')
-            alert('获取网易排行榜详情数据异常，请刷新重试或联系本人')
+//            alert('获取网易排行榜详情数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取网易排行榜详情数据异常`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('获取网易排行榜详情数据出错了', err)
-          alert('获取网易排行榜详情数据出错了，请刷新重试或联系本人')
+//          alert('获取网易排行榜详情数据出错了，请刷新重试或联系本人')
+          this.$message({
+            type: 'error',
+            message: `获取网易排行榜详情数据出错了, ${err}`,
+            duration: 4500,
+          });
         })
       },
       optimizeQQRankListSongs (list) {

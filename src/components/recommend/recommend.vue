@@ -96,7 +96,12 @@
           }
         }).catch(err => {
           console.log('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
-          alert('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
+//          alert('获取QQ轮播数据出错了，请刷新重试或者联系本人', err)
+          this.$message({
+            type: 'error',
+            message: `获取QQ轮播数据出错了，请刷新重试或者联系本人, ${err}`,
+            duration: 4500,
+          });
         })
       },
       _getQQHotSongList: function () {
@@ -105,11 +110,21 @@
             this.hotSongList = res.data.hotdiss.list
           } else {
             console.log('getQQHotSongList里的res.code 不为0')
-            alert('获取QQ热门歌单数据异常，请刷新重试或联系本人')
+//            alert('获取QQ热门歌单数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取QQ热门歌单数据异常，请刷新重试或联系本人`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
-          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+//          alert('获取QQ热门歌单出错了，请刷新重试或者联系本人', err)
+          this.$message({
+            type: 'error',
+            message: `获取QQ热门歌单出错了，请刷新重试或者联系本人, ${err}`,
+            duration: 4500,
+          });
         })
       },
       _getWYHotSongList: function () {
@@ -118,11 +133,21 @@
             this.hotSongList = res.playlists
           } else {
             console.log('getWYHotSongList.code 不为200')
-            alert('获取网易热门歌单数据异常，请刷新重试或联系本人')
+//            alert('获取网易热门歌单数据异常，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取网易热门歌单数据异常，请刷新重试或联系本人`,
+              duration: 4500,
+            });
           }
         }).catch(err => {
           console.log('获取网易热门歌单出错了，请刷新重试或者联系本人', err)
-          alert('获取网易热门歌单出错了，请刷新重试或者联系本人', err)
+//          alert('获取网易热门歌单出错了，请刷新重试或者联系本人', err)
+          this.$message({
+            type: 'error',
+            message: `获取网易热门歌单出错了，请刷新重试或者联系本人, ${err}`,
+            duration: 4500,
+          });
         })
       },
       loadImg: function () {

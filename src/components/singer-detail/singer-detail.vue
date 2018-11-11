@@ -54,12 +54,22 @@
             this.songs=this.optimizeQQSongs(res.data.list)
           } else {
             console.log('获取QQ歌手详情数据失败：res.code不为0')
-            alert('获取QQ歌手详情数据失败，请刷新重试或联系本人')
+//            alert('获取QQ歌手详情数据失败，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取QQ歌手详情数据失败，请刷新重试或联系本人`,
+              duration: 4500,
+            });
           }
 
         }).catch(err => {
           console.log('获取歌手详情数据出错了', err)
-          alert('获取歌手详情数据出错了，请刷新重试', err)
+//          alert('获取歌手详情数据出错了，请刷新重试', err)
+          this.$message({
+            type: 'error',
+            message: `'获取歌手详情数据出错了', ${err}`,
+            duration: 4500,
+          });
         })
       },
       _getWYSingerDetail() {
@@ -72,12 +82,22 @@
             this.songs = this.optimizeWYSongs(res.hotSongs)
           } else {
             console.log('获取网易云音乐歌手详情数据失败：res.code不为0')
-            alert('获取网易云音乐歌手详情数据失败，请刷新重试或联系本人')
+//            alert('获取网易云音乐歌手详情数据失败，请刷新重试或联系本人')
+            this.$message({
+              type: 'error',
+              message: `获取网易云音乐歌手详情数据失败，请刷新重试或联系本人`,
+              duration: 4500,
+            });
           }
 
         }).catch(err => {
           console.log('获取网易云音乐歌手详情数据出错了', err)
-          alert('获取网易云音乐歌手详情数据出错了，请刷新重试', err)
+//          alert('获取网易云音乐歌手详情数据出错了，请刷新重试', err)
+          this.$message({
+            type: 'error',
+            message: `获取网易云音乐歌手详情数据出错了 ${err}`,
+            duration: 4500,
+          });
         })
       },
       optimizeQQSongs(list) {
